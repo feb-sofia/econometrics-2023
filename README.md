@@ -8,9 +8,14 @@
 - Monday, 17:00-18:30 (English), room 128
 - Thursday, 14:15-15:45 (German), room 303
 
+## Grading
+
+TBA
+
 ## Class notes
 
-[2020 script](https://feb-uni-sofia.github.io/econometrics-script/index.html)
+The class notes will be provided as `Rmd` files in this repository. You can also use
+the notes in the [2020 script](https://feb-uni-sofia.github.io/econometrics-script/index.html).
 
 
 ## Software
