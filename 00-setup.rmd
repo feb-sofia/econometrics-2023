@@ -1,0 +1,8 @@
+---
+title: "Workspace setup"
+output: html_notebook
+---
+
+```{r}
+install.packages("tidyverse")
+```
