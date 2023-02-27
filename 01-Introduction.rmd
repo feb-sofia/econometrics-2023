@@ -5,7 +5,8 @@ date: "3/14/2022"
 output: html_document
 ---
 
-Optional: more on R Markdown: https://rmarkdown.rstudio.com/lesson-1.html.
+Optional: more on R Markdown: https://rmarkdown.rstudio.com/lesson-1.html
+
 Optional: a base R cheatsheet: https://www.datacamp.com/cheat-sheet/getting-started-r
 
 ## Arithmetic operations
