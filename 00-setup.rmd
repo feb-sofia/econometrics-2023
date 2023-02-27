@@ -4,5 +4,5 @@ output: html_notebook
 ---
 
 ```{r}
-install.packages("tidyverse")
+install.packages(c("tidyverse", "skimr"))
 ```

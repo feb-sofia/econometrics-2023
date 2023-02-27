@@ -1,0 +1,217 @@
+---
+title: "Introduction"
+author: "Boyko Amarov"
+date: "3/14/2022"
+output: html_document
+---
+
+Optional: more on R Markdown: https://rmarkdown.rstudio.com/lesson-1.html.
+
+## Arithmetic operations
+
+Shortcut to insert a code chunk: Ctrl-Alt-i
+Shortcut to run a single line of code: Ctrl-Enter
+Shortcut to run the whole chunk: Ctrl-Shift-Enter
+
+```{r}
+1 + 4
+3 - 2
+2 * 8
+2 / 8
+2^4
+```
+
+## Assignment
+
+Shortcut for the assignment operator: Alt - (minus)
+```{r}
+y <- 34
+y - 40
+```
+
+## Vectors
+
+```{r}
+x <- c(1, 4)
+```
+
+
+```{r}
+## Length, average, sum of a numeric vector
+mean(x)
+sum(x)
+length(x)
+```
+
+
+```{r}
+## Documentation
+?mean
+```
+
+## Text
+
+```{r}
+z <- "Hello, world!"
+```
+
+
+## Logical values
+
+```{r}
+2 < 5
+2 > 5
+"Text 2" == "Text 2"
+```
+
+```{r}
+z == "Text 2"
+```
+
+## Data
+
+```{r}
+library(tidyverse)
+```
+
+## Manual
+
+```{r}
+dt <- tibble(
+  id = 1:5,
+  y = c(2, 2.5, 3, 8, 12)
+)
+dt1 <- tribble(
+  ~id, ~y,
+  1, 2,
+  2, 2.5,
+  3, 3,
+  4, 8,
+  5, 12
+)
+dt
+dt1
+```
+
+## Import from text files
+
+```{r}
+earnings <- read_csv("https://raw.githubusercontent.com/feb-uni-sofia/econometrics2021/main/data/earnings.csv")
+```
+
+- _height_ (numeric): Height in inches (1 inch = 2.54 cm)
+- _weight_ (numeric): Weight in pounds (1 pound $\approx$ 0.45 kilograms)
+- _male_ (numeric): 1: Male, 0: Female
+- _earn_ (numeric): Annual income in USD
+- _earnk_ (numeric): Annual income in 1,000 USD
+- _ethnicity_ (character): Ethnicity
+- _age_ (numeric): Age
+
+
+```{r}
+earnings <- mutate(
+  earnings,
+  height_cm = 2.54 * height,
+  weight_kg = 0.45 * weight
+)
+earnings1 <- select(earnings, height_cm, weight_kg)
+```
+
+## Pipes
+
+```{r}
+earnings1 <- earnings %>%
+  mutate(
+    height_cm = 2.54 * height,
+    weight_kg = 0.45 * weight
+  ) %>%
+  select(height_cm, weight_kg)
+```
+
+
+## Data summary
+
+### Location
+
+```{r}
+mean(earnings1$height_cm)
+## Or using a pipe
+earnings1$height_cm %>% mean()
+```
+
+
+$$
+x = (x_1, x_2,\ldots, x_n)\\
+\bar{x} = \frac{1}{n}\sum_{i = 1}^{n} x_i
+$$
+
+$n = 1816$.
+
+
+### Variability
+
+```{r}
+max(earnings$height_cm)
+min(earnings$height_cm)
+```
+
+```{r}
+max(earnings$height_cm) - min(earnings$height_cm)
+```
+
+$$
+S^2_x = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2 \\
+S_x = \sqrt{S^2_x}: \text{Standardabweichung}
+$$
+
+```{r}
+var(earnings$height_cm)
+```
+
+```{r}
+sqrt(var(earnings$height_cm))
+```
+
+```{r}
+sd(earnings$height_cm)
+```
+
+```{r}
+## Basic summaries for the whole tibble
+earnings %>% skimr::skim()
+```
+
+## Visualizations
+
+Density
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height)) +
+  geom_density() +
+  geom_histogram(aes(y = ..density..), alpha = 0.3)
+```
+
+Group comparisons
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height, color = ethnicity)) +
+  geom_density()
+```
+
+## Boxplots
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height)) +
+  geom_boxplot()
+```
+
+Group comparisons
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height, y = ethnicity)) +
+  geom_boxplot()
+```
