@@ -6,6 +6,7 @@ output: html_document
 ---
 
 Optional: more on R Markdown: https://rmarkdown.rstudio.com/lesson-1.html.
+Optional: a base R cheatsheet: https://www.datacamp.com/cheat-sheet/getting-started-r
 
 ## Arithmetic operations
 
@@ -160,8 +161,9 @@ max(earnings$height_cm) - min(earnings$height_cm)
 ```
 
 $$
-S^2_x = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2 \\
-S_x = \sqrt{S^2_x}: \text{Standardabweichung}
+x = (x_1, \ldots, x_n)\\
+S^2_x = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2: \quad \text{variance}\\
+S_x = \sqrt{S^2_x} \quad \text{standard deviation}
 $$
 
 ```{r}
