@@ -215,3 +215,12 @@ earnings %>%
   ggplot(aes(x = height, y = ethnicity)) +
   geom_boxplot()
 ```
+
+Associations
+```{r}
+earnings1 %>%
+  ggplot(aes(x = weight_kg, y = height_cm)) +
+  geom_point(jitter = 0.5) +
+  geom_smooth(method = "lm") +
+  geom_smooth(color = "firebrick2")
+```
