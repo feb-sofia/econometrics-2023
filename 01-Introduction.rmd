@@ -235,10 +235,12 @@ earnings1 %>%
   ggplot(aes(x = weight_kg, y = height_cm)) +
   geom_point(position = "jitter", alpha = 0.5) +
   geom_smooth(method = "lm") +
-  geom_smooth(color = "firebrick3") +
   labs(
     x = "Weight (kg)",
     y = "Height (cm)"
   )
 ```
-
+```{r}
+summary(lm(weight_kg ~ height_cm, data = earnings1))
+summary(lm(height_cm ~ weight_kg, data = earnings1))
+```
