@@ -9,7 +9,7 @@ Optional: more on R Markdown: https://rmarkdown.rstudio.com/lesson-1.html
 
 Optional: a base R cheatsheet: https://www.datacamp.com/cheat-sheet/getting-started-r
 
-## Arithmetic operations
+# Arithmetic operations
 
 Shortcut to insert a code chunk: Ctrl-Alt-i
 Shortcut to run a single line of code: Ctrl-Enter
@@ -23,7 +23,7 @@ Shortcut to run the whole chunk: Ctrl-Shift-Enter
 2^4
 ```
 
-## Assignment
+# Assignment
 
 Shortcut for the assignment operator: Alt - (minus)
 ```{r}
@@ -31,7 +31,7 @@ y <- 34
 y - 40
 ```
 
-## Vectors
+# Vectors
 
 ```{r}
 x <- c(1, 4)
@@ -51,14 +51,14 @@ length(x)
 ?mean
 ```
 
-## Text
+# Character values
 
 ```{r}
 z <- "Hello, world!"
 ```
 
 
-## Logical values
+# Logical values
 
 ```{r}
 2 < 5
@@ -70,7 +70,7 @@ z <- "Hello, world!"
 z == "Text 2"
 ```
 
-## Data
+# Data
 
 ```{r}
 library(tidyverse)
@@ -95,7 +95,7 @@ dt
 dt1
 ```
 
-## Import from text files
+## Import from external sources
 
 ```{r}
 earnings <- read_csv("https://raw.githubusercontent.com/feb-uni-sofia/econometrics2021/main/data/earnings.csv")
@@ -119,7 +119,7 @@ earnings <- mutate(
 earnings1 <- select(earnings, height_cm, weight_kg)
 ```
 
-## Pipes
+# Pipes
 
 ```{r}
 earnings1 <- earnings %>%
@@ -131,16 +131,9 @@ earnings1 <- earnings %>%
 ```
 
 
-## Data summary
+# Data summary
 
-### Location
-
-```{r}
-mean(earnings1$height_cm)
-## Or using a pipe
-earnings1$height_cm %>% mean()
-```
-
+## Location
 
 $$
 x = (x_1, x_2,\ldots, x_n)\\
@@ -149,8 +142,24 @@ $$
 
 $n = 1816$.
 
+```{r}
+mean(earnings1$height_cm)
+## Or using a pipe
+earnings1$height_cm %>% mean()
+```
 
-### Variability
+
+```{r}
+table(earnings$ethnicity)
+```
+
+```{r}
+earnings %>%
+  ggplot(aes(y = ethnicity)) +
+  geom_bar()
+```
+
+## Variability
 
 ```{r}
 max(earnings$height_cm)
@@ -220,10 +229,16 @@ earnings %>%
 ```
 
 Associations
+
 ```{r}
 earnings1 %>%
   ggplot(aes(x = weight_kg, y = height_cm)) +
-  geom_point(position = "jitter") +
+  geom_point(position = "jitter", alpha = 0.5) +
   geom_smooth(method = "lm") +
-  geom_smooth(color = "firebrick3")
+  geom_smooth(color = "firebrick3") +
+  labs(
+    x = "Weight (kg)",
+    y = "Height (cm)"
+  )
 ```
+
