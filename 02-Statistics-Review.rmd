@@ -7,7 +7,9 @@ output: html_document
 
 
 ```{r}
-# First, load the tidyverse package
+## First, load the tidyverse package
+## If the package is not installed, uncomment the next line and run the code chunk again
+## install.packages("tidyverse")
 library(tidyverse)
 ```
 
@@ -135,10 +137,10 @@ unif_games <- expand_grid(
     result = runif(n(), min = -1, max = 1)
   ) %>%
   bind_rows(
-    ## Add an initial values so that all players start with 0
+    ## Add a initial values so that all players start with 0
     tibble(
       player = 1:players_n,
-      game = 0,
+      game = as.integer(0),
       result = 0,
     )
   )
@@ -149,10 +151,7 @@ unif_games <- unif_games %>%
   mutate(
     running_total = cumsum(result)
   )
-```
 
-
-```{r}
 ## Illustration only
 unif_games %>%
   ggplot(aes(x = game, y = running_total, group = player)) +
@@ -161,10 +160,13 @@ unif_games %>%
   geom_line(aes(color = player < 2, alpha = player < 2)) +
   scale_color_manual(values = c("skyblue4", "firebrick4")) +
   scale_alpha_manual(values = c(1 / 5, 1)) +
-  scale_x_continuous("Game", breaks = c(0, 4, 8, 12, 16)) +
+  scale_x_continuous("Game number", breaks = c(0, 4, 8, 12, 16)) +
   theme(legend.position = "none") +
   labs(y = "Running Total")
 ```
+
+
+
 
 ```{r}
 unif_games %>%
