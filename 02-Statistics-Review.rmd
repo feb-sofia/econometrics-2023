@@ -1,0 +1,190 @@
+---
+title: "Statistics Review"
+author: "Boyko Amarov"
+date: "3/14/2022"
+output: html_document
+---
+
+
+```{r}
+# First, load the tidyverse package
+library(tidyverse)
+```
+
+# Random number generators in R
+
+## Uniform distributions
+
+$$
+X \sim \text{Uniform}(a, b), \quad a,b \in \mathbb{R} \\
+f(x) = \begin{cases}
+\frac{1}{b - a} & a \leq x \leq b\\
+0 & \text{otherwise}
+\end{cases} \\
+E(X) = \int_{a}^{b} f(x) dx = \frac{1}{2}(a + b) \\
+Var(X) = \int_{a}^{b} \left(x - E(X)\right)^2 = \frac{1}{12}(b - a)^2 \\
+SD(X) = \sqrt{Var(X)} = \frac{1}{\sqrt{12}}(b - a) \\
+F(x) = \int_{-\infty}^{x} = \begin{cases}
+0 & x < a \\
+\frac{x - a}{b - a} & a \leq x \leq b\\
+1 & x > b
+\end{cases}
+$$
+
+
+For $a = -1$ and $b = 1$ the density of the uniform distribution is depicted in the following figure:
+
+```{r}
+## Illustration only
+unif_dens_plt <- ggplot() +
+  xlim(c(-2, 2)) +
+  stat_function(fun = dunif, args = list(min = -1, max = 1), n = 1000) +
+  labs(
+    x = "x",
+    y = "Density"
+  )
+unif_dens_plt
+```
+
+
+
+```{r}
+runif(n = 1, min = -1, max = 1)
+```
+
+
+```{r}
+
+unif_sim <- tibble(
+  x = runif(n = 30, min = -1, max = 1)
+)
+
+unif_dens_plt +
+  geom_rug(aes(x = x), data = unif_sim)
+```
+
+$$
+P(X < -0.2) = F(-0.2)
+$$
+
+```{r}
+## Compute the probability
+punif(-0.2, min = -1, max = 1)
+
+## Compute the sample proportion in the simulated data
+mean(unif_sim$x < -0.2)
+```
+
+$$
+P(X > -0.2) = 1 - F(-0.2)
+$$
+
+```{r}
+## Compute the probability
+1 - punif(-0.2, min = -1, max = 1)
+punif(-0.2, min = -1, max = 1, lower.tail = FALSE)
+
+## Compute the sample proportion in the simulated data
+mean(unif_sim$x > -0.2)
+```
+
+$$
+P(-0.2 < X < 0.3) = F(0.3) - F(-0.2)
+$$
+
+```{r}
+## Probability
+punif(0.3, min = -1, max = 1) - punif(-0.2, min = -1, max = 1)
+
+## Sample proportion in the simulation
+mean(unif_sim$x < 0.3 & unif_sim$x > -0.2)
+```
+
+```{r}
+sim_unif <- tibble(
+  x = runif(n = 100000, min = -1, max = 1)
+)
+
+sim_unif %>%
+  ggplot(aes(x = x)) +
+  geom_histogram(bins = 10) +
+  xlim(c(-1, 1))
+```
+
+# Normal distributions
+
+$$
+X \sim N(\mu, \sigma^2) \\
+f(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x - \mu}{\sigma}\right)^2}\\
+E(X) = \mu \\
+Var(X) = \sigma^2 \\
+SD(X) = \sqrt{\sigma^2} = \sigma
+$$
+
+```{r}
+players_n <- 100
+games_n <- 16
+
+unif_games <- expand_grid(
+  game = 1:games_n,
+  player = 1:players_n
+) %>%
+  mutate(
+    ## When used in mutate, n() returns the number of rows in a group of obs
+    ## When the data is not grouped as here, it retuns the number of obs in the whole table
+    result = runif(n(), min = -1, max = 1)
+  ) %>%
+  bind_rows(
+    ## Add an initial values so that all players start with 0
+    tibble(
+      player = 1:players_n,
+      game = 0,
+      result = 0,
+    )
+  )
+
+unif_games <- unif_games %>%
+  arrange(player, game) %>%
+  group_by(player) %>%
+  mutate(
+    running_total = cumsum(result)
+  )
+```
+
+
+```{r}
+## Illustration only
+unif_games %>%
+  ggplot(aes(x = game, y = running_total, group = player)) +
+  geom_vline(xintercept = c(4, 8, 16), linetype = 2) +
+  geom_hline(yintercept = 0) +
+  geom_line(aes(color = player < 2, alpha = player < 2)) +
+  scale_color_manual(values = c("skyblue4", "firebrick4")) +
+  scale_alpha_manual(values = c(1 / 5, 1)) +
+  scale_x_continuous("Game", breaks = c(0, 4, 8, 12, 16)) +
+  theme(legend.position = "none") +
+  labs(y = "Running Total")
+```
+
+```{r}
+unif_games %>%
+  filter(game == 4) %>%
+  ggplot(aes(x = running_total)) +
+  geom_density() +
+  labs(title = "Running total distribution at the 4-th game") +
+  labs(
+    x = "Running total"
+  )
+```
+
+```{r}
+unif_games %>%
+  filter(game == 16) %>%
+  ggplot(aes(x = running_total)) +
+  geom_density() +
+  labs(title = "Running total distribution at the 16-th game") +
+  labs(
+    x = "Running total"
+  )
+```
+
