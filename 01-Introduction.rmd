@@ -83,16 +83,7 @@ dt <- tibble(
   id = 1:5,
   y = c(2, 2.5, 3, 8, 12)
 )
-dt1 <- tribble(
-  ~id, ~y,
-  1, 2,
-  2, 2.5,
-  3, 3,
-  4, 8,
-  5, 12
-)
 dt
-dt1
 ```
 
 ## Import from external sources
@@ -144,9 +135,18 @@ $n = 1816$.
 
 ```{r}
 mean(earnings1$height_cm)
-## Or using a pipe
-earnings1$height_cm %>% mean()
+mean(earnings1$weight_kg, na.rm = TRUE)
 ```
+
+```{r}
+max(earnings1$height_cm) - min(earnings1$height_cm)
+```
+
+```{r}
+var(c(1, 3))
+```
+
+
 
 
 ```{r}
@@ -175,6 +175,13 @@ x = (x_1, \ldots, x_n)\\
 S^2_x = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2: \quad \text{variance}\\
 S_x = \sqrt{S^2_x} \quad \text{standard deviation}
 $$
+```{r}
+x <- c(1, 3)
+((1 - 2)^2 + (3 - 2)^2) / 1
+var(x)
+sd(x)
+```
+
 
 ```{r}
 var(earnings$height_cm)
@@ -193,6 +200,11 @@ sd(earnings$height_cm)
 earnings %>% skimr::skim()
 ```
 
+```{r}
+table(earnings$ethnicity)
+```
+
+
 ## Visualizations
 
 Density
@@ -200,19 +212,8 @@ Density
 ```{r}
 earnings %>%
   ggplot(aes(x = height)) +
-  geom_density() +
-  geom_histogram(aes(y = ..density..), alpha = 0.3)
+  geom_histogram()
 ```
-
-Group comparisons
-
-```{r}
-earnings %>%
-  ggplot(aes(x = height, color = ethnicity)) +
-  geom_density()
-```
-
-## Boxplots
 
 ```{r}
 earnings %>%
@@ -228,6 +229,14 @@ earnings %>%
   geom_boxplot()
 ```
 
+## Boxplots
+
+
+
+Group comparisons
+
+
+
 Associations
 
 ```{r}
@@ -240,7 +249,7 @@ earnings1 %>%
     y = "Height (cm)"
   )
 ```
+
 ```{r}
-summary(lm(weight_kg ~ height_cm, data = earnings1))
 summary(lm(height_cm ~ weight_kg, data = earnings1))
 ```

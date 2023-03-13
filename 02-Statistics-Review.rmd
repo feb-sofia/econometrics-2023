@@ -13,7 +13,7 @@ output: html_document
 library(tidyverse)
 ```
 
-# Random number generators in R
+# Statistics Background
 
 ## Uniform distributions
 
@@ -146,7 +146,10 @@ unif_games <- expand_grid(
   )
 
 unif_games <- unif_games %>%
+  ## Sort the data by player id and game id
   arrange(player, game) %>%
+  ## Groups the data by player, because we want the running totals to be calculated for each
+  ## player separately
   group_by(player) %>%
   mutate(
     running_total = cumsum(result)
@@ -189,4 +192,56 @@ unif_games %>%
     x = "Running total"
   )
 ```
+
+# Statistical tests
+
+| Истина/Решение | Осъден | Неосъден |
+|----------------|--------|----------|
+| Виновен        | 	      | X        |
+| Невинен        | X      | 	        |
+
+
+$$
+H_0: \mu = a \\
+H_1: \mu \neq a
+$$
+
+$$
+t = \frac{\overline{x} - a}{S_x / \sqrt{n}}
+$$
+
+The t-statistic follows a t-distribution with $n - 1$ degrees of freedom.
+
+```{r}
+mu_0 <- 0
+B <- 2000
+n <- 300
+
+sim_test <- expand.grid(
+  experiment_id = 1:B,
+  obs_id = 1:n
+) %>%
+  mutate(
+    x = rnorm(n = n(), mean = mu_0, sd = 1)
+  ) %>%
+  group_by(experiment_id) %>%
+  summarise(
+    mean_x = mean(x),
+    sd_x = sd(x),
+    t_stat = (mean_x - mu_0) / (sd_x / sqrt(n))
+  )
+```
+
+```{r}
+mean(sim_test$t_stat < -2)
+```
+
+```{r}
+sim_test %>%
+  ggplot(aes(x = t_stat)) +
+  geom_density() +
+  geom_vline(xintercept = -2, lty = 2) +
+  geom_vline(xintercept = 2, lty = 2)
+```
+
 
