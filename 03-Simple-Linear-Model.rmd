@@ -72,7 +72,7 @@ $$
 u_i \sim N(0, \sigma^2)
 $$
 
-Under the assumption that $E(u_i) = 0$ we can compute the conditional expected
+Under the assumption that $E(u_i) = 0$ we can compute the conditional (given the number of invoices) expected
 value of $y_i$. We use the linearity of the expected value:
 
 $$
@@ -202,10 +202,11 @@ $$
 RSS: Residual Sum of Squares. When we solve this minimization problem we get the Ordinary Least Squares (OLS) estimators for $\beta_0$ and $\beta_1$.
 
 
-Calculation of the OLS estimates given data
+Calculation of the OLS coefficient estimates given data and the model
 
 $$
-y_i = \beta_0 + \beta_1 x_i + u_i
+y_i \sim N(\mu_i, \sigma^2)\\
+\mu_i = \beta_0 + \beta_1 x_i + u_i
 $$
 
 
@@ -230,9 +231,7 @@ ggplot(data = invoices, aes(x = Invoices, y = Time)) +
   geom_vline(xintercept = c(50, 120, 201, 250, 400), lty = 2, alpha = 0.5) +
   scale_x_continuous(breaks = c(50, 120, 201, 250, 400)) +
   geom_abline(slope = 0.015, intercept = 0.1) +
-  ylim(c(0, 7)) +
-  geom_abline(slope = 0.001, intercept = 0.1, color = "firebrick") +
-  geom_abline(slope = 0.01129, intercept = 0.64171, color = "steelblue")
+  ylim(c(0, 7))
 ```
 
 Calculating the residual sum of squares (RSS) for different lines: a line with
@@ -245,10 +244,8 @@ $$
 ```{r}
 invoices <- invoices %>%
   mutate(
-    y_hat_manual = 0.1 + 0.015 * Invoices,
-    residuals_manual = Time - y_hat_manual,
-    y_hat_OLS = 0.64171 + 0.01129 * Invoices,
-    residuals_OLS = Time - y_hat_OLS
+    y_hat_manual = ,
+    residuals_manual = ,
   )
 ```
 
@@ -363,22 +360,6 @@ invoices %>%
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 The predicted processing time for 50 invoices (given the linear model that we assumed and method for estimating its coefficients) is 1.2 hours.
 
 Prediction for 50 invoices:
@@ -445,7 +426,7 @@ $$
 \hat{y}_{x=0} = 0.64 + 0.011*0 = 0.64 [hours]
 $$
 
-For $x = 0$ (zero invoices) the expected processing time ($\hat{y}$) equals 0.64 hours. These corresponds to the fixed costs of the firm (in terms of time). 0.011 (hours/invoice) is the estimated marginal cost for an additional invoice (in terms of time).
+For $x = 0$ (zero invoices) the expected processing time ($\hat{y}$) equals 0.64 hours. These correspond to the fixed costs of the firm (in terms of time). 0.011 (hours/invoice) is the estimated marginal cost for an additional invoice (in terms of time).
 
 To plot the OLS regression line quickly:
 
