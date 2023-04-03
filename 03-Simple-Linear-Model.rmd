@@ -49,7 +49,8 @@ i = 1,\ldots,n = 30\\
 x_i: \text{ number of invoices on day } i \\
 y_i: \text{ processing time on day } i \\
 $$
-Assume a simple (linear) functional relationship
+
+Assume a simple (linear) functional relationship between the processing time and the number of invoices.
 
 $$
 y_i = 0.1 + 0.015x_i
@@ -61,35 +62,42 @@ lie on the line with intercept 0.1 and with a slope equal to 0.015.
 
 
 $$
-y_i = 0.1 + 0.015x_i + u_i
+y_i = 0.1 + 0.015x_i + e_i
 $$
 
-The extra term $u_i$ accounts for the deviations of the observed processing times from the line.
+The extra term $e_i$ accounts for the deviations of the observed processing times from the line.
 
-Assume that $u_i$ follows a normal distribution with expected value (mean) of zero and variance $\sigma^2$. We also that $u_i$ are independent and that $u_i$ are independent of $x_i$.
+Assume that $e_i$ follows a normal distribution with expected value (mean) of zero and variance $\sigma^2$. We also that $e_i$ are independent and that $e_i$ are independent of $x_i$.
 
 $$
-u_i \sim N(0, \sigma^2)
+e_i \sim N(0, \sigma^2)
 $$
 
-Under the assumption that $E(u_i) = 0$ we can compute the conditional (given the number of invoices) expected
+Under the assumption that $E(e_i) = 0$ we can compute the conditional (given the number of invoices) expected
 value of $y_i$. We use the linearity of the expected value:
 
 $$
-E(y_i) = E(0.1 + 0.015x_i + u_i)\\
-E(y_i) = E(0.1) + E(0.015x_i) + E(u_i) \\
+E(y_i) = E(0.1 + 0.015x_i + e_i)\\
+E(y_i) = E(0.1) + E(0.015x_i) + E(e_i) \\
 E(y_i) = 0.1 + 0.015x_i + 0 \\
 E(y_i) = 0.1 + 0.015x_i
 $$
 The _expected_ processing time $E(y_i|x_i)$ is equal to $0.1 + 0.015x_i$.
 
 $$
-y_i = \underbrace{0.1 + 0.015x_i}_{\text{Systematic part}} + \underbrace{u_i}_{\text{Random part}}
-$$
-$$
-y_i = E(y_i) + u_i
+y_i = \underbrace{0.1 + 0.015x_i}_{\text{Systematic part}} + \underbrace{e_i}_{\text{Random part}}
 $$
 
+$$
+y_i = E(y_i) + e_i
+$$
+
+An alternative way to describe the model is:
+
+$$
+y_i \sim N(\mu_i, \sigma^2) \\
+\mu_i = \beta_0 + \beta_1 x_i
+$$
 
 # Interpretation of the linear equation
 
@@ -102,7 +110,7 @@ $$
 Units of measurement?
 
 $$
-y_i [hours] = 0.1 [hours] + 0.015 [\frac{hours}{invoice}] x_i[\#invoices] + u_i[hours]\\
+y_i [hours] = 0.1 [hours] + 0.015 [\frac{hours}{invoice}] x_i[\#invoices] + e_i[hours]\\
 $$
 
 $$
@@ -113,8 +121,8 @@ $$
 # Ordinary Least Squares
 
 $$
-y_i = 0.1 + 0.015 x_i + u_i\quad \text{black line}\\
-y_i =  0.1 + 0.001 x_i + u_i\quad \text{red line}
+y_i = 0.1 + 0.015 x_i + e_i\quad \text{black line}\\
+y_i =  0.1 + 0.001 x_i + e_i\quad \text{red line}
 $$
 
 
@@ -129,7 +137,7 @@ ggplot(data = invoices, aes(x = Invoices, y = Time)) +
 
 
 $$
-y_i = \beta_0 + \beta_1 x_i + u_i
+y_i = \beta_0 + \beta_1 x_i + e_i
 $$
 
 where $\beta_0$ and $\beta_1$ are unknown coefficients. Because the coefficients
@@ -172,8 +180,9 @@ invoices <- invoices %>%
 ggplot(data = invoices, aes(x = Invoices, y = Time)) +
   geom_point() +
   geom_abline(slope = 0.015, intercept = 0.1) +
-  ylim(c(0, 7)) +
-  geom_segment(aes(xend = Invoices, yend = y_hat_manual, ystart = Time))
+  ylim(c(0, 5)) +
+  geom_segment(aes(xend = Invoices, yend = y_hat_manual), lty = 2, alpha = 0.5) +
+  geom_label(aes(label = residuals_manual))
 ```
 
 
@@ -206,7 +215,7 @@ Calculation of the OLS coefficient estimates given data and the model
 
 $$
 y_i \sim N(\mu_i, \sigma^2)\\
-\mu_i = \beta_0 + \beta_1 x_i + u_i
+\mu_i = \beta_0 + \beta_1 x_i + e_i
 $$
 
 
@@ -244,8 +253,8 @@ $$
 ```{r}
 invoices <- invoices %>%
   mutate(
-    y_hat_manual = ,
-    residuals_manual = ,
+    y_hat_manual =,
+    residuals_manual =,
   )
 ```
 
@@ -254,13 +263,13 @@ Manually chosen coefficients (0.1; 0.015)
 RSS for the manually chosen coefficients (0.1; 0.015)
 
 ```{r}
-sum(invoices$residuals_manual ^ 2)
+sum(invoices$residuals_manual^2)
 ```
 
 RSS for the OLS coefficients (intercept = 0.64171; slope = 0.01129)
 
 ```{r}
-sum(invoices$residuals_OLS ^ 2)
+sum(invoices$residuals_OLS^2)
 ```
 
 
