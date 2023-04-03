@@ -78,7 +78,7 @@ $$
 Find the OLS estimates for $\beta_0$ and $\beta_1$ using the `lm` function.
 
 ```{r}
-summary(lm(kid_score ~ mom_hs, data = kids))
+lm(???, data = ???)
 ```
 
 Write the estimated regression equation
@@ -93,12 +93,12 @@ We want to create a simulation where we select 2000 samples of children from a g
 
 $$
 y_i \sim N(\mu_i, 19.85^2) \\
-y_i = 77.548 + 11.771 x_i \\
+\mu_i = 77.548 + 11.771 x_i \\
 $$
 
 ```{r}
 ## Fix the random numbers generator so that you can reproduce your results
-set.seed(some number)
+set.seed(???)
 
 sim_df <- expand_grid(
   R = 1:2,
@@ -108,20 +108,20 @@ sim_df <- expand_grid(
 sim_df <- sim_df %>%
   mutate(
     mu = ???,
-    kid_score = rnorm(n = n(), mu, ???)
+    kid_score = rnorm(n = n(), mean = mu, sd = ???)
   )
 ```
 
-Select the first simulated sample and
+Select the first simulated sample and find the OLS coefficient estimates using `lm`.
 
 ```{r}
 ## Estimate the OLS coefficients with the data from the first sample of children
-sample1 <- sim_df %>% filter(R == ???)
-head(sample1)
+sim_sample_1 <- sim_df %>% filter(R == ???)
+
 ```
 
 ```{r}
-lm(kid_score ~ 1 + mom_hs, data = sample1)
+lm(???, data = ???)
 ```
 
 The following code computes the OLS estimates for each of the samples.
@@ -134,7 +134,7 @@ sim_coeff <- sim_df %>%
   select(R, term, estimate, std.error, statistic)
 ```
 
-The data set `sim_coeff` now contains estimated coefficients ($\hat{\alpha}$ and $\hat{\beta}$) for every sample. To plot the distribution of $\hat{\beta}}$ we filter the data set so that we keep only the raw where `term == "mom_hs"` (i.e our estimates for $\beta$).
+The data set `sim_coeff` now contains estimated coefficients ($\hat{\alpha}$ and $\hat{\beta}$) for every sample. Check the first two rows and compare it to your results for the first estimated sample. To plot the distribution of $\hat{\beta}}$ we filter the data set so that we keep only the raw where `term == "mom_hs"` (i.e our estimates for $\beta$).
 
 ```{r}
 slopes <- sim_coeff %>% filter(term == "mom_hs")
@@ -161,6 +161,13 @@ slopes %>%
   geom_vline(xintercept = 11.77, color = "red")
 #  xlim(c(0, 21))
 ```
+
+Copy the code above and adapt it to show the distribution of the intercept coefficients.
+
+```{r}
+???
+```
+
 
 ## Summary of the lm output
 
