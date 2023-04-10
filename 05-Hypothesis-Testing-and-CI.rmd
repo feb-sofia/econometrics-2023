@@ -1,0 +1,400 @@
+---
+title: "Simple ANOVA"
+author: "Boyko Amarov"
+date: "4/19/2021"
+output:
+bookdown::html_document2: default
+---
+
+```{r setup, include=FALSE}
+## Warning: to compile the notes you need the "bookdown" and the "broom" packages. Install them by
+## running install.packages, see the commented lines below
+
+# install.packages(c("patchwork", "bookdown", "broom"))
+library(tidyverse)
+library(broom)
+library(patchwork)
+
+kids <- read_csv(
+  "https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/childiq.csv") %>%
+  select(kid_score, mom_hs)
+```
+
+# Hypothesis testing
+
+The previous [notebook](https://github.com/feb-sofia/econometrics-2023/blob/main/04-Simple-ANOVA.rmd) discussed the
+linear regression model with a single (0/1) explanatory variable. The example used the `kids` dataset, see the notes from
+the previous class for a description.
+
+
+In the previous class we studied the difference between the average IQ test scores of two groups of children: the ones
+with a mother with a high school degree (`mom_hs = 1`), and the ones whose mothers had no high school degree (`mom_hs = 0`).
+
+We saw that the linear regression model
+
+$$
+\text{kid_score}_i \sim N(\mu_i, \sigma^2) \\
+\mu_i = \beta_0 + \beta_1 \text{mom_hs}_i \\
+$$
+
+had the following interpretation of the regression coefficients:
+
+$$
+\text{mom_hs} = 1 \implies \mu_{\text{mom_hs} = 1} = \beta_0 + \beta_1 \\
+\text{mom_hs} = 0 \implies \mu_{\text{mom_hs} = 0} = \beta_0\\
+\beta_1 = \mu_{\text{mom_hs} = 1} - \mu_{\text{mom_hs} = 0}
+$$
+
+The intercept in the regression equation corresponds to the expected IQ score (population IQ score) of children with `mom_hs = 0`.
+The slope coefficient $\beta_1$ is simply the difference between expected (population) scores of the two groups.
+
+We used `lm` to estimate the two coefficients
+
+```{r}
+fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
+summary(fit)
+```
+
+and therefore obtained the estimated regression equation:
+
+$$
+\hat{\mu}_i = \hat{\beta}_0 + \hat{\beta}_1 \text{mom_hs}_i \\
+\hat{\mu}_i = 77.55 + 11.77 \text{mom_hs}_i \\
+$$
+
+The OLS estimates of the coefficients are the average IQ score in the `mom_hs = 0` group for $\beta_0$, and the
+difference between the group averages for $\beta_1$.
+
+## Simulation
+
+In the previous class we developed a simulation study using a model, mimicking the OLS results obtained from the `kids`
+data analysis (see above).
+
+$$
+y_i \sim N(\mu_i, \sigma^2) \\
+\mu_i = 77.548 + 11.771 \text{mom_hs}_i \\
+\sigma = 19.85
+$$
+
+First, we constructed a column `mom_hs` with values 0 and 1. We set the number of zeros and ones to the observed counts of these values in the `kids` dataset (93 zeros and 341 ones).
+Then `expand_grid` repeated this column as many times as the number of unique values of the column `R`. The
+
+```{r}
+## Fix the random numbers generator so that you can reproduce your results
+set.seed(123)
+
+sim_coeffs <- expand_grid(
+  R = 1:200,
+  mom_hs = rep(c(0, 1), c(93, 341))
+) %>%
+  mutate(
+    mu = 77.548 + 11.771 * mom_hs,
+    kid_score = rnorm(n = n(), mean = mu, sd = 19.85)
+  ) %>%
+  group_by(R) %>%
+  ## The tidy function reformats the output of lm so that it can fit in a data frame
+  do(tidy(lm(kid_score ~ 1 + mom_hs, data = .))) %>%
+  select(R, term, estimate, std.error, statistic)
+
+slopes <- sim_coeffs %>%
+        filter(term == "mom_hs")
+
+intercepts <- sim_coeffs %>%
+        filter(term == "(Intercept)")
+```
+Plot the distribution of the slope estimates
+
+```{r}
+slopes %>%
+  ggplot(aes(x = estimate)) +
+  geom_point(
+    aes(y = 0),
+    position = "jitter",
+    size = 1 / 2,
+    alpha = 0.5
+  ) +
+  geom_boxplot(alpha = 0.5) +
+  labs(
+    x = "Slope estimate",
+    title = "Distribution of slope estimates (over 2000 samples)",
+    y = ""
+  ) +
+  geom_density(color = "steelblue") +
+  geom_vline(xintercept = 11.77, color = "red")
+```
+
+
+## Summary of the lm output
+
+```{r}
+summary(fit)
+```
+
+
+Standard error: this is an estimate of the standard deviation of the estimator for the coefficient based on assumption of the normal distribution in the model.
+
+The standard deviation of $\hat{\beta}_1$, computed using the simulated samples:
+
+```{r}
+## sd: standard deviation
+sd(slopes$estimate)
+```
+
+
+## Testing a true null hypothesis
+
+$$
+H_0: \beta_1 = 11.77\\
+H_1: \beta_1 \neq 11.77
+$$
+
+t-test
+
+$$
+\text{t-statistic} = \frac{\hat{\beta}_1 - 11.77}{SE(\hat{\beta}_1)}
+$$
+
+When is the value of the t-statistic close to zero? 1. The estimate is close to the
+value under the null hypothesis. 2. For high values of the standard error
+
+$$
+t = \frac{11.77 - 11.77}{2.322} = 0
+$$
+
+```{r}
+slopes <- slopes %>%
+  mutate(
+    t_statistic = ???
+)
+```
+
+
+```{r}
+slopes %>%
+  ggplot(aes(x = ???)) +
+  geom_point(
+    aes(y = 0),
+    position = "jitter",
+    size = 1 / 2,
+    alpha = 0.5
+  ) +
+  geom_boxplot(alpha = 0.5) +
+  labs(
+    x = "Value of the t-statistic",
+    title = "Distribution of t-statistic under a true null hypothesis beta_1 = 11.77 (2000 samples)",
+    y = ""
+  ) +
+  geom_density(color = "steelblue") +
+  geom_vline(xintercept = 0, color = "red") +
+  geom_vline(xintercept = c(-2, 2), color = "steelblue", lty = 2) +
+  geom_vline(xintercept = c(-3, 3), color = "firebrick", lty = 2) +
+  xlim(c(-4, 8)) +
+  scale_x_continuous(breaks = c(-3, -2, 0, 2, 3))
+#  xlim(c(0, 21))
+```
+
+The real coefficient equals 11.77 (it is known, because we choose it for the simulation).
+
+Let's assume a rule that we reject the null hypothesis $H_0: \beta_1 = 0$ vs. $H_1: \beta_1 \neq 0$ if the value of the t-statistic is less than -2 or greater than +2.
+
+In how many samples will we wrongly reject the null hypothesis using this rule?
+
+```{r}
+testing_1 <- slopes %>%
+  mutate(
+    ## Logical OR: |
+    wrong_decision_blue = ???,
+    wrong_decision_red = ???
+  )
+
+## Share of TRUE values (blue)
+mean(???)
+
+## Share of TRUE values (red)
+mean(???)
+```
+
+
+## Hypothesis testing
+
+$$
+H_0: \beta_1 = 0\\
+H_1: \beta_1 \neq 0
+$$
+
+$$
+y_i = \beta_0 + \beta_1 x_i + u_i
+$$
+
+If $H_0$ is true, the model is simply
+
+$$
+y_i = \beta_0 + u_i
+$$
+
+
+t-test
+
+$$
+\text{t-statistic} = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)}
+$$
+The value of the t-statistic is small when the estimate for the coefficient is close to the value under the null hypothesis. The value of the t-statistic will be small, if the standard error of the estimator is high.
+
+$$
+t = \frac{11.77 - 0}{2.322} = 5.069
+$$
+
+Compute the value of the t-statistic for all samples in the simulation (and compare it to the value of the `statistic` column in the `sim_coef` dataset)
+
+```{r}
+slopes <- slopes %>%
+  mutate(
+    t_statistic0 = ???
+  )
+```
+
+
+```{r}
+slopes %>%
+  ggplot(aes(x = ???)) +
+  geom_point(
+    aes(y = 0),
+    position = "jitter",
+    size = 1 / 2,
+    alpha = 0.5
+  ) +
+  geom_boxplot(alpha = 0.5) +
+  labs(
+    x = "Value of the t-statistic",
+    title = "Distribution of t-statistic, beta_1 = 0 (false)",
+    y = ""
+  ) +
+  geom_density(color = "steelblue") +
+  geom_vline(xintercept = 0, color = "red") +
+  geom_vline(xintercept = c(-2, 2), color = "steelblue", lty = 2) +
+  geom_vline(xintercept = c(-3, 3), color = "firebrick", lty = 2) +
+  xlim(c(-4, 8)) +
+  scale_x_continuous(breaks = c(-3, -2, 0, 2, 3))
+```
+```{r}
+testing_2 <- slopes %>%
+  mutate(
+    ## Logical AND: &
+    wrong_decision_blue = t_statistic0 < 2 & t_statistic0 > -2,
+    wrong_decision_red = t_statistic0 < 3 & t_statistic0 > -3
+  )
+## Share of TRUE values
+mean(testing_2$wrong_decision_blue)
+mean(testing_2$wrong_decision_red)
+```
+
+## How to choose critical values?
+
+Convention: choose the critical values so that the probability of rejecting a true null hypothesis is 5%.
+
+# t-distribution
+
+$$
+y_i = \beta_0 + \beta_1 x_i + u_i
+$$
+
+Under some assumptions it can be shown that under the null hypothesis (this simply means that we assume the null hypothesis is true)
+
+$$
+H_0: \beta_1 = \beta_{H_0}\\
+H_1: \beta_1 \neq \beta_{H_0}\\
+$$
+
+$$
+\text{t-statistic} = \frac{\hat{\beta_1} -  \beta_{H_0}}{SE(\hat{\beta}_1)}
+$$
+
+$$
+\text{t-statistic} \underbrace{\sim}_{H_0} t(\text{df} = n - p)
+$$
+
+The t-statistic follow a t-distribution with $n - p$ degrees of freedom (parameter of the distribution), where $n$ is the number of observations in the linear model (in our example $n = 434$ kids) and $p$ is the number of coefficients in the linear equation. In our linear regression model the number of coefficients in $p = 2$: the intercept $\beta_0$, and the slope coefficient $\beta_1$.
+
+## Probabilities and quantiles of the t-distribution
+
+```{r, echo = FALSE}
+dt <- data.frame(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 100)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = 434 - 2)
+  )
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens)) +
+  ## Draws the shaded area under the curve between
+  ## -1 and 1
+  geom_ribbon(
+    data = filter(dt, x > -1.96, x < 1.96),
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) +
+  annotate(
+    "text",
+    x = 0,
+    y = dnorm(0) / 3,
+    label = paste("Pr(-1.96 < X < 1.96) = ", round(pt(-1.96, df = 434 - 2) - pt(1.96, df = 434 - 2), 2), sep = " ")
+  ) +
+  geom_vline(xintercept = c(-1.96, 1.96), lty = 2, colour = "steelblue") +
+  # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
+  scale_x_continuous(breaks = c(-1.96, 0, 1.96))
+```
+### Probability
+
+```{r}
+# p: probability, t: t-distribution
+pt(-2, df = 434 - 2)
+```
+
+```{r}
+rt(1, df = 434 - 2)
+```
+
+
+```{r}
+# r: random, t: t-distribution
+mean(rt(1000000, df = 434 - 2) < -2)
+# mean(rt(1000000, df = 2) < -2)
+```
+
+### Quantiles
+
+```{r}
+## q: quantile, t: t-distribution
+qt(p = 0.02306292, df = 434 - 2)
+```
+
+
+## Critical values in t-tests
+
+```{r}
+# 0.025 quantile of the t-distribution with 2 degrees of freedom
+qt(0.025, df = 434 - 2)
+```
+
+```{r}
+# r: random, t: t-distribution
+mean(rt(10000, df = 434 - 2) < -1.965471)
+```
+
+
+A convention is to use a 5% error probability of rejecting a true null hypothesis,
+so we use the quantiles of the t-distribution to derive critical values as follows:
+
+```{r}
+## Lower critical value: the 0.025 quantile of the t-distribution
+qt(0.025, df = 434 - 2)
+## Upper critical value: the 0.975 quantile of the t-distribution
+## lower.tail = FALSE instructs qt to calculate
+qt(0.025, df = 434 - 2, lower.tail = FALSE)
+```
+
+Both critical values are equal in absolute value.
