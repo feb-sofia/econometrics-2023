@@ -497,8 +497,8 @@ R^2 = 1 - \frac{87.95}{860} = 0.897
 дадена вероятност за покритие от 95 процента. <span class="math inline">\(1 - \alpha = 0.95 \implies \alpha = 0.05\)</span>.
 Знаем, че случайна променлива, която следва чи квадрат разпределение с
 <span class="math inline">\(n - k\)</span> степени на свобода ще се
-резлизира с верояност 95 процента между <span class="math inline">\(\alpha / 2\)</span>-рия квантил (<span class="math inline">\(\chi_{n - k}(\alpha/2)\)</span>) и <span class="math inline">\((1 - \alpha / 2)\)</span> квантил: <span class="math inline">\(\chi_{n - k}(1 - \alpha / 2)\)</span>. При <span class="math inline">\(\alpha = 0.05\)</span> търсим квантилите при <span class="math inline">\(0.05 / 2 = 0.025\)</span> и <span class="math inline">\(1 - 0.05 / 2 = 1 - 0.05 / 2 = 97.5\)</span> Тези
-квантили можем да пресметнем например в <code>R</code>:</p>
+резлизира с верояност 95 процента между <span class="math inline">\(\alpha / 2\)</span>-рия квантил (<span class="math inline">\(\chi_{n - k}(\alpha/2)\)</span>) и <span class="math inline">\((1 - \alpha / 2)\)</span> квантил: <span class="math inline">\(\chi_{n - k}(1 - \alpha / 2)\)</span>. При <span class="math inline">\(\alpha = 0.05\)</span> търсим квантилите при <span class="math inline">\(0.05 / 2 = 0.025\)</span> и <span class="math inline">\(1 - 0.05 / 2 = 0.975\)</span> Тези квантили можем
+да пресметнем например в <code>R</code>:</p>
 <pre class="r"><code>qchisq(0.025, df = 5 - 2)</code></pre>
 <pre><code>## [1] 0.2157953</code></pre>
 <pre class="r"><code>qchisq(0.975, df = 5 - 2)</code></pre>
