@@ -1,8 +1,8 @@
 
 # Econometrics 2023
 
-**Warning**
-The Monday 18-20 exercise class will take place in room 418!
+> **Warning**
+> The Monday 18-20 exercise class will take place in room 418!
 
 ## Решение на задачата от лекциите (10.04.2023)
 
