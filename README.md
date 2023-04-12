@@ -12,7 +12,7 @@
 
 - Monday, 14:15-15:45 (English), room 303
 - Monday, 16:15-17:45 (English), room 303
-- Monday, 17:00-18:30 (English), room 418
+- Monday, 18:15-19:45 (English), room 418
 - Thursday, 14:15-15:45 (German), room 303
 
 ## Grading
