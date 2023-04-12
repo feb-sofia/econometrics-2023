@@ -2,7 +2,7 @@
 # Econometrics 2023
 
 > **Warning**
-> The Monday 18-20 exercise class will take place in room 418!
+> Due to maintenance works in room 128 the Monday 18:15-19:45 class will take place in room 418!
 
 ## Решение на задачата от лекциите (10.04.2023)
 
