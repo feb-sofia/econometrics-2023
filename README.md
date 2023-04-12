@@ -1,11 +1,18 @@
 
 # Econometrics 2023
 
+**Warning**
+The Monday 18-20 exercise class will take place in room 418!
+
+## Решение на задачата от лекциите (10.04.2023)
+
+Решението може да видите тук: https://feb-sofia.github.io/econometrics-2023/slide_5_exercise_solution.html.
+
 ## Schedule
 
 - Monday, 14:15-15:45 (English), room 303
 - Monday, 16:15-17:45 (English), room 303
-- Monday, 17:00-18:30 (English), room 128
+- Monday, 17:00-18:30 (English), room 418
 - Thursday, 14:15-15:45 (German), room 303
 
 ## Grading
@@ -33,7 +40,7 @@ the notes in the [2020 script](https://feb-uni-sofia.github.io/econometrics-scri
     Another introduction into basic probability theory and linear models. The references to Bayesian inference in the book are not relevant to our course.
 5. Faraway, J. J. (2015) Linear models with R. Second edition. Boca Raton: CRC Press, Taylor & Francis Group.
     
-    Another introduction into linear models with application in R.
+    Another introduction into linear models with examples in R.
 
  
 

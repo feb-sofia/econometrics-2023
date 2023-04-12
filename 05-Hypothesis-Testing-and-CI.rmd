@@ -102,6 +102,7 @@ slopes <- sim_coeffs %>%
 intercepts <- sim_coeffs %>%
         filter(term == "(Intercept)")
 ```
+
 Plot the distribution of the slope estimates
 
 ```{r}
@@ -122,6 +123,20 @@ slopes %>%
   geom_density(color = "steelblue") +
   geom_vline(xintercept = 11.77, color = "red")
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Summary of the lm output
@@ -164,14 +179,14 @@ $$
 ```{r}
 slopes <- slopes %>%
   mutate(
-    t_statistic = ???
+    t_statistic = (estimate - 11.77) / std.error
 )
 ```
 
 
 ```{r}
 slopes %>%
-  ggplot(aes(x = ???)) +
+  ggplot(aes(x = t_statistic)) +
   geom_point(
     aes(y = 0),
     position = "jitter",
@@ -203,15 +218,17 @@ In how many samples will we wrongly reject the null hypothesis using this rule?
 testing_1 <- slopes %>%
   mutate(
     ## Logical OR: |
-    wrong_decision_blue = ???,
-    wrong_decision_red = ???
+    wrong_decision_blue = t_statistic < -2 | t_statistic > 2,
+    wrong_decision_red = t_statistic < -3 | t_statistic > 3
   )
 
 ## Share of TRUE values (blue)
-mean(???)
+sum(testing_1$wrong_decision_blue)
+mean(testing_1$wrong_decision_blue)
 
 ## Share of TRUE values (red)
-mean(???)
+sum(testing_1$wrong_decision_red)
+mean(testing_1$wrong_decision_red)
 ```
 
 
@@ -249,14 +266,14 @@ Compute the value of the t-statistic for all samples in the simulation (and comp
 ```{r}
 slopes <- slopes %>%
   mutate(
-    t_statistic0 = ???
+    t_statistic0 = (estimate - 0) / std.error
   )
 ```
 
 
 ```{r}
 slopes %>%
-  ggplot(aes(x = ???)) +
+  ggplot(aes(x = t_statistic0)) +
   geom_point(
     aes(y = 0),
     position = "jitter",
