@@ -3,7 +3,7 @@ title: "Simple ANOVA"
 author: "Boyko Amarov"
 date: "4/19/2021"
 output:
-bookdown::html_document2: default
+  bookdown::html_document2: default
 ---
 
 ```{r setup, include=FALSE}
@@ -126,19 +126,6 @@ slopes %>%
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Summary of the lm output
 
 ```{r}
@@ -232,7 +219,7 @@ mean(testing_1$wrong_decision_red)
 ```
 
 
-## Hypothesis testing
+## Testing a wrong hypothesis
 
 $$
 H_0: \beta_1 = 0\\
@@ -364,6 +351,7 @@ ggplot() +
   # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
   scale_x_continuous(breaks = c(-1.96, 0, 1.96))
 ```
+
 ### Probability
 
 ```{r}
@@ -397,11 +385,6 @@ qt(p = 0.02306292, df = 434 - 2)
 qt(0.025, df = 434 - 2)
 ```
 
-```{r}
-# r: random, t: t-distribution
-mean(rt(10000, df = 434 - 2) < -1.965471)
-```
-
 
 A convention is to use a 5% error probability of rejecting a true null hypothesis,
 so we use the quantiles of the t-distribution to derive critical values as follows:
@@ -415,3 +398,33 @@ qt(0.025, df = 434 - 2, lower.tail = FALSE)
 ```
 
 Both critical values are equal in absolute value.
+
+
+## Confidence intervals for the coefficients
+
+$$
+P\left( \hat{\beta}_1 + t_{\alpha / 2}(n - p) se(\hat{\beta}_1) \leq \hat{\beta}_1 +  t_{1 - \alpha / 2}(n - p) se(\hat{\beta}_1)\right) = 1 - \alpha
+$$
+
+
+```{r}
+alpha <- 0.05
+
+slopes <- slopes %>%
+  mutate(
+    ## ???
+  )
+```
+
+```{r}
+slopes %>%
+  ggplot(aes(x = estimate, y= factor(R), xmin = CI_lower, xmax = CI_upper)) + 
+  geom_errorbarh()
+```
+
+
+
+## p-values
+
+
+
