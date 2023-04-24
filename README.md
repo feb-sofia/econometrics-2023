@@ -22,6 +22,8 @@ TBA
 
 ## Class notes
 
+You can find the compiled class notes here: https://feb-sofia.github.io/econometrics-2023. 
+
 The class notes will be provided as `Rmd` files in this repository. You can also use
 the notes in the [2020 script](https://feb-uni-sofia.github.io/econometrics-script/index.html).
 
