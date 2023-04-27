@@ -155,10 +155,10 @@ slopes <- slopes %>%
 
 $$
 H_0: \beta_1 = 0\\
-H_1: \beta_1 \neq 0
+H_1: \beta_1 < 0
 $$
 $$
-\text{t} = \frac{\hat{\beta}_1 - ?}{SE(\hat{\beta}_1)}
+\text{t} = \frac{\hat{\beta}_1 - ?}{se(\hat{\beta}_1)}
 $$
 
 
@@ -190,7 +190,7 @@ H_1: \beta_1 \neq \beta_{H_0}\\
 $$
 
 $$
-\text{t-statistic} = \frac{\hat{\beta_1} -  \beta_1^{H_0}}{SE(\hat{\beta}_1)}
+\text{t-statistic} = \frac{\hat{\beta_1} -  \beta_1^{H_0}}{se(\hat{\beta}_1)}
 $$
 
 $$
@@ -199,10 +199,30 @@ $$
 
 ## Probabilities and quantiles of the t-distribution
 
+### Density of the t-distribution
+
+```{r}
+dt <- expand_grid(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 200),
+  df = c(1, 5, 50, 500)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = df),
+    df = factor(df)
+  )
+
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens, colour = df))
+```
+
+
 ```{r, echo = FALSE}
 dt <- data.frame(
   ## Creates a sequence of 100 numbers between -3 and 3
-  x = seq(-4, 4, length.out = 100)
+  x = seq(-4, 4, length.out = 1000)
 ) %>%
   mutate(
     ## Computes the standard normal density at each of the 100 points in x
@@ -251,3 +271,29 @@ qt(p = 0.02306292, df = 434 - 2)
 ```{r}
 # 0.025 quantile of the t-distribution with 2 degrees of freedom
 ```
+
+## p-values
+
+The p-value is the probability to observe (by chance) a t-statistic more extreme (i.e. against the null hypothesis) than the one observed in 
+the sample assuming that $H_0$ is true. For the one-sided hypothesis considered here it is given by
+
+$$
+\text{p-value} = P(t < t^{obs} | H_0)
+$$
+Compute the p-value for
+
+$$
+H_0: \beta = 11.77 \\
+H_1: \beta < 11.77
+$$
+
+
+$$
+H_0: \beta = 0\\
+H_1: \beta < 0
+$$
+
+$$
+H_0: \beta = 0\\
+H_1: \beta \neq 0
+$$
