@@ -1,0 +1,20 @@
+# Conclusion
+
+
+The present analysis considered (XXX, w) snapshots from static traffic cameras around the small ring of Sofia, Bulgaria.
+
+<!-- Limitations -->
+The analysis assumes that 
+
+- Data from only one month so seasonal variation cannot be explored
+- Data is insufficient for weekly seasonality as there are only four weeks in the data
+
+
+# Въпроси
+
+- Какво всъщност снимат тези камери? Например CA8154HX е сниман над 10 000 пъти от една и съща камера на кръстовището
+на Славянска и В. Левски. Силно подозирам, че ако отидем там ще намерим колата паркирана някъде до това кръстовище.
+- Какво са CAM и BUS?
+- В разпознатите номера на превозните средства има странни стойности, например 00, това валидни номера ли са?
+- Възможно ли е камерите да правят грешки при разпознаването на номерата?
+- Имам впечатлението, че освен неразпознатите номера има и немалък брой превозни средства, които изобщо не са били засечени от камерите

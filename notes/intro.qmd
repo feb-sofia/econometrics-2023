@@ -1,0 +1,79 @@
+```{r setup}
+source("setup.R")
+```
+
+```{r desc-vars}
+n_snaps <- nrow(cams)
+n_unique_cams <- length(unique(cams$cam_id))
+n_unique_plates <- length(unique(cams$plate))
+min_dttime <- min(cams$dttime, na.rm = TRUE)
+max_dttime <- max(cams$dttime, na.rm = TRUE)
+n_na_dttime <- sum(is.na(cams$dttime))
+n_na_plate <- sum(is.na(cams$plate))
+```
+
+# Data description
+
+The dataset contains the plate numbers and the time capture time from `r fmt_int(n_unique_cams)` fixed traffic cameras around the small ring of Sofia (@fig-cam-locs). The cameras captured `r fmt_int(n_unique_plates)` unique plate numbers in a total of `r fmt_int(n_snaps)` snapshots between `r min_dttime` and `r max_dttime`. The timestamp of the snapshot in unavailable for `r fmt_int(n_na_dttime)` cases (`r fmt_pct(100 * n_na_dttime / n_snaps)` percent). The cameras failed to recognize the plate number in `r fmt_int(n_na_plate)` cases (`r fmt_pct(100 * n_na_plate / n_snaps)` percent).
+
+```{r}
+#| label: fig-cam-locs
+#| fig-cap: "Camera locations and direction: inbound or outbound relative to the center of the city."
+
+camloc %>%
+  mapview(
+    xcol = "long", ycol = "lat",
+    crs = 4269, 
+    grid = FALSE,
+    zcol = "dir",
+    map.types = c("OpenStreetMap.Mapnik"),
+    label = "cam_id",
+    homebutton = TRUE
+  )
+```
+
+## Prep
+
+An exploratory analysis of the data reveals a large number of consecutive snapshots from one and the same camera of the same vehicle in a short period of time. In order to avoid counting these snapshots as multiple inbound or outbound moves, we take the first snapshot with the smallest time stamp (earliest snapshot), removing (XXX, w) subsequent snapshots from the same camera.
+
+
+```{r}
+plates_tbl <- xtabs( ~ plate + first_inbound, data = snaps_tmp)
+```
+
+```{r}
+pk_plates <- snaps_tmp %>% filter(str_starts(plate, "PK"), first_inbound == TRUE)
+```
+
+```{r}
+inout_plates <- snaps_tmp %>% 
+  filter(first_inbound == TRUE, day_span < 4)
+```
+
+
+```{r}
+plates_tbl %>% 
+  as_tibble() %>%
+  arrange(desc(n)) %>%
+  filter(n < 100) %>%
+  slice_head(n = 10)
+```
+
+```{r}
+tmp <- snaps %>%
+  filter(str_ends(plate, "A7170MB"))
+```
+
+```{r}
+single_vehicle <- snaps_tmp %>% 
+  filter(plate == "A7276HH") %>%
+  arrange(dttime) %>%
+  select(dttime, cam_id, dir, loc, inner) %>%
+  filter(inner == 0)
+
+single_vehicle
+```
+
+```{r}
+
+```

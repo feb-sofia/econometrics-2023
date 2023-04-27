@@ -1,0 +1,249 @@
+# Introduction to R
+
+## Arithmetic Operations
+
+Shortcut to insert a code chunk: Ctrl-Alt-i
+Shortcut to run a single line of code: Ctrl-Enter
+Shortcut to run the whole chunk: Ctrl-Shift-Enter
+
+```{r}
+1 + 4
+3 - 2
+2 * 8
+2 / 8
+2^4
+```
+
+## Assignment
+
+Shortcut for the assignment operator: Alt - (minus)
+```{r}
+y <- 34
+y - 40
+```
+
+## Vectors
+
+```{r}
+x <- c(1, 4)
+```
+
+
+```{r}
+## Length, average, sum of a numeric vector
+mean(x)
+sum(x)
+length(x)
+```
+
+
+```{r}
+## Documentation
+?mean
+```
+
+## Character values
+
+```{r}
+z <- "Hello, world!"
+```
+
+
+## Logical values and logical operators
+
+```{r}
+2 < 5
+2 > 5
+"Text 2" == "Text 2"
+```
+
+```{r}
+z == "Text 2"
+```
+
+## Data
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+dt <- tibble(
+  id = 1:5,
+  y = c(2, 2.5, 3, 8, 12)
+)
+dt
+```
+
+```{r}
+earnings <- read_csv("https://raw.githubusercontent.com/feb-uni-sofia/econometrics2021/main/data/earnings.csv")
+```
+
+- _height_ (numeric): Height in inches (1 inch = 2.54 cm)
+- _weight_ (numeric): Weight in pounds (1 pound $\approx$ 0.45 kilograms)
+- _male_ (numeric): 1: Male, 0: Female
+- _earn_ (numeric): Annual income in USD
+- _earnk_ (numeric): Annual income in 1,000 USD
+- _ethnicity_ (character): Ethnicity
+- _age_ (numeric): Age
+
+
+```{r}
+earnings <- mutate(
+  earnings,
+  height_cm = 2.54 * height,
+  weight_kg = 0.45 * weight
+)
+earnings1 <- select(earnings, height_cm, weight_kg)
+```
+
+The same code can be rewritten in a more convenient way using [pipes](https://r4ds.had.co.nz/pipes.html).
+
+```{r}
+earnings1 <- earnings %>%
+  mutate(
+    height_cm = 2.54 * height,
+    weight_kg = 0.45 * weight
+  ) %>%
+  select(height_cm, weight_kg)
+```
+
+Note that the object holding the original data is unaffected by mutate and select.
+
+
+## Basic data summaries
+
+### Location
+
+$$
+x = (x_1, x_2,\ldots, x_n)\\
+\bar{x} = \frac{1}{n}\sum_{i = 1}^{n} x_i
+$$
+
+$n = 1816$.
+
+```{r}
+mean(earnings1$height_cm)
+mean(earnings1$weight_kg, na.rm = TRUE)
+```
+
+```{r}
+max(earnings1$height_cm) - min(earnings1$height_cm)
+```
+
+```{r}
+var(c(1, 3))
+```
+
+
+
+
+```{r}
+table(earnings$ethnicity)
+```
+
+```{r}
+earnings %>%
+  ggplot(aes(y = ethnicity)) +
+  geom_bar()
+```
+
+### Variability
+
+```{r}
+max(earnings$height_cm)
+min(earnings$height_cm)
+```
+
+```{r}
+max(earnings$height_cm) - min(earnings$height_cm)
+```
+
+$$
+x = (x_1, \ldots, x_n)\\
+S^2_x = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2: \quad \text{variance}\\
+S_x = \sqrt{S^2_x} \quad \text{standard deviation}
+$$
+```{r}
+x <- c(1, 3)
+((1 - 2)^2 + (3 - 2)^2) / 1
+var(x)
+sd(x)
+```
+
+
+```{r}
+var(earnings$height_cm)
+```
+
+```{r}
+sqrt(var(earnings$height_cm))
+```
+
+```{r}
+sd(earnings$height_cm)
+```
+
+```{r}
+## Basic summaries for the whole tibble
+earnings %>% skimr::skim()
+```
+
+```{r}
+table(earnings$ethnicity)
+```
+
+
+## Visualizations
+
+Histogram
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height)) +
+  geom_histogram()
+```
+
+A smooth density plot is an alternative way to visualize the distribution of a variable.
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height)) +
+  geom_density()
+```
+
+The boxplot shows the median and the 25-th and 75-th percentiles (the box). The whiskers in the plot stretch to the
+minimum or the maximum observed value, unless there are extreme observations that are shown as single dots.
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height)) +
+  geom_boxplot()
+```
+
+Group comparisons
+
+```{r}
+earnings %>%
+  ggplot(aes(x = height, y = ethnicity)) +
+  geom_boxplot()
+```
+
+The scatterplot will be our primary tool in studying associations between variables. It represents each
+observation as a point in a coordinate system defined by the variables that we would like to study.
+
+```{r}
+earnings1 %>%
+  ggplot(aes(x = weight_kg, y = height_cm)) +
+  geom_point(position = "jitter", alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(
+    x = "Weight (kg)",
+    y = "Height (cm)"
+  )
+```
+
+```{r}
+summary(lm(height_cm ~ weight_kg, data = earnings1))
+```

@@ -1,0 +1,507 @@
+# Simple Linear Model
+
+We begin the introduction to linear regression analysis using a simple example
+with one response variable and one explanatory (predictor) variable. Let us first
+load the data and the `tidyverse` packages.
+
+```{r setup}
+library(tidyverse)
+
+invoices <- read.delim('https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/invoices.txt')
+```
+
+The dataset `invoices` contains `r nrow(invoices)` rows and `r ncol(invoices)`  columns.
+The data was provided by an accounting firm which processes invoices on behalf of its clients.
+Each observation corresponds to one working day of this firm. The number of invoices processed each
+day is given in the column `Invoices` and the processing time for that number of invoices is given in
+the column `Time`. Both columns are numeric.
+
+- `Time`: (numeric) Processing time in hours
+- `Invoices` (numeric): Number of invoices
+
+You can see the first few values of each column by calling `glimpse`.
+
+```{r}
+glimpse(invoices)
+```
+
+
+Our goal in this exercise is to develop a simple model that can predict the processing time
+given a number of invoices, for example 50, 120, 201, 250 or 400 invoices.
+
+First we will visualize the data using a scatterplot. In that plot each dot
+represents one row in the data. Here each row is one working day of the firm,
+therefore each 
+
+```{r}
+#| label: fit-invoices-scatter
+#| fig-cap: "Processing time and number of invoices"
+
+invoices_plt <- ggplot(
+  # The data argument tells the plotting function
+  # where to find the data
+  data = invoices, 
+  # The aes (aesthetics function) maps columns in the dataset to visual elements
+  # of the plot, in this case the x and y axes.
+  aes(x = Invoices, y = Time)
+  ) +
+  # geom_point draws the actual dots on the plot
+  geom_point()
+
+# Print the plot
+invoices_plt
+```
+
+We will start by assuming a linear relationship between the processing time
+and the the number of invoices.
+
+$$
+i = 1,\ldots,n = 30\\
+x_i: \text{ number of invoices on day } i \\
+y_i: \text{ processing time on day } i \\
+$$
+
+\begin{align}
+y_i = \beta_0 + \beta_1 x_i
+\end{align}{#eq-linear-nonstoch}
+
+Where the coefficients $\beta_0$ and $\beta_1$ are fixed but unknown. When you look at the scatterplot in @fit-invoices-scatter you will notice that the equation in @eq-linear-nonstoch cannot describe the data as it
+implies that all points must lie on a single straight line. Therefore we need to relax this equation by adding
+a term for the deviation of each dot from that straight line. Let us call this term $e_i$.
+
+\begin{align}
+y_i = \beta_0 + \beta_1 x_i + e_i
+\end{align}{#eq-linear-model}
+
+$$
+y_i = 0.1 + 0.015x_i + e_i
+$$
+
+The extra term $e_i$ accounts for the deviations of the observed processing times from the line.
+
+We will assume that $e_i$ follows a normal distribution with expected value (mean) of zero and variance $\sigma^2$. We will also assume that $e_i$ are independent and that $e_i$ are independent of $x_i$.
+
+```{r}
+fit <- lm(Time ~ Invoices, data = invoices)
+summary(fit)
+```
+
+```{r}
+predict(fit, newdata = tibble(Invoices = c(50, 150, 250)))
+```
+
+
+```{r, echo = FALSE}
+dt <- expand_grid(
+  B = factor(1:2000),
+  x = c(50, 150, 250),
+) %>%
+  mutate(
+    mu = 0.6417099 + 0.0112916 * x,
+    y = rnorm(n = n(), mean = mu, sd = 0.3298),
+    dy = x + 20 * dnorm(y, mean = mu, sd = 0.3298)
+  ) %>%
+  arrange(x, dy)
+
+ggplot() +
+  geom_point(
+    data = invoices, 
+    aes(x = Invoices, y = Time)
+  ) +
+  geom_path(data = dt, aes(x = dy, y = y, group = x), alpha = 0.2, color = "salmon") + 
+  geom_abline(intercept = 0.6417099, slope = 0.0112916) + 
+  geom_segment(
+    data = tibble(
+      y = c(1.206292, 2.335456, 3.464621),
+      yend = y,
+      x = c(50, 150, 250),
+      xend = 25 + x
+    ),
+    aes(
+      y = y, 
+      x = x, 
+      xend = xend, 
+      yend = yend
+    ),
+    lty = 2,
+    alpha = 0.5
+  )
+```
+
+$$
+e_i \sim N(0, \sigma^2)
+$$
+
+Under the assumption that $E(e_i) = 0$ we can compute the conditional (given the number of invoices) expected value of $y_i$. We use the linearity of the expected value:
+
+\begin{align}
+E(y_i | x_i) = E(0.1 + 0.015x_i + e_i)\\
+E(y_i| x_i) = E(0.1) + E(0.015x_i) + E(e_i) \\
+E(y_i| x_i) = 0.1 + 0.015x_i + 0 \\
+E(y_i| x_i) = 0.1 + 0.015x_i
+\end{align}
+
+The *expected* processing time $E(y_i|x_i)$ is equal to $0.1 + 0.015x_i$.
+
+$$
+y_i = \underbrace{0.1 + 0.015x_i}_{\text{systematic part}} + \underbrace{e_i}_{\text{random part}}
+$$
+
+$$
+y_i = E(y_i) + e_i
+$$
+
+An alternative (and more general) way to describe the model is:
+
+$$
+y_i \sim N(\mu_i, \sigma^2) \\
+\mu_i = \beta_0 + \beta_1 x_i
+$$
+
+## Interpretation of the linear equation
+
+$$
+i = 1,\ldots,n = 30\\
+x_i: \text{ number of invoices on day } i \\
+y_i: \text{ processing time on day } i \text{ (hours)} \\
+$$
+
+Units of measurement?
+
+$$
+y_i [hours] = 0.1 [hours] + 0.015 [\frac{hours}{invoice}] x_i[\#invoices] + e_i[hours]\\
+$$
+
+<!-- $$ -->
+<!-- 1 [m] \times 2 [m] = 2 [m^2] \text{ example with area} \\ -->
+<!-- 300 [\frac{BGN}{month}]* 2 [months] = 600 [BGN] \text{ example with monthly rent} -->
+<!-- $$ -->
+
+## Ordinary Least Squares
+
+$$
+y_i = 0.1 + 0.015 x_i + e_i\quad \text{black line}\\
+y_i =  0.1 + 0.001 x_i + e_i\quad \text{red line}
+$$
+
+```{r}
+ggplot(data = invoices, aes(x = Invoices, y = Time)) +
+  geom_point() +
+  geom_abline(slope = 0.015, intercept = 0.1) +
+  ylim(c(0, 7)) +
+  geom_abline(slope = 0.001, intercept = 0.1, color = "firebrick")
+```
+
+$$
+y_i = \beta_0 + \beta_1 x_i + e_i
+$$
+
+where $\beta_0$ and $\beta_1$ are unknown coefficients. Because the coefficients are unknown, we must guess these from the data.
+
+We can compare different guesses about the coefficients using the distance between the regression line (the model) and the dots (the observed data).
+
+$$
+\hat{y}_i = \hat{\mu}_i= \hat{\beta}_0 + \hat{\beta}_1 x_i \text{ regression line (model)}
+$$
+
+For example with $\hat{\beta}_0 = 0.1, \hat{\beta}_1 = 0.015$ and $x = 120$:
+
+$$
+y_{26} = 2.5, x_{26} = 120\\
+\hat{y}_{26} = 0.1 + 0.015 * 120  = 1.9
+$$
+
+The *observed* processing time on the 26-th day was 2.5 hours, leading to difference of 0.6 hours between observed and predicted processing time. We call this difference the *residual* (on day 26 in this example).
+
+$$
+r_{26} = y_{26} - \hat{y}_{26} = 2.5 - 1.9 = 0.6 [hours]
+$$
+
+```{r}
+invoices <- invoices %>%
+  mutate(
+    y_hat_manual = 0.1 + 0.015 * Invoices,
+    residuals_manual = Time - y_hat_manual
+  )
+```
+
+```{r}
+ggplot(data = invoices, aes(x = Invoices, y = Time)) +
+  geom_point() +
+  geom_abline(slope = 0.015, intercept = 0.1) +
+  ylim(c(0, 5)) +
+  geom_segment(aes(xend = Invoices, yend = y_hat_manual), lty = 2, alpha = 0.5) +
+  geom_label(aes(label = residuals_manual))
+```
+
+Residual for obs. $i$.
+
+$$
+r_i = y_i - \hat{y}_i
+$$
+
+Let us formalize the idea that small residuals lead to better prediction.
+
+$$
+\frac{1}{n}\sum_{i = 1}^{n}r_i
+$$
+
+$$
+\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i
+$$
+
+$$
+\min_{\hat{\beta}_0, \hat{\beta}_1} RSS(\hat{\beta}_0, \hat{\beta}_1) = \sum_{i = 1}^n r_i ^ 2 = \sum_{i = 1}^n (y_i - \hat{y}_i) ^ 2 =\sum_{i = 1}^n (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
+$$
+
+RSS: Residual Sum of Squares. When we solve this minimization problem we get the Ordinary Least Squares (OLS) estimators for $\beta_0$ and $\beta_1$.
+
+Calculation of the OLS coefficient estimates given data and the model
+
+$$
+y_i \sim N(\mu_i, \sigma^2)\\
+\mu_i = \beta_0 + \beta_1 x_i + e_i
+$$
+
+```{r}
+## lm: Linear Model
+## y: Time
+## x: Invoices
+fit <- lm(Time ~ 1 + Invoices, data = invoices)
+fit
+```
+
+Using OLS we get the estimated ("guessed")
+
+$$
+\hat{\beta}_0 = 0.64171; \hat{\beta}_1 = 0.01129\\
+\hat{y}_i = 0.64171 + 0.01129 x_i
+$$
+
+```{r}
+ggplot(data = invoices, aes(x = Invoices, y = Time)) +
+  geom_point() +
+  geom_vline(xintercept = c(50, 120, 201, 250, 400), lty = 2, alpha = 0.5) +
+  scale_x_continuous(breaks = c(50, 120, 201, 250, 400)) +
+  geom_abline(slope = 0.015, intercept = 0.1) +
+  ylim(c(0, 7))
+```
+
+Calculating the residual sum of squares (RSS) for different lines: a line with manually chosen (arbitrary) coefficients, and the OLS estimates of the coefficients.
+
+$$
+\hat{y}_i = 0.64171 + 0.01129 x_i
+$$
+
+```{r}
+invoices <- invoices %>%
+  mutate(
+    y_hat_manual = 0.1 + 0.015 * Invoices,
+    residuals_manual = Time - y_hat_manual,
+    y_hat_ols = 0.64171 + 0.01129 * Invoices,
+    residuals_ols = Time - y_hat_ols
+  )
+```
+
+
+RSS for the manually chosen coefficients (0.1; 0.015)
+
+```{r}
+sum(invoices$residuals_manual^2)
+```
+
+RSS for the OLS coefficients (intercept = 0.64171; slope = 0.01129)
+
+```{r}
+sum(invoices$residuals_ols^2)
+```
+
+Let us get back to the original task to predict the time needed to process 50, 120, 201, 250, 400 invoices.
+
+```{r}
+## Where to get the data?
+invoices %>%
+  ggplot(
+    ## How to map data to elements in the graphic
+    aes(
+      x = Invoices,
+      y = Time
+    )
+  ) +
+  ## How to visualise the data
+  geom_point() +
+  ## Add the regression line (least squares) to the graphic
+  geom_smooth(method = "lm") +
+  geom_vline(
+    ## Where should the vertical lines intercept with the x-axis
+    xintercept = c(50, 120, 201, 250, 400),
+    ## Alpha channel: controls transparency
+    alpha = 0.5,
+    ## lty: line type
+    lty = 2
+  ) +
+  ## Controls the x-axis
+  scale_x_continuous(breaks = c(50, 120, 201, 250, 400)) +
+  geom_hline(
+    yintercept = c(
+      1.206292,
+      1.996707,
+      2.911330,
+      3.464621,
+      5.158368),
+    lty = 2,
+    alpha = 0.5
+  ) +
+  scale_y_continuous(breaks = c(
+    1.206292,
+    1.996707,
+    2.911330,
+    3.464621,
+    5.158368))
+```
+
+$$
+\hat{y} = 0.64 + 0.011 x
+$$ $$
+\hat{y}_{x = 50} = 0.64 + 0.011 * 50 = 1.19 [hours]
+$$ $$
+\hat{y}_{x = 120} = 0.64 + 0.011 * 120 = 1.96 [hours]
+$$
+
+```{r}
+data_for_predictions <- tibble(
+  Invoices = c(50, 120, 201, 250, 400)
+)
+```
+
+```{r}
+# ?predict.lm
+predict(fit, newdata = data_for_predictions)
+```
+
+# Interpretation of the model coefficients
+
+$$
+\hat{y} = 0.64 + 0.011 x
+$$
+
+$$
+\hat{y}_{x = 0} = 0.64 + 0.011 * 0 = 0.64 [hours]
+$$ The intercept estimates the expected fixed costs (in terms of time) of the firm.
+
+The slope is 0.011 \[hours/invoice\]: marginal costs: these are the additional costs (in terms of time) for one additional unit of input (one invoice).
+
+
+The predicted processing time for 50 invoices (given the linear model that we assumed and method for estimating its coefficients) is 1.2 hours.
+
+Prediction for 50 invoices:
+
+$$
+\hat{y}_{x = 50} = 0.64171 + 0.01129*50 = 1.20621 [hours]
+$$ Prediction for 120 invoices:
+
+$$
+\hat{y}_{x = 120} = 0.64171 + 0.01129*120 = 1.99651 [hours]
+$$
+
+
+
+Create a data object that holds the values for which we want to make a prediction.
+
+```{r}
+data_for_predictions <- tibble(
+  Invoices = c(50, 120, 201, 250, 400)
+)
+```
+
+To compute the predictions using R we can use the `predict` function.
+
+```{r}
+predict(fit, newdata = data_for_predictions)
+```
+
+$$
+\hat{y}_{x = 50} = 0.6417 + 0.01129 * 50 = 1.206292
+$$
+
+Prediction for 120 invoices:
+
+$$
+\hat{y}_{x = 120} = 0.6417 + 0.01129 * 120 = 1.996707
+$$
+
+## Interpretation of the model coefficients
+
+$$
+\hat{y} = 0.64 + 0.011 x
+$$
+
+$$
+\hat{y}_{x=0} = 0.64 + 0.011*0 = 0.64 [hours]
+$$
+
+For $x = 0$ (zero invoices) the expected processing time ($\hat{y}$) equals 0.64 hours. These correspond to the fixed costs of the firm (in terms of time). 0.011 (hours/invoice) is the estimated marginal cost for an additional invoice (in terms of time).
+
+To plot the OLS regression line quickly:
+
+```{r}
+invoices %>%
+  ggplot(aes(x = Invoices, y = Time)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Simulation
+
+Normal distribution
+
+```{r}
+# r: random, norm: normal
+# mean: expected value of the distribution,
+# sd: standard deviation of the distribution = square root of the variance
+
+u <- rnorm(1000, mean = 0, sd = 1)
+# u
+```
+
+```{r}
+mean(u)
+```
+
+```{r}
+tibble(u) %>%
+  ggplot(aes(x = u)) +
+  geom_histogram(bins = 20)
+```
+
+Lets us assume, that we know a linear relationship between $y$ and $x$.
+
+$$
+y =  0.1 + 0.015 x + u, \quad u \sim N(0, \sigma^2 = 0.5^2)
+$$
+
+```{r}
+## Number of onservations
+n <- 30
+
+## Generate a grid of 30 values for x between 10 and 250
+x <- round(seq(10, 250, length.out = n), 0)
+x
+```
+
+```{r}
+## Select values at random from a standard
+## normal distribution, i.e. mean (expected value) = 0, standard dev. = 0.5
+u <- rnorm(n, mean = 0, sd = 0.5)
+y <- 0.1 + 0.015 * x + u
+sim_data <- tibble(x = x, y = y)
+# sim_data %>%
+#   ggplot(aes(x = x, y = y)) +
+#     geom_point() +
+#     geom_abline(intercept = 0.1, slope = 0.015) +
+#     ## Controls the range of the y-axis
+#     ylim(c(0, 5)) +
+#     ## Controls the range of the x-axis
+#     xlim(c(0, 260))
+lm(y ~ 1 + x)
+```
