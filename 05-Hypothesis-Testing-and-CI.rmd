@@ -4,8 +4,10 @@ author: "Boyko Amarov"
 date: "4/19/2021"
 output:
   bookdown::html_document2: default
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
-
 
 ```{r setup, include=FALSE}
 ## Warning: to compile the notes you need the "bookdown" and the "broom" packages. Install them by
@@ -23,14 +25,14 @@ kids <- read_csv(
 
 # Hypothesis testing
 
-In the previous class we fitted a linear regression model for the IQ score of
-the children in the `kids` dataset depending on the educational status of their mother `mom_hs`.
+In the previous class we fitted a linear regression model for the IQ
+score of the children in the `kids` dataset depending on the educational
+status of their mother `mom_hs`.
 
 $$
 \text{kid_score}_i \sim N(\mu_i, \sigma^2) \\
 \mu_i = \beta_0 + \beta_1 \text{mom_hs}_i
-$$
-We used OLS to find guesses for the unknown coefficients.
+$$ We used OLS to find guesses for the unknown coefficients.
 
 ```{r}
 fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
@@ -44,31 +46,28 @@ $$
 \hat{y}_i = \hat{\mu}_i = 77.55 + 11.77 \text{mom_hs}_i \\
 $$
 
-The OLS estimates of the coefficients are the average IQ score in the `mom_hs = 0` group for $\beta_0$, and the
-difference between the group averages for $\beta_1$.
+The OLS estimates of the coefficients are the average IQ score in the
+`mom_hs = 0` group for $\beta_0$, and the difference between the group
+averages for $\beta_1$.
 
-Now we would like to test whether there is a difference between the two groups of children in the _population_ (we already know
-that there is a difference in the sample!).
-
-
-
+Now we would like to test whether there is a difference between the two
+groups of children in the *population* (we already know that there is a
+difference in the sample!).
 
 ## Simulation
 
 The model:
 
 $$
-y_i \sim N(\mu_i, \sigma^2) \\
-\mu_i = 77.548 + 11.771 \text{mom_hs}_i \\
-\sigma = 19.85
+y_i \sim N(\mu_i, \sigma^2 = 19.85^2) \\
+\mu_i = 77.548 + 11.771 \text{mom_hs}_i
 $$
-
 
 ```{r}
 ## Fix the random numbers generator so that you can reproduce your results
 set.seed(123)
 
-slopes <- expand_grid(
+sim_coeffs <- expand_grid(
   R = 1:200,
   mom_hs = rep(c(0, 1), c(93, 341))
 ) %>%
@@ -107,7 +106,6 @@ slopes %>%
   geom_vline(xintercept = 11.77, color = "red")
 ```
 
-
 ## Testing a true null hypothesis
 
 $$
@@ -117,12 +115,11 @@ $$
 
 $$
 \text{t} = \frac{\hat{\beta}_1 - \hat{\beta}_1^{H_0}}{se(\hat{\beta}_1)}
-$$
-$$
+$$ $$
 \text{t} = \frac{\hat{\beta}_1 - ?}{se(\hat{\beta}_1)}
 $$
 
-1. Compute the t-statistic for each simulated sample sample 
+1.  Compute the t-statistic for each simulated sample sample
 
 ```{r}
 slopes <- slopes %>%
@@ -131,12 +128,10 @@ slopes <- slopes %>%
 )
 ```
 
+2.  Plot the distribution of the t-statistic
 
-2. Plot the distribution of the t-statistic
-
-3. Make a decision to reject $H_0$ if the t-statistic is less than -2. In how many 
- cases you make a wrong decision?
-
+3.  Make a decision to reject $H_0$ if the t-statistic is less than -2.
+    In how many cases you make a wrong decision?
 
 ```{r}
 slopes <- slopes %>%
@@ -150,19 +145,17 @@ slopes <- slopes %>%
 # mean()
 ```
 
-
 ## Testing a wrong hypothesis
 
 $$
 H_0: \beta_1 = 0\\
 H_1: \beta_1 < 0
-$$
-$$
+$$ $$
 \text{t} = \frac{\hat{\beta}_1 - ?}{se(\hat{\beta}_1)}
 $$
 
-
-1. Compute the value of the t-statistic for all samples in the simulation
+1.  Compute the value of the t-statistic for all samples in the
+    simulation
 
 ```{r}
 slopes <- slopes %>%
@@ -171,10 +164,10 @@ slopes <- slopes %>%
   )
 ```
 
-2. Plot the distribution of the t-statistic
+2.  Plot the distribution of the t-statistic
 
-3. In how many cases would you make a wrong decision if you reject $H_0$ for values of the t-statistic les than -2?
-
+3.  In how many cases would you make a wrong decision if you reject
+    $H_0$ for values of the t-statistic les than -2?
 
 # t-distribution
 
@@ -182,7 +175,8 @@ $$
 y_i = \beta_0 + \beta_1 x_i + u_i
 $$
 
-Under some assumptions it can be shown that under the null hypothesis (this simply means that we assume the null hypothesis is true)
+Under some assumptions it can be shown that under the null hypothesis
+(this simply means that we assume the null hypothesis is true)
 
 $$
 H_0: \beta_1 = \beta_{H_0}\\
@@ -218,7 +212,6 @@ ggplot() +
   geom_line(data = dt, aes(x = x, y = t_dens, colour = df))
 ```
 
-
 ```{r, echo = FALSE}
 dt <- data.frame(
   ## Creates a sequence of 100 numbers between -3 and 3
@@ -250,7 +243,6 @@ ggplot() +
   scale_x_continuous(breaks = c(-1.96, 0, 1.96))
 ```
 
-
 ## Probabilities using the t-distribution
 
 ```{r}
@@ -265,7 +257,6 @@ pt(-2, df = 434 - 2)
 qt(p = 0.02306292, df = 434 - 2)
 ```
 
-
 ## Critical values in t-tests
 
 ```{r}
@@ -274,19 +265,19 @@ qt(p = 0.02306292, df = 434 - 2)
 
 ## p-values
 
-The p-value is the probability to observe (by chance) a t-statistic more extreme (i.e. against the null hypothesis) than the one observed in 
-the sample assuming that $H_0$ is true. For the one-sided hypothesis considered here it is given by
+The p-value is the probability to observe (by chance) a t-statistic more
+extreme (i.e. against the null hypothesis) than the one observed in the
+sample assuming that $H_0$ is true. For the one-sided hypothesis
+considered here it is given by
 
 $$
 \text{p-value} = P(t < t^{obs} | H_0)
-$$
-Compute the p-value for
+$$ Compute the p-value for
 
 $$
 H_0: \beta = 11.77 \\
 H_1: \beta < 11.77
 $$
-
 
 $$
 H_0: \beta = 0\\
