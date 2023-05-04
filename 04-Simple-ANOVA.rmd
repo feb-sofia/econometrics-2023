@@ -45,7 +45,8 @@ kids %>%
   group_by(mom_hs) %>%
   ## Compute the average IQ score in each group
   summarise(
-    average_IQ = mean(kid_score)
+    average_IQ = mean(kid_score),
+    n = n()
   )
 ```
 
@@ -78,8 +79,10 @@ $$
 Find the OLS estimates for $\beta_0$ and $\beta_1$ using the `lm` function.
 
 ```{r}
-lm(???, data = ???)
+lm(kid_score ~ 1 + mom_hs, data = kids)
 ```
+
+
 
 Write the estimated regression equation
 
@@ -98,17 +101,18 @@ $$
 
 ```{r}
 ## Fix the random numbers generator so that you can reproduce your results
-set.seed(???)
+set.seed(123)
 
 sim_df <- expand_grid(
-  R = 1:2,
-  mom_hs = rep(c(0, 1), c(???, ???))
+  R = 1:200,
+  # mom_hs = rep(c(0, 1), c(2, 4))
+  mom_hs = rep(c(0, 1), c(93, 341))
 )
 
 sim_df <- sim_df %>%
   mutate(
-    mu = ???,
-    kid_score = rnorm(n = n(), mean = mu, sd = ???)
+    mu = 77.548 + 11.771 * mom_hs,
+    kid_score = rnorm(n = n(), mean = mu, sd = 19.85)
   )
 ```
 
@@ -116,12 +120,11 @@ Select the first simulated sample and find the OLS coefficient estimates using `
 
 ```{r}
 ## Estimate the OLS coefficients with the data from the first sample of children
-sim_sample_1 <- sim_df %>% filter(R == ???)
-
+sim_sample_1 <- sim_df %>% filter(R == 1)
 ```
 
 ```{r}
-lm(???, data = ???)
+lm(kid_score ~ 1 + mom_hs, data = sim_sample_1)
 ```
 
 The following code computes the OLS estimates for each of the samples.
@@ -160,6 +163,49 @@ slopes %>%
   geom_density(color = "steelblue") +
   geom_vline(xintercept = 11.77, color = "red")
 #  xlim(c(0, 21))
+```
+
+
+
+
+
+
+```{r}
+fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
+# fit
+summary(fit)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+mean(slopes$estimate)
 ```
 
 Copy the code above and adapt it to show the distribution of the intercept coefficients.

@@ -26,7 +26,7 @@ kids <- read_csv(
 # Hypothesis testing
 
 In the previous class we fitted a linear regression model for the IQ
-score of the children in the `kids` dataset depending on the educational
+score of the children in the `kids` data set depending on the educational
 status of their mother `mom_hs`.
 
 $$
@@ -82,7 +82,6 @@ sim_coeffs <- expand_grid(
 
 slopes <- sim_coeffs %>%
         filter(term == "mom_hs")
-
 ```
 
 Plot the distribution of the slope estimates
@@ -115,8 +114,10 @@ $$
 
 $$
 \text{t} = \frac{\hat{\beta}_1 - \hat{\beta}_1^{H_0}}{se(\hat{\beta}_1)}
-$$ $$
-\text{t} = \frac{\hat{\beta}_1 - ?}{se(\hat{\beta}_1)}
+$$ 
+
+$$
+\text{t} = \frac{\hat{\beta}_1 - 11.77}{se(\hat{\beta}_1)}
 $$
 
 1.  Compute the t-statistic for each simulated sample sample
@@ -124,64 +125,112 @@ $$
 ```{r}
 slopes <- slopes %>%
   mutate(
-    # t_statistic = 
+    t_statistic = (estimate - 11.77) / std.error,
+    reject_H0 = t_statistic < -1
 )
+
+sum(slopes$reject_H0)
+mean(slopes$reject_H0)
 ```
 
-2.  Plot the distribution of the t-statistic
+2. Plot the distribution of the t-statistic
 
-3.  Make a decision to reject $H_0$ if the t-statistic is less than -2.
+```{r}
+slopes %>%
+  ggplot(aes(x = t_statistic)) +
+  geom_point(
+    aes(y = 0),
+    position = "jitter",
+    size = 1 / 2,
+    alpha = 0.5
+  ) +
+  geom_boxplot(alpha = 0.5) +
+  labs(
+    x = "Slope estimate",
+    title = "Distribution of slope estimates",
+    y = ""
+  ) +
+  geom_density(color = "steelblue") +
+  geom_vline(xintercept = 0, color = "red")
+```
+
+5.  Make a decision to reject $H_0$ if the t-statistic is less than -2.
     In how many cases you make a wrong decision?
-
+    
 ```{r}
 slopes <- slopes %>%
   mutate(
-    ## Logical OR: |, logical comparison LESS THAN: <
-    reject_H0 = 
+    reject_H0_less_2 = t_statistic < -2
   )
 
-## Share of TRUE values (blue)
-# sum()
-# mean()
+sum(slopes$reject_H0_less_2)
+mean(slopes$reject_H0_less_2)
 ```
 
 ## Testing a wrong hypothesis
 
 $$
 H_0: \beta_1 = 0\\
-H_1: \beta_1 < 0
-$$ $$
-\text{t} = \frac{\hat{\beta}_1 - ?}{se(\hat{\beta}_1)}
+H_1: \beta_1 > 0
+$$
+
+
+$$
+\text{t} = \frac{\hat{\beta}_1 - 0}{se(\hat{\beta}_1)}
 $$
 
 1.  Compute the value of the t-statistic for all samples in the
     simulation
+    
+```{r}
+slopes <- slopes %>%
+  mutate(
+    t_statistic0 = estimate / std.error
+  )
+```
+    
+2.  Plot the distribution of the t-statistic
+
+```{r}
+
+slopes %>%
+  ggplot(aes(x = t_statistic0)) +
+  geom_point(
+    aes(y = 0),
+    position = "jitter",
+    size = 1 / 2,
+    alpha = 0.5
+  ) +
+  geom_boxplot(alpha = 0.5) +
+  labs(
+    x = "Slope estimate",
+    title = "Distribution of slope estimates",
+    y = ""
+  ) +
+  geom_density(color = "steelblue") +
+  geom_vline(xintercept = 0, color = "red")
+```
+
+
+3.  In how many cases would you make a wrong decision if you reject
+    $H_0$ for values of the t-statistic greater than 2?
 
 ```{r}
 slopes <- slopes %>%
   mutate(
-    # t_statistic0 = 
+    reject_H0_gt_2 = t_statistic0 > 2
   )
+
+sum(slopes$reject_H0_gt_2)
 ```
 
-2.  Plot the distribution of the t-statistic
 
-3.  In how many cases would you make a wrong decision if you reject
-    $H_0$ for values of the t-statistic les than -2?
+## t-distribution
 
-# t-distribution
+It can be shown that the t-statistic follows t-distribution with $n - p$
+degrees of freedom _if the null hypothesis is true_. We call this
+the distribution of the statsitic _under_ the null hypothesis.
 
-$$
-y_i = \beta_0 + \beta_1 x_i + u_i
-$$
-
-Under some assumptions it can be shown that under the null hypothesis
-(this simply means that we assume the null hypothesis is true)
-
-$$
-H_0: \beta_1 = \beta_{H_0}\\
-H_1: \beta_1 \neq \beta_{H_0}\\
-$$
 
 $$
 \text{t-statistic} = \frac{\hat{\beta_1} -  \beta_1^{H_0}}{se(\hat{\beta}_1)}
@@ -191,9 +240,6 @@ $$
 \text{t-statistic} \underbrace{\sim}_{H_0 \text{ is true}} t(\text{df} = n - p)
 $$
 
-## Probabilities and quantiles of the t-distribution
-
-### Density of the t-distribution
 
 ```{r}
 dt <- expand_grid(
@@ -211,6 +257,13 @@ ggplot() +
   ## Draws the normal density line
   geom_line(data = dt, aes(x = x, y = t_dens, colour = df))
 ```
+
+$$
+y_i = \beta_0 + \beta_1 x_i + u_i
+$$
+
+Under some assumptions it can be shown that under the null hypothesis
+(this simply means that we assume the null hypothesis is true)
 
 ```{r, echo = FALSE}
 dt <- data.frame(
@@ -240,17 +293,16 @@ ggplot() +
   ) +
   geom_vline(xintercept = c(-1.96, 1.96), lty = 2, colour = "steelblue") +
   # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
-  scale_x_continuous(breaks = c(-1.96, 0, 1.96))
+  scale_x_continuous(breaks = c(-1.96, 0, 1.96)) +
+  labs(
+    y = "Density"
+  )
 ```
-
-## Probabilities using the t-distribution
 
 ```{r}
 # p: probability, t: t-distribution
 pt(-2, df = 434 - 2)
 ```
-
-### Quantiles
 
 ```{r}
 ## q: quantile, t: t-distribution
@@ -259,9 +311,34 @@ qt(p = 0.02306292, df = 434 - 2)
 
 ## Critical values in t-tests
 
-```{r}
-# 0.025 quantile of the t-distribution with 2 degrees of freedom
-```
+For a test with a probability of wrong rejection of a true null hypothesis $\alpha$
+the critical values are:
+
+
+$$
+H_0: \beta_1 = \beta_1^{H_0} \\
+H_1: \beta_1 < \beta_1^{H_0}
+$$
+
+We reject $H_0$ for values of the t-statistic greater than $t_{\alpha}(n - p)$
+
+
+$$
+H_0: \beta_1 = \beta_1^{H_0} \\
+H_1: \beta_1 > \beta_1^{H_0}
+$$
+
+We reject $H_0$ for values of the t-statistic greater than $t_{1 - \alpha}(n - p)$
+
+$$
+H_0: \beta_1 = \beta_1^{H_0} \\
+H_1: \beta_1 \neq \beta_1^{H_0}
+$$
+
+We reject $H_0$ if the t-statistic is less than $t_{\alpha / 2}(n - p)$ or greater
+than $t_{1 - \alpha / 2}(n - p)$.
+
+
 
 ## p-values
 
@@ -272,7 +349,7 @@ considered here it is given by
 
 $$
 \text{p-value} = P(t < t^{obs} | H_0)
-$$ Compute the p-value for
+$$
 
 $$
 H_0: \beta = 11.77 \\
@@ -288,3 +365,30 @@ $$
 H_0: \beta = 0\\
 H_1: \beta \neq 0
 $$
+
+## Confidence intervals
+
+From the distribution of the t-statistic we can see that
+
+$$
+\text{t-statistic} = \frac{\hat{\beta}_1 - \beta_1}{se(\hat{\beta}_1)} \sim t(n - p)
+$$
+
+
+Therefore the probability to observed a value of the t-statistic in the interval
+[$t_{\alpha / 2}(n - p)$, $t_{1 - \alpha / 2}$] is 95%.
+
+$$
+P\left(t_{\alpha / 2}(n - p) < \frac{\hat{\beta}_1 - \beta_1}{se(\hat{\beta}_1)} < t_{1 - \alpha / 2}\right) \implies \\
+P\left(\hat{\beta_1} + se(\hat{\beta}_1) t_{\alpha/2} < \beta_1 < \hat{\beta_1} + se(\hat{\beta}_1) t_{1 - \alpha/2} \right)
+$$
+Compute the upper and the lower bounds of the confidence intervals for each sample.
+In how many samples did the confidence interval contain the real coefficient $\beta_1$?
+
+```{r}
+
+```
+
+
+
+

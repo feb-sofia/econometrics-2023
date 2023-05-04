@@ -262,7 +262,9 @@ t-test
 
 $$
 \text{t-statistic} = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)}
-$$ The value of the t-statistic is small when the estimate for the coefficient is close to the value under the null hypothesis. The value of the t-statistic will be small, if the standard error of the estimator is high.
+$$ 
+
+The value of the t-statistic is expected small when the estimate for the coefficient is close to the value under the null hypothesis. The value of the t-statistic will be small, if the standard error of the estimator is high.
 
 $$
 t = \frac{11.77 - 0}{2.322} = 5.069
@@ -420,3 +422,52 @@ qt(0.025, df = 434 - 2, lower.tail = FALSE)
 ```
 
 Both critical values are equal in absolute value.
+
+## Mathematical Details (Optional)
+
+### OLS estimator in the binary predictor case
+
+In the case when $x_i \in \{0, 1\}$ the average of $x$, i.e $\overline{x}$ is simply the proportion of ones, lets say $n_1 / n$. Notice that the average of the squared $x$ is the same as the average of $x$, because $x$ only contains zeroes and ones. The average of the product of $x$ and $y$ is equal to the sum of $y$ where the $x = 1$, because the other values in $y$ are multiplied by zero.
+
+$$
+\overline{x^2} = \overline{x} \\
+\overline{xy} = \frac{1}{n}\sum_{i: x_i = 1} y_i = \frac{n_1}{n_1}\frac{1}{n} \sum_{i: x_i = 1} y_i  = \frac{n_1}{n} \overline{y}_{1}
+$$
+
+Therefore the expression for $\hat{\beta}_1$ simplifies to:
+
+$$
+\hat{\beta}_1 = \frac{ \frac{n_1}{n} \overline{y}_{1} - \overline{x}\overline{y}}{\overline{x} - \overline{x}^2} \\
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{1 - \frac{n_1}{n}} \\
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{\frac{n - n_1}{n}} \\
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{\frac{n_0}{n}} \\
+$$
+
+Furthermore the average of $y$ is simply the weighted average of the two group means. Let there be $n_0$ observations with $x_i = 0$ and $n_1$ observations with $x_i = 1$.
+
+$$
+\overline{y} = \frac{1}{n}\left(\sum_{x_i = 0} y_i + \sum_{x_i = 0} y_i\right) \\
+\overline{y} = \frac{1}{n}\left(n_0 \overline{y}_0 + n_1 \overline{y}_1 \right)
+$$ Substituting gives us:
+
+$$
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \frac{1}{n}\left(n_0 \overline{y}_0 + n_1 \overline{y}_1 \right)}{\frac{n_0}{n}} \\
+$$
+
+When you simplify the above expression (this is left as an exercise) you will arrive at:
+
+$$
+\hat{\beta}_1 = \overline{y}_1 - \overline{y}_0
+$$ 
+
+From the equation for $\hat{\beta}_0$ we get:
+
+$$
+\hat{\beta}_0 = \overline{y} - (\overline{y}_1 - \overline{y}_0) \overline{x}
+$$ 
+
+Taking into account that $\overline{x} = n_1 / n$ this equation simplifies to
+
+$$
+\hat{\beta}_0 = \overline{y}_0
+$$

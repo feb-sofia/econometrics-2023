@@ -5,28 +5,12 @@ date: "3/14/2022"
 output: html_document
 ---
 
-
 ```{r}
 ## First, load the tidyverse package
 ## If the package is not installed, uncomment the next line and run the code chunk again
 ## install.packages("tidyverse")
 library(tidyverse)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Statistics Background
 
@@ -48,7 +32,6 @@ F(x) = \int_{-\infty}^{x} = \begin{cases}
 \end{cases}
 $$
 
-
 For $a = -1$ and $b = 1$ the density of the uniform distribution is depicted in the following figure:
 
 ```{r}
@@ -63,13 +46,10 @@ unif_dens_plt <- ggplot() +
 unif_dens_plt
 ```
 
-
-
 ```{r}
 mean(runif(n = 5, min = -1, max = 1))
 mean(runif(n = 5, min = 3, max = 5))
 ```
-
 
 ```{r}
 
@@ -184,9 +164,6 @@ unif_games %>%
   labs(y = "Running Total")
 ```
 
-
-
-
 ```{r}
 unif_games %>%
   filter(game == 4) %>%
@@ -213,9 +190,8 @@ unif_games %>%
 
 | Истина/Решение | Осъден | Неосъден |
 |----------------|--------|----------|
-| Виновен        | 	      | X        |
-| Невинен        | X      | 	        |
-
+| Виновен        |        | X        |
+| Невинен        | X      |          |
 
 $$
 H_0: \mu = a \\
@@ -259,5 +235,3 @@ sim_test %>%
   geom_vline(xintercept = -2, lty = 2) +
   geom_vline(xintercept = 2, lty = 2)
 ```
-
-

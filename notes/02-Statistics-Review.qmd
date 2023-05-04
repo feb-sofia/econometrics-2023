@@ -201,7 +201,6 @@ tibble(
     geom_bar(stat = "identity")
 ```
 
-
 <!-- ::: {#exr-discrete-game} -->
 
 <!-- ## Discrete probability -->
@@ -209,67 +208,105 @@ tibble(
 <!-- Consider a game of chance with the following probability mass function. -->
 
 <!-- $$ -->
+
 <!-- p(x) = \begin{cases} -->
+
 <!-- 0.05 & \text{if} \quad x = -2 \\ -->
+
 <!-- 0.20 & \text{if} \quad x = -1 \\ -->
+
 <!-- 0.25 & \text{if} \quad x = 0 \\ -->
+
 <!-- 0.5 & \text{if} \quad x = 1 \\ -->
+
 <!-- 0 & \text{otherwise} -->
+
 <!-- \end{cases} -->
+
 <!-- $$ -->
 
 <!-- - Plot ths PMF using a barchart -->
+
 <!-- - Write down the corresponding CDF -->
 
 <!-- ```{r} -->
+
 <!-- ## ggplot -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- ## Select size = 20 values at random from the numbers 0, 1, 2, -->
+
 <!-- ## with selection probabilities: 0.5, 0.3, 0.2 -->
+
 <!-- sample(0:2, size = 20, prob = c(0.5, 0.3, 0.2), replace = TRUE) -->
+
 <!-- ``` -->
 
 <!-- ::: -->
 
-
-
 <!-- ::: {def-cdf} -->
+
 <!-- # Cumulative Distribution Function -->
 
 <!-- Closely related to the probability mass function is the cumulative distribution function (CDF) which computes the probability for events of the type $X \leq x$. -->
 
-
 <!-- ```{=tex} -->
+
 <!-- \begin{align} -->
+
 <!--     F(x) = \sum_{x_i \leq x} p(x_i). -->
+
 <!--   \end{align} -->
+
 <!-- ``` -->
+
 <!-- ::: -->
 
 <!-- ::: {exm-cdf-games} -->
+
 <!-- # CDF for the lottery game -->
 
 <!-- ```{=tex} -->
+
 <!-- \begin{align} -->
+
 <!--   P(X < 0) = 0 \\ -->
+
 <!--   P(X < 1) & = \sum_{x_k < 1} p(x_k) = p(x_1) = `r probs[1]`. \\ -->
+
 <!--   P(X \leq 1) & = \sum_{x_k \leq 1} p(x_k) = p(x_1) + p(x_2) = `r probs[1]`+ `r probs[2]`= 0.8\\ -->
+
 <!--   P(X < 2) & = \sum_{x_k < 2} p(x_k) = p(x_1) + p(x_2) = `r probs[1]`+ `r probs[2]`= 0.8\\ -->
+
 <!--   P(X \leq 2) & = \sum_{x_k \leq 2} p(x_k) = p(x_1) + p(x_2) + p(x_3) = `r probs[1]`+ `r probs[2]`+ `r probs[3]`= 1\\ -->
+
 <!-- \end{align} -->
+
 <!-- ``` -->
+
 <!-- $$ -->
+
 <!-- F(x) =  -->
+
 <!-- \begin{cases} -->
+
 <!--   0 & x < 0 \\ -->
+
 <!--   0.5 & 0 \leq x < 1 \\ -->
+
 <!--   0.8 & 1 \leq x < 2 \\ -->
+
 <!--   1 & x \leq 2 \\ -->
+
 <!--   1 & x > 2 -->
+
 <!-- \end{cases} -->
+
 <!-- $$ -->
+
 <!-- ::: -->
 
 ## Expected value
@@ -302,26 +339,22 @@ ggplot(gameDat, aes(x, y = p)) + geom_bar(stat="identity") +
 Let us write the expected value in a more general way:
 
 ::: {#def-expectation-discrete}
-
 ## Expected Value
 
-For discrite random variable $X$ with possible values $x_1, x_2,\ldots,x_n$ the weighted average of the possible outcomes:
-  \begin{align}
+For discrite random variable $X$ with possible values $x_1, x_2,\ldots,x_n$ the weighted average of the possible outcomes: \begin{align}
     E(X) = \sum_{i = 1} ^ {n} x_i p(x_i) (\#eq:expectation-discrete)
-  \end{align}
-is called the expected value of $X$. Sometimes we will refer to the expected value as the mean of the distribution or the mean of the random variable following the distribution.
+  \end{align} is called the expected value of $X$. Sometimes we will refer to the expected value as the mean of the distribution or the mean of the random variable following the distribution.
 :::
 
 We introduced the expected value with an example of a game with 100 tickets in order to illustrate it. You should notice from @def-expectation-discrete that the expected value is independent of the *number* of games played as it is a property of the probability mass function of the game.
 
 ::: {#exr-expected-value-game-2}
-
 ## Expected Value
 
-Let $Y$ be a game with possible winnings of -1, 0, and 2 EUR. The probabilities of these outcomes are $P(x = -1) = 0.2, P(x = 0) = 0.7, P(x = 2) = 0.1$. 
+Let $Y$ be a game with possible winnings of -1, 0, and 2 EUR. The probabilities of these outcomes are $P(x = -1) = 0.2, P(x = 0) = 0.7, P(x = 2) = 0.1$.
 
-- Plot the PMF using a barchart
-- Calculate the expected winnings of this game using @def-expectation-discrete
+-   Plot the PMF using a barchart
+-   Calculate the expected winnings of this game using @def-expectation-discrete
 
 Play the game using the function `sample` (check its documentation either by typing `?sample` on the command line in R or by searching for it online). It selects `size` of the values speficied in `x` according to the probabilities given in `prob`.
 
@@ -335,50 +368,54 @@ sample(
 ```
 
 Play the game a couple of times and look at the outcomes. Compute the average winnings using `mean` and compare the result with the expected value that you calculated in the previous step.
-
 :::
-
 
 ### Properties of the expected value
 
 In the following we list a few important properties of the expected value that we will use throughout the course. In the following let $X$ and $Y$ be random variables with expected values $E(X)$ and $E(Y)$.
 
 ::: {#thm-expectation-linearity}
-
 ## Linearity of the Expected Value
 
 Let $X$ and $Y$ be two random variables. Then the exected value of their sum equals the sum of their expected values.
 
+```{=tex}
 \begin{align}
   E(X + Y) = E(X) + E(Y)
 \end{align}
+```
 :::
 
-:::{#thm-expectation-constant}
+::: {#thm-expectation-constant}
 ## The Expected Value of a Constant
 
 The expected value of a constant equals the constant itself. Let $a$ be any fixed (not random) real number. Then its expected value is:
 
+```{=tex}
 \begin{align}
   E(a) = a.
 \end{align}
+```
 :::
 
-:::{#thm-expectation-scaled}
+::: {#thm-expectation-scaled}
 ## Expected value of a scaled random variable
 
 Let $X$ be a random variable and let $a$ be any fixed (not random) real number. Then the expected value of $aX$ is:
 
-
+```{=tex}
 \begin{align}
   E(aX) = a E(X)
 \end{align}
+```
 :::
 
-:::{.proof}
+::: proof
+```{=tex}
 \begin{align}
   E(aX) = \sum_{i = 1} ^ {n} a x_i p(x_i) = a \sum_{i = 1} ^ {n} x_i p(x_i) = aE(X).
 \end{align}
+```
 :::
 
 ## Variance
@@ -387,92 +424,100 @@ Let us compare the two games in @tbl-discrete-game-probabilities. Both have the 
 
 The second game offers a higher probability to win the highest prize (`r x[3]` EUR) at the cost of a lower probability for the middle prize (`r x[2]` EUR). In other words it places a higher probability on *extreme* outcomes (outcomes that are far from the centre of the distribution, i.e. the expected value). A summary of a distribution that measures its spread (i.e. how likely are extreme values) is the variance:
 
-:::{#def-variance}
-
+::: {#def-variance}
 ## Variance
 
 For a discrete random variable $X$ with possible outcomes $x_1, x_2,\ldots,x_n$ and probability function p(x) the variance is the expected quadratic deviation from the expected value of the distribution $E(X)$.
 
+```{=tex}
 \begin{align}
   Var(X) & = E(X - E(X)) ^ 2 \\
          & = \sum_{i = 1}  ^ n \left(x_i - E(X)\right) ^ 2 p(x_i)
 \end{align}
+```
 :::
 
-:::{#exm-variance-discrete}
+::: {#exm-variance-discrete}
 ## Variance
 
 The variance of the first game (X) is:
 
-  \begin{align}
+```{=tex}
+\begin{align}
     Var(X) & = \sum_{i = 1} ^ {3} (x_i - E(X)) ^ 2 p(x_i) \\
            & = (x_1 - E(X)) ^ 2 p(x_i) + (x_2 - E(X)) ^ 2 p(x_2) + (x_3 - E(X)) ^ 2 p(x_3) \\
            & = (\devxa) ^ 2 \times \pa + (\devxb) ^ 2 \times \pb + (\devxc) ^ 2 \times \pc \\
            & = \varx.
   \end{align}
+```
 :::
 
-:::{#exr-variance-discrete}
+::: {#exr-variance-discrete}
 Compute the variance of $Y$, the second game described in Table @tbl-discrete-game-probabilities.
 :::
 
-:::{.solution}
+::: solution
 $Var(Y) = \vary$.
 :::
 
-:::{#independence-random-variables}
-
+::: {#independence-random-variables}
 ## Independence of Random Variables
 
 Two discrete random variables $X$ and $Y$ with possible values $x_1,\ldots,x_K$ and $y_1,\ldots,y_L$ are independent if for every $k$ and $l$:
 
+```{=tex}
 \begin{align}
   P(X = x_k, Y = y_l) = P(X = x_k)P(Y = y_l)
 \end{align}
+```
 :::
 
-:::{#thm-variance-sum-independent}
-For two independent random variables $X$ and $Y$.
-\begin{align}
+::: {#thm-variance-sum-independent}
+For two independent random variables $X$ and $Y$. \begin{align}
   Var(X + Y) = Var(X) + Var(Y)
 \end{align}
 
 More generally, if $X_i, i = 1,\ldots,n$ are independent random variables, the variance of their sum is equal to the sum of their variances:
 
+```{=tex}
 \begin{align}
 Var\left(\sum_{i = 1}^{n} X_i\right) = \sum_{i = 1}^{n} Var(X_i).
 \end{align}
+```
 :::
 
 <!-- TODO: rename to variance-sum-independent -->
 
-
 @thm-variance-sum-independent actually holds even for only uncorrelated variables. We will discuss the concept correlation later.
 
-:::{#thm-variance-scaled}
-
+::: {#thm-variance-scaled}
 ## Variance of a Scaled Random Variable
+
 Let $a \in \mathbf{R}$ be a fixed (not random) real number and let $X$ be a random variable with variance $Var(X)$.
 
 The variance of $aX$ is given by:
 
+```{=tex}
 \begin{align}
 Var(aX) = a^2 Var(X).
 \end{align}
+```
 :::
-:::{.proof}
+
+::: proof
+```{=tex}
 \begin{align}
   Var(aX) & = \sum_{k = 1} ^ K (ax_k - E(aX))^2 p(x_k) \\
           & = \sum_{k = 1} ^ K a^2(x_k - E(X))^2 p(x_k) \\
           & = a^2 \sum_{k = 1} ^ K a^2(x_k - E(X))^2 p(x_k) \\
           & = a^2 Var(X).
 \end{align}
+```
 :::
 
 Another useful formula for working with the variance is:
 
-Often it will be easier to compute the variance using the following decomposition: 
-\begin{align}
+Often it will be easier to compute the variance using the following decomposition: \begin{align}
   Var(X) & = E(X - E(X))^2 \\
          & = E\left(X^2 - 2XE(X) + E(X) ^ 2\right) \\
          & = E(X^2) - E(2XE(X)) + E(E(X) ^ 2) \\
@@ -482,11 +527,11 @@ Often it will be easier to compute the variance using the following decompositio
 
 The proof above uses the fact that $E(X)$ is a constant and applies @thm-expectation-constant and @thm-expectation-scaled.
 
-
 ## Continuous Distributions
 
 ### Uniform distributions
 
+```{=tex}
 \begin{align}
 X \sim \text{Uniform}(a, b), \quad a,b \in \mathbb{R} \\
 f(x) = \begin{cases}
@@ -502,7 +547,7 @@ F(x) = \int_{-\infty}^{x} = \begin{cases}
 1 & x > b
 \end{cases}
 \end{align}
-
+```
 For $a = -1$ and $b = 1$ the density of the uniform distribution is depicted in the following figure:
 
 ```{r unif-dens}
@@ -535,16 +580,13 @@ runif(n = 5, min = -1, max = 1)
 
 ```
 
-Now that you've seen what `runif` does, lets create a larger simulation which we will
-use in the examples. We will select $n = 200$ values at random from the same distribution
-and we will store these values as a column in a data table using the function `tibble`.
+Now that you've seen what `runif` does, lets create a larger simulation which we will use in the examples. We will select $n = 200$ values at random from the same distribution and we will store these values as a column in a data table using the function `tibble`.
 
 ```{r}
 unif_sim <- tibble(
   x = runif(n = 200, min = -1, max = 1)
 )
 ```
-
 
 The following code plots the values in `x` as small lines just over the x-axis (rug plot).
 
@@ -558,28 +600,24 @@ unif_dens_plt +
   geom_rug(aes(x = x), data = unif_sim)
 ```
 
-The area under the density function for an interval is the probability of occurrence of outcomes in this interval. It is easy to calculate the area under @fig-unif-dens for the interval [-1, -0.2]. The hight of the density function is constant at $1/2$. The length of the interval is 0.8, therefore the area of the rectangle is $0.8 \cdot 1/2 = 0.4$.
-
+The area under the density function for an interval is the probability of occurrence of outcomes in this interval. It is easy to calculate the area under @fig-unif-dens for the interval \[-1, -0.2\]. The hight of the density function is constant at $1/2$. The length of the interval is 0.8, therefore the area of the rectangle is $0.8 \cdot 1/2 = 0.4$.
 
 $$
 P(X < -0.2) = 0.4
-$$
-You can also compute this probability using the `punif` function. By default it computes probabilities of the type `P(X < x)`, where `x` is its first argument. Note that you also need to speficy the limits of the distribution ([-1, 1] in this case).
-
+$$ You can also compute this probability using the `punif` function. By default it computes probabilities of the type `P(X < x)`, where `x` is its first argument. Note that you also need to speficy the limits of the distribution (\[-1, 1\] in this case).
 
 ```{r}
 ## Compute the probability
 punif(-0.2, min = -1, max = 1)
 ```
 
-Earlier we used `runif` to select a couple of values at random from this distribution and stored the result in an object called `x`. Let us compare the _observed_ proportion of values less than -0.2 to the theoretical probability.
+Earlier we used `runif` to select a couple of values at random from this distribution and stored the result in an object called `x`. Let us compare the *observed* proportion of values less than -0.2 to the theoretical probability.
 
 ```{r}
 ## Use < to see which values in x are less than -0.2
 x
 x < -0.2
 ```
-
 
 ```{r}
 ## Compute the sample proportion in the simulated data
@@ -590,7 +628,7 @@ x < -0.2
 mean(unif_sim$x < -0.2)
 ```
 
-As an exercise, increase the number of games plated (change the `size` argument in `runif`) and compare the _observed_ proportion to the probability.
+As an exercise, increase the number of games plated (change the `size` argument in `runif`) and compare the *observed* proportion to the probability.
 
 $$
 P(X > -0.2) = 1 - F(-0.2)
@@ -629,126 +667,219 @@ unif_sim %>%
 <!-- # Normal distributions -->
 
 <!-- $$ -->
+
 <!-- X \sim N(\mu, \sigma^2) \\ -->
+
 <!-- f(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x - \mu}{\sigma}\right)^2}\\ -->
+
 <!-- E(X) = \mu \\ -->
+
 <!-- Var(X) = \sigma^2 \\ -->
+
 <!-- SD(X) = \sqrt{\sigma^2} = \sigma -->
+
 <!-- $$ -->
 
 <!-- ```{r} -->
+
 <!-- players_n <- 300 -->
+
 <!-- games_n <- 16 -->
 
 <!-- unif_games <- expand_grid( -->
+
 <!--   game = 1:games_n, -->
+
 <!--   player = 1:players_n -->
+
 <!-- ) %>% -->
+
 <!--   mutate( -->
+
 <!--     ## When used in mutate, n() returns the number of rows in a group of obs -->
+
 <!--     ## When the data is not grouped as here, it retuns the number of obs in the whole table -->
+
 <!--     result = runif(n(), min = -1, max = 1) -->
+
 <!--   ) %>% -->
+
 <!--   bind_rows( -->
+
 <!--     ## Add a initial values so that all players start with 0 -->
+
 <!--     tibble( -->
+
 <!--       player = 1:players_n, -->
+
 <!--       game = as.integer(0), -->
+
 <!--       result = 0, -->
+
 <!--     ) -->
+
 <!--   ) -->
 
 <!-- unif_games <- unif_games %>% -->
+
 <!--   ## Sort the data by player id and game id -->
+
 <!--   arrange(player, game) %>% -->
+
 <!--   ## Groups the data by player, because we want the running totals to be calculated for each -->
+
 <!--   ## player separately -->
+
 <!--   group_by(player) %>% -->
+
 <!--   mutate( -->
+
 <!--     running_total = cumsum(result) -->
+
 <!--   ) -->
 
 <!-- ## Illustration only -->
+
 <!-- unif_games %>% -->
+
 <!--   ggplot(aes(x = game, y = running_total, group = player)) + -->
+
 <!--   geom_vline(xintercept = c(4, 8, 16), linetype = 2) + -->
+
 <!--   geom_hline(yintercept = 0) + -->
+
 <!--   geom_line(aes(color = player < 2, alpha = player < 2)) + -->
+
 <!--   scale_color_manual(values = c("skyblue4", "firebrick4")) + -->
+
 <!--   scale_alpha_manual(values = c(1 / 5, 1)) + -->
+
 <!--   scale_x_continuous("Game number", breaks = c(0, 4, 8, 12, 16)) + -->
+
 <!--   theme(legend.position = "none") + -->
+
 <!--   labs(y = "Running Total") -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- unif_games %>% -->
+
 <!--   filter(game == 4) %>% -->
+
 <!--   ggplot(aes(x = running_total)) + -->
+
 <!--   geom_density() + -->
+
 <!--   labs(title = "Running total distribution at the 4-th game") + -->
+
 <!--   labs( -->
+
 <!--     x = "Running total" -->
+
 <!--   ) -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- unif_games %>% -->
+
 <!--   filter(game == 16) %>% -->
+
 <!--   ggplot(aes(x = running_total)) + -->
+
 <!--   geom_density() + -->
+
 <!--   labs(title = "Running total distribution at the 16-th game") + -->
+
 <!--   labs( -->
+
 <!--     x = "Running total" -->
+
 <!--   ) -->
+
 <!-- ``` -->
 
 <!-- # Statistical tests -->
 
 <!-- | Истина/Решение | Осъден | Неосъден | -->
+
 <!-- |----------------|--------|----------| -->
+
 <!-- | Виновен        |        | X        | -->
+
 <!-- | Невинен        | X      |          | -->
 
 <!-- $$ -->
+
 <!-- H_0: \mu = a \\ -->
+
 <!-- H_1: \mu \neq a -->
+
 <!-- $$ -->
 
 <!-- $$ -->
+
 <!-- t = \frac{\overline{x} - a}{S_x / \sqrt{n}} -->
+
 <!-- $$ -->
 
 <!-- The t-statistic follows a t-distribution with $n - 1$ degrees of freedom. -->
 
 <!-- ```{r} -->
+
 <!-- mu_0 <- 0 -->
+
 <!-- B <- 2000 -->
+
 <!-- n <- 300 -->
 
 <!-- sim_test <- expand.grid( -->
+
 <!--   experiment_id = 1:B, -->
+
 <!--   obs_id = 1:n -->
+
 <!-- ) %>% -->
+
 <!--   mutate( -->
+
 <!--     x = rnorm(n = n(), mean = mu_0, sd = 1) -->
+
 <!--   ) %>% -->
+
 <!--   group_by(experiment_id) %>% -->
+
 <!--   summarise( -->
+
 <!--     mean_x = mean(x), -->
+
 <!--     sd_x = sd(x), -->
+
 <!--     t_stat = (mean_x - mu_0) / (sd_x / sqrt(n)) -->
+
 <!--   ) -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- mean(sim_test$t_stat < -2) -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- sim_test %>% -->
+
 <!--   ggplot(aes(x = t_stat)) + -->
+
 <!--   geom_density() + -->
+
 <!--   geom_vline(xintercept = -2, lty = 2) + -->
+
 <!--   geom_vline(xintercept = 2, lty = 2) -->
+
 <!-- ``` -->

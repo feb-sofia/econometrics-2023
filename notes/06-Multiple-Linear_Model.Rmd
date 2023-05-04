@@ -1,0 +1,788 @@
+---
+title: "06-Multiple-Regression-Model"
+author: "Boyko Amarov"
+date: "5/10/2022"
+output: html_document
+---
+
+---
+title: 'Week 6: Multiple regression'
+author: "Boyko Amarov"
+date: "5/14/2021"
+output: html_document
+---
+
+## Cholera outbreak
+
+[Jon Snow](https://gameofthrones.fandom.com/wiki/Jon_Snow) is a character from George R. R. Martin's (unfinished) "Fire and Ice" novel who fought the Night King and helped bring peace to Westeros.
+
+![Jon Snow](https://els-jbs-prod-cdn.jbs.elsevierhealth.com/cms/attachment/7e74d705-56d0-468b-8b0f-ec9acb00cd46/fx1_lrg.jpg)
+
+![John Snow](https://upload.wikimedia.org/wikipedia/commons/c/cc/John_Snow.jpg)
+[John Snow](https://en.wikipedia.org/wiki/John_Snow) was an English physicist famous for locating the source of the London cholera epidemic of 1854. At the time of the outbreak the germ theory of disease transmission was not developed yet and cholera was blamed on bad air. John Snow investigated the cases and concluded that the source of the outbreak is a water pump located on Broad Street. He was able to convince the city council to close the pump but people initially resisted his theory of water born transmission, because it seemed to be socially unacceptable.
+
+
+
+
+![Cholera cases](http://blog.rtwilson.com/wp-content/uploads/2012/01/SnowMap_Points.png)
+
+![Broad street pump](https://www.courant.com/resizer/Oohql3wzTPDk38wLTIb7mQmxj_0=/800x0/filters:format(jpg):quality(70)/cloudfront-us-east-1.images.arcpublishing.com/tronc/EHHSIM2Y3OKQCVRE5J7BJGN7EE.jpg)
+
+
+## World War II
+
+During World war 2 combat aviation played a crucial role but also suffered heavy casualties. British bomber command for example reports a death rate of about 46 percent over the entire war. In order to reduce the number of planes that were being shot down during mission, the military collected data on the damage taken from returning bombers in order to decide where to place armour on the planes.
+
+
+![Flight](https://images.squarespace-cdn.com/content/v1/5497331ae4b0148a6141bd47/1563476799483-JXTY82K6EJ2Y6THNIN53/ke17ZwdGBToddI8pDm48kAY9gT9wm-2Z9KnmFRfe2dVZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpzdMdQQVVUpiXVl6rYD3wsGGtpDQQshX7-5HE1V8UScgaHj4j2hNsP6urc280cwWcU/7.jpg)
+
+![Anti-air gun](https://i.pinimg.com/originals/1d/fe/6f/1dfe6f294ee4c277d5ce8031e9fe9fc9.jpg)
+
+
+![Flac damage on a bomber plane](https://www.old.bombercommandmuseum.ca/photos/p_airgunners1b.jpg)
+
+
+![Bullet holes locations (histogram)](https://alearningadayblog.files.wordpress.com/2018/06/bombers.jpeg)
+
+
+![fsdf](https://riskwerk.files.wordpress.com/2016/11/abraham-wald1.png)
+
+# Two continuous predictors
+
+```{r}
+# install.packages(c("plotly", "GGally"))
+library(tidyverse)
+library(patchwork)
+library(plotly)
+library(GGally)
+crime <- read_tsv("https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/crime.csv") %>%
+  select(-I)
+```
+
+Variables description:
+
+- `C`: number of crimes per 100,000 inhabitants
+- `HS`: share of high school graduates
+- `U`: share of persons living in urban areas
+
+```{r}
+ggpairs(crime[, -1])
+```
+
+```{r}
+## Code for illustration purposes only
+us_counties <- map_data("county")
+florida_counties <- us_counties %>%
+  filter(region == "florida")
+crime_match <- crime %>%
+  mutate(
+    County = str_to_lower(str_replace_all(County, "\\.", ""))
+  )
+county_name_compat <- c(
+  "washington" = "washing",
+  "santa rosa" = "santar",
+  "suwannee" = "suwanee",
+  "palm beach" = "palmb",
+  "okeechobee" = "okeech",
+  "indian river" = "indianr",
+  "hillsborough" = "hillsbor",
+  "miami-dade" = "dade"
+)
+florida_crime <- florida_counties %>%
+  mutate(
+    County = dplyr::recode(subregion, !!!county_name_compat),
+    County = str_replace_all(County, "\\s", "")
+  ) %>%
+  left_join(crime_match, by = "County")
+p1 <- florida_crime %>%
+  ggplot(aes(x = long, y = lat, group = group, fill = U)) +
+  geom_polygon() +
+  labs(
+    title = "Urbanisation"
+  )
+p2 <- florida_crime %>%
+  ggplot(aes(x = long, y = lat, group = group, fill = HS)) +
+  geom_polygon() + 
+  labs(
+    title = "Education"
+  )
+p3 <- florida_crime %>%
+  ggplot(aes(x = long, y = lat, group = group, fill = C)) +
+  geom_polygon() +
+  labs(
+    title = "Crime"
+  )
+p1 + p2 + p3
+```
+
+## Exploration
+
+```{r}
+ggpairs(crime %>% select(-County))
+```
+
+
+## First model: crime and education
+
+$$
+\underbrace{C_i}_{\text{Crime}} = \beta_0 + \beta_1 \underbrace{\text{HS}_i}_{\text{Share of persons with high school degree}} + \underbrace{e_i}_{\text{Random term}}, \quad i = 1,\ldots,n = 67
+$$
+
+
+```{r}
+fit <- lm(C ~ 1 + HS, data = crime)
+summary(fit)
+```
+
+Estimated equation: $\hat{C}$: expected crime rate
+
+
+$$
+\hat{C}_i = -50.8 + 1.48 \text{HS}_i
+$$
+
+$$
+\hat{C}_{HS = 80}  = -50.8 + 1.48 \cdot 80 = 67.6\\
+\hat{C}_{HS = 50}  = -50.8 + 1.48 \cdot 50 = 23.2\\
+$$
+
+$$
+\hat{C}_{HS = 80} - \hat{C}_{HS = 79} = -50.8 + 1.48 \cdot 80 - (-50.8 + 1.48 \cdot 79) = 1.48\cdot(80 - 79) = 1.48
+$$
+
+## Second model: crime and urbanisation
+
+$$
+C_i = \beta_0 + \beta_1 U_i + e_i
+$$
+
+
+```{r}
+fit_U <- lm(C ~ 1 + U, data = crime)
+summary(fit_U)
+```
+
+Initial expectation: more crime in more urbanised counties.
+
+Estimated regression equation:
+$$
+\hat{C}_i = 24.5 + 0.56 U_i
+$$
+The coefficient of U is positive. This implies that expected crime rate $\hat{C}$ increases
+with increasing values of $U$ (degree of urbanisation).
+
+Homework: difference in expected crime rates for two counties with $U = 80$ and $U = 50$.
+
+
+## Third model: crime, education, and urbanisation
+
+
+```{r}
+median(crime$U)
+```
+
+```{r}
+crime_rural <- crime %>% filter(U < 45)
+crime_urban <- crime %>% filter(U > 45)
+```
+
+```{r}
+lm(C ~ 1 + HS, data = crime_rural)
+lm(C ~ 1 + HS, data = crime_urban)
+```
+
+
+$$
+C_i = \beta_0 + \beta_1 \text{HS}_i  + \beta_2 \text{U}_i + e_i
+$$
+
+```{r}
+fit_U_HS <- lm(C ~ 1 + HS + U, data = crime)
+summary(fit_U_HS)
+```
+Estimated regression equation:
+$$
+\hat{C}_i = 59.1 -0.58 \text{HS}_i  + 0.68 \text{U}_i
+$$
+
+$$
+\hat{C}_{HS = 80} = 59.1 - 0.58 \cdot 80 + 0.68 U = 12.4 + 0.68 U \\
+\hat{C}_{HS = 50} = 59.1 - 0.58 \cdot 50 + 0.68 U = 29.93+ 0.68 U
+$$
+
+$$
+\hat{C}_{HS = 80, U = 50} = 59.1 - 0.58 \cdot 80 + 0.68 U = 12.4 + 0.68 \cdot 50 = 46.4\\
+\hat{C}_{HS = 50, U = 50} = 59.1 - 0.58 \cdot 50 + 0.68 U = 29.93+ 0.68 \cdot 50 = 63.9\\
+\hat{C}_{HS = 80, U = 50} - \hat{C}_{HS = 50, U = 50} = 12.4 - 29.93 = -16.9 \approx -0.58 \cdot \underbrace{30}_{\Delta HS = 80 - 50} \quad \text{approx. due to rounding}
+$$
+
+Homework: compute the difference:
+
+$$
+\hat{C}_{HS = 80, U = 10} - \hat{C}_{HS = 50, U = 10} = ?
+$$
+
+## Interpretation of the coefficients
+
+
+
+```{r}
+summary(fit)
+```
+
+
+$$
+\hat{C}_i = -50.8 + 1.48 \text{HS}_i
+$$
+
+The constant in the model is the expected number of crimes (per 100,000 citizens) in 
+a county where HS = 0.
+
+```{r}
+crime %>%
+  ggplot(aes(x = HS, y = C)) +
+    geom_point() +
+    xlim(c(0, 100)) +
+    ylim(c(-60, 120)) +
+    geom_abline(intercept = -50.8, slope = 1.48)
+#     geom_vline(xintercept = c(0, mean(crime$HS)), color = "steelblue", lty = 2)
+```
+Centered predictors (x-variables)
+
+$$
+C_i = \beta_0 + \beta_1 (\text{HS}_i - \overline{HS}) + e_i
+$$
+mean of $HS_i - \overline{HS} = 0$
+
+```{r}
+crime <- crime %>%
+  mutate(
+    HS_centered = HS - mean(HS)
+  )
+mean(crime$HS)
+mean(crime$HS_centered)
+```
+$$
+\text{-2.12e-16} = -2.12 \cdot 10^{-16} = \frac{-2.12}{10^{16}}
+$$
+
+```{r}
+## I: identity function
+fit_HS_centered <- lm(C ~ 1 + HS_centered, data = crime)
+summary(fit_HS_centered)
+```
+
+$$
+\hat{C}_i = 52.4 + 1.48 (\text{HS}_i - \overline{HS})
+$$
+When is the expected crime rate equal to to the intercept (52.4)? => When $\text{HS}_i - \overline{HS} = 0$, i.e. it estimates the expected crime for a county with
+an average share of persons with a school degree ($\text{HS} = \overline{HS}$)
+
+
+
+## Predictions
+
+Predict the crime rate in 3 hypothetical counties: 
+
+$$
+\hat{C}_{HS = 0} = -50.8 \\
+\hat{C}_{HS = \overline{HS}} = 52.04 \approx 52.4030 \\
+\hat{C}_{HS = 100} = 97.2
+$$
+
+```{r}
+crime %>%
+  ggplot(aes(x = HS, y = C)) +
+    geom_point() +
+    xlim(c(0, 100)) +
+    ylim(c(-60, 120)) +
+    geom_abline(intercept = -50.8, slope = 1.48) +
+    geom_vline(xintercept = c(0, mean(crime$HS), 100), color = "steelblue", lty = 2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Using the original (non-centered predictor) equation:
+
+$$
+\hat{C}_i = -50.8 + 1.48 \text{HS}_i
+$$
+
+$$
+\hat{C}_{HS = 0} = -50.8\\
+\hat{C}_{HS = \overline{HS}} = -50.8 + 1.48 \cdot 69.5 = 52.06 \\
+\hat{C}_{HS = 100} = -50.8 + 1.48 \cdot 100 = 97.2
+$$
+
+Standard errors of predictions?
+
+$$
+SE(\hat{C}_{HS = 0}) = 24.45\\
+SE(\hat{C}_{HS = \overline{HS}}) = 3.06 \\
+SE(\hat{C}_{HS = 100}) = 11.08
+$$
+
+```{r}
+## First argument: model fit object from lm
+newdata <- tribble(
+  ~HS,
+  0,
+  69.48,
+  100
+  )
+predict(fit, newdata = newdata, se.fit = TRUE)
+```
+
+```{r}
+## Documentation
+?predict.lm
+```
+
+
+
+
+
+```{r}
+crime %>%
+  ggplot(aes(x = HS, y = C)) +
+    geom_point() +
+    geom_smooth(method = "lm")
+```
+
+```{r}
+crime %>%
+  ggplot(aes(x = HS, y = C)) +
+    geom_point() +
+    geom_smooth(method = "lm")
+```
+
+
+## Hypothesis testing
+
+$$
+C_i = \beta_0 + \beta_1 \text{HS}_i  + \beta_2 \text{U}_i + e_i
+$$
+
+```{r}
+# options(scipen = 1000000)
+fit_U_HS <- lm(C ~ 1 + HS + U, data = crime)
+summary(fit_U_HS)
+```
+
+$$
+H_0: \beta_1 = 0 \\
+H_1: \beta_1 \neq 0
+$$
+For a given level of urbanisation, the number of crimes does not vary systematically with
+the share of residents with a school degree.
+
+$$
+t = \frac{-0.5834 - 0}{0.4725} = -1.235
+$$
+
+Distribution of the t-statistic under the null hypothesis:
+
+$$
+t \sim t(df = 67 - 3)
+$$
+Choose a significance level: 5% probability to falsely reject a true null hypothesis
+
+```{r}
+## q: quantile, t: t-distribution
+## alpha: error probability
+critical_value_lower <- qt(0.05 / 2, df = 67 - 3)
+critical_value_lower
+upper_critical_value <- qt(0.05 / 2, df = 67 - 3, lower.tail = FALSE)
+upper_critical_value
+```
+
+Compare the t-statistic with the critical values: -1.235 > -1.99 and -1.235 < 1.99. Therefore
+we cannot reject the null hypothesis (at a 5% error probability).
+
+
+```{r, echo = FALSE}
+dt <- data.frame(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 100)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = 67 - 3)
+  )
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens)) + 
+  ## Draws the shaded area under the curve between 
+  ## -1 and 1
+  geom_ribbon(
+    data = filter(dt, x > -1.99, x < 1.99), 
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) + 
+  annotate(
+    "text",
+    x = 0,
+    y = dnorm(0) / 3,
+    label = paste("Pr(-1.99 < X < 1.99) = ", round(pt(1.99, df = 67 - 3) - pt(-1.99, df = 67 - 3), 2), sep = " ")
+  ) +
+  geom_vline(xintercept = c(-1.99, 1.99), lty = 2, colour="steelblue") +
+  # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
+  scale_x_continuous(breaks = c(-1.99, 0, 1.99))
+```
+
+
+### p-value (two-sided alternative)
+
+The value of t-statistic that we obtained is -1.235. What is probability (under the distribution of the statistic under $H_0$) to obtain a value of the t-statistic that is more _extreme_ than the observed one.
+In the case of a two-sided alternative $H_1: \beta_1 \neq 0$ _extreme_ means values of the t-statistic that are far away from zero (both positive and negative).
+
+$$
+\text{p-value} = P(t < -1.235) + P(t > 1.235)
+$$
+
+
+```{r, echo = FALSE}
+dt <- data.frame(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 100)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = 67 - 3)
+  )
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens)) + 
+  # Draws the shaded area under the curve between
+  # -1 and 1
+  geom_ribbon(
+    data = filter(dt, x > -1.99, x < 1.99),
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) +
+  annotate(
+    "text",
+    x = 0,
+    y = dnorm(0) / 3,
+    label = paste("Pr(-1.99 < X < 1.99) = ", round(pt(1.99, df = 67 - 3) - pt(-1.99, df = 67 - 3), 2), sep = " ")
+  ) +
+  geom_vline(xintercept = c(-1.235, 1.235), lty = 2, colour="steelblue") +
+  geom_vline(xintercept = c(-1.99, 1.99), lty = 2, colour="black") +
+  geom_vline(xintercept = c(-2.5, 2.5), lty = 2, colour="firebrick") +
+  # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
+  scale_x_continuous(breaks = c(-2.5, -1.99, -1.235, 1.235, 0, 1.99, 2.5)) +
+  labs(
+    title = "Density of a t-distribution with 64 df",
+    y = ""
+  )
+```
+
+```{r}
+## p: probability, t: t-distribution
+## P(t < -1.235) = 0.11
+pt(-1.235, df = 67 - 3)
+## P(t > 1.235)
+pt(1.235, df = 67 - 3, lower.tail = FALSE)
+```
+
+$$
+P(t < -1.235) + P(t > 1.235) = 2P(t < -1.235) = 2 \cdot 0.1106727 \approx 0.2213
+$$
+
+```{r}
+2 * pt(-2.5, df = 67 - 3)
+```
+
+With a probability of wrong rejection of a true null hypothesis at 5%, we would reject the null hypothesis
+for p-values that are less than 5%.
+
+
+## p-value (one-sided alternative)
+
+$$
+H_0: \beta_1 = 0 \\
+H_1: \beta_1 > 0
+$$
+
+$$
+t = \frac{-0.5834 - 0}{0.4725} = -1.235
+$$
+
+Distribution of the t-statistic under the null hypothesis:
+
+$$
+t \sim t(df = 67 - 3)
+$$
+This time, because the alternative is one-sided we would reject for large positive values
+of the t-statistic. Therefore we compute only one critical value:
+
+```{r}
+## Critical value
+qt(0.05, lower.tail = FALSE, df = 67 - 3)
+```
+
+The value of the t-statistic is -1.235 < 1.669, therefore we cannot reject the null hypothesis.
+
+```{r, echo = FALSE}
+dt <- data.frame(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 100)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = 67 - 3)
+  )
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens)) + 
+  # Draws the shaded area under the curve between
+  # -1 and 1
+  geom_ribbon(
+    data = filter(dt, x > 1.669013),
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) +
+  annotate(
+    "text",
+    x = 0,
+    y = dnorm(0) / 3,
+    label = paste("Pr(X > 1.67) = ", 0.05, sep = " ")
+  ) +
+  geom_vline(xintercept = c(-1.235), lty = 2, colour="steelblue") +
+  geom_vline(xintercept = c(1.669013), lty = 2, colour="black") +
+  # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
+  scale_x_continuous(breaks = c(-2.5, -1.99, -1.235, 0, 1.669013)) +
+  labs(
+    title = "Density of a t-distribution with 64 df",
+    y = ""
+  )
+```
+The p-value for this alternative is:
+
+$$
+\text{p-value} = P(t > -1.235) = 0.89
+$$
+```{r}
+pt(-1.235, lower.tail = FALSE, df = 67 - 3)
+```
+
+
+$$
+H_0: \beta_1 = 0\\
+H_1: \beta_1 < 0
+$$
+
+$$
+\text{p-value} = P(t < -1.235) = 0.11
+$$
+
+```{r}
+pt(-1.235, df = 67 - 3)
+```
+
+p-value > 0.05, therefore we cannot reject the null hypothesis at a 5% probability of wrong rejection (of a true null hypothesis).
+
+
+## Linearity
+
+Real structure:
+
+$$
+y_i = 3 + x^2 + u_i, \quad u_i \sim N(0, 500^2)
+$$
+Linear model
+$$
+y_i = \beta_0 + \beta_1 x^2 + u_i, \quad u_i \sim N(0, 500^2)
+$$
+Example of a non-linear model
+$$
+y_i = \beta + \beta^2 x + u_i
+$$
+
+
+```{r}
+dt <- tibble(
+  x = (-100):100
+) %>%
+  mutate(
+    y = 10000 + x ^ 2 + rnorm(n(), 0, 500)
+  )
+```
+
+
+```{r}
+dt %>%
+  ggplot(aes(x = x, y = y)) + 
+    geom_point() +
+    geom_abline(slope = -0.1944, intercept = 3309.5337)
+ #    geom_smooth()
+```
+
+Fit a linear (in x) model to the data
+$$
+y_i = \beta_0 + \beta_1 x_i + u_i
+$$
+
+```{r}
+fit_xy <- lm(y ~ 1 + x, data = dt)
+summary(fit_xy)
+```
+
+Fit a linear (in x) model to the data
+$$
+y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + u_i
+$$
+```{r}
+I("fgsdfsdf")
+```
+
+
+```{r}
+fit_x2y <- lm(y ~ 1 + x + I(x ^ 2), data = dt)
+summary(fit_x2y)
+```
+
+$$
+y_i = 3 + 0\cdot x + x^2 + u_i, \quad u_i \sim N(0, 500^2)
+$$
+
+
+<!-- $$ -->
+<!-- \hat{C}_i[\text{number of crimes}] = -50.8[\text{number of crimes}] + 1.48 \left[\frac{\text{number of crimes}}{\text{percentage points}}\right]\text{HS}_i[\text{percentage points}] -->
+<!-- $$ -->
+
+<!-- Interpretation (slope): comparing two counties: that differ by 1 percentage point on HS we expect the county with the higher HS to have 1.48 crimes more for 100,000 inhabitants. -->
+
+<!-- Interpretation (intercept): -->
+
+<!-- $$ -->
+<!-- \hat{C}_{HS} = -50.8 + 1.48 HS\\ -->
+<!-- \hat{C}_{HS = 0} = -50.8 -->
+<!-- $$ -->
+
+<!-- $$ -->
+<!-- f(x) = -50.8 + 1.48x\\ -->
+<!-- f(0) = -50.8 -->
+<!-- $$ -->
+
+<!-- $$ -->
+<!-- \overline{HS} = \frac{1}{n}\sum_{i = 1}^{n} HS_i\\ -->
+<!-- C_i = \alpha + \beta (\text{HS}_i - \overline{HS}) + e_i\\ -->
+<!-- $$ -->
+<!-- ```{r} -->
+<!-- crime %>% -->
+<!--   ggplot(aes(x = HS, y = C)) + -->
+<!--     geom_point() +  -->
+<!--     geom_smooth(method = "lm") + -->
+<!--     geom_abline(intercept = -50.8, slope = 1.48) + -->
+<!--     labs( -->
+<!--       x = "HS: Percentage of persons with high school degree", -->
+<!--       y = "C: Crime rate" -->
+<!--     ) + -->
+<!--     scale_x_continuous(breaks = c(55, 60, 70, 80, 85)) + -->
+<!--     xlim(c(0, 90)) + -->
+<!--     ylim(c(-55, 140))  + -->
+<!--      geom_vline(xintercept = 0, lty = 2) + -->
+<!--      geom_vline(xintercept = 69.49, lty = 2) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- crime %>% -->
+<!--   ggplot(aes(x = U, y = HS)) + -->
+<!--     geom_point() + -->
+<!--     geom_smooth(method = "lm") -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- ## Average value of HS: 69.48 percent -->
+<!-- mean(crime$HS) -->
+<!-- crime <- crime %>% -->
+<!--   mutate( -->
+<!--     HS_centered = HS - mean(HS) -->
+<!--   ) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- fit_HS_centered <- lm(C ~ HS_centered, data = crime) -->
+<!-- summary(fit_HS_centered) -->
+<!-- # summary(crime$HS) -->
+<!-- # summary(crime$HS_centered) -->
+<!-- ``` -->
+
+<!-- $$ -->
+<!-- \hat{C}_i = 52.4 + 1.48 (HS_i - \overline{HS})\\ -->
+<!-- \hat{C}_i = 52.4 + 1.48 (HS_i - 69.48)\\ -->
+<!-- $$ -->
+
+<!-- $$ -->
+<!-- \hat{C}_{HS = \overline{HS}} = 52.4 -->
+<!-- $$ -->
+<!-- Expected crime rate in a county with the average share of high school graduates. -->
+
+
+<!-- $$ -->
+<!-- \underbrace{C_i}_{Crime} = \alpha + \beta \underbrace{\text{U}_i}_{\text{Share of persons in urban areas}} + e_i -->
+<!-- $$ -->
+
+<!-- Predictions: -->
+
+<!-- ```{r} -->
+<!-- ## Prediction with the original model C ~ HS -->
+<!-- newdata_hs0 <- data.frame(HS = 0) -->
+<!-- # ?predict.lm -->
+<!-- predict(fit, newdata = newdata_hs0, se.fit = TRUE) -->
+<!-- ``` -->
+
+<!-- $$ -->
+<!-- \hat{C}_{HS} = -50.85 + 1.48 HS\\ -->
+<!-- \hat{C}_{HS = 0} = -50.85 -->
+<!-- $$ -->
+
+
+<!-- ```{r} -->
+<!-- ## Average HS = 69.49 -->
+<!-- predict(fit, newdata = data.frame(HS = 69.49), se.fit = TRUE) -->
+<!-- ``` -->
+
+<!-- $$ -->
+<!-- \hat{C}_{HS = \overline{HS}} = 52.40365 -->
+<!-- $$ -->
+
+<!-- ```{r} -->
+<!-- newdata_multiple_values <- data.frame(HS = c(40, 50, 69, 80, 100)) -->
+<!-- # newdata_multiple_values <- data.frame(HS = c(69)) -->
+<!-- predict(fit, newdata = newdata_multiple_values, se.fit = TRUE, interval = "confidence") -->
+<!-- ``` -->
+
+<!-- $$ -->
+<!-- \hat{C}_{HS = 100} = 97.74081 -->
+<!-- $$ -->
+
+
+<!-- Interpretation: counties that differ by one percentage point (the unit of U) on U are expected to differ by 0.56 cimes per 100,000 inhabitants. Counties with higher degree of urbanisation are expected to have higher crime rates. -->
+
+
+<!-- ```{r} -->
+<!-- crime %>% -->
+<!--   select(C, HS, U) %>% -->
+<!--   pairs() -->
+<!-- ``` -->
+
