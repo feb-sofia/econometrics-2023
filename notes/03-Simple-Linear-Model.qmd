@@ -1,4 +1,11 @@
-# Simple Linear Model
+# Simple Linear Model {#sec-simple-linear-model}
+
+::: {.content-hidden}
+$$
+\newcommand\bh{{\hat{\beta}}}
+\newcommand\sumiton{{\sum_{i = 1}^{n}}}
+$$
+:::
 
 We begin the introduction to linear regression analysis using a simple example with one response variable and one explanatory (predictor) variable. Let us first load the data and the `tidyverse` packages.
 
@@ -215,7 +222,7 @@ The the $\beta_1$ coefficient would correspond to the marginal cost as it descri
 
 <!-- $$ -->
 
-## Ordinary Least Squares
+## Ordinary Least Squares {#sec-ols-intro}
 
 Up to now we have considered a model with known coefficients $\beta_0$ and $\beta_1$.
 In general, these coefficients are not known and we need to make reasonable guesses
@@ -842,9 +849,9 @@ Finally, we obtain the whole solution:
 $$
 \begin{align}
   \bar{y} & = \hat{\beta}_0 + \hat{\beta}_1 \bar{x} \\
-  \hat{\beta}_1 & = \frac{\overline} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
+  \hat{\beta}_1 & = \frac{\overline{xy} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
 \end{align}
-$$ {#eq-ols-simple}
+$${#eq-ols-simple}
 
 The equation for the intercept in @eq-ols-simple simply says that the OLS regression line passes through the center of the observations. The second equation says that the slope estimate equals the covariance of $x$ and $y$ scaled with the variance of $x$.
 
@@ -900,3 +907,184 @@ $$
 \end{align*}
 $$
 :::
+
+
+### Properties of the OLS estimator
+
+The OLS estimators are unbiased for the coefficients.
+
+:::{#thm-ols-expected-value}
+
+## Expected value of the OLS estimator
+
+$$
+E\hat{\beta}_0 = \beta_0 \\
+E\hat{\beta}_1 = \beta_1
+$$
+:::
+:::{.proof}
+
+From @eq-ols-simple we know that the OLS estimator for $\beta_1$ is
+
+$$
+\hat{\beta}_1 = \frac{\overline{xy} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
+$$
+To investigate the statistical properties (expected value and variance) of this estimator
+it is convenient to write is as a linear combination of $y$.
+
+$$
+\begin{align*}
+\hat{\beta}_1 & = \frac{1}{n} \frac{1}{\overline{x^2} - \bar{x}^2} \left(\sum_{i = 1}^{n} x_i y_i - \bar{x} \sum_{i = 1}^{n} y_i \right) \\
+        & = \frac{1}{n} \frac{1}{\overline{x^2} - \bar{x}^2} \sum_{i = 1}^{n} (x_i - \bar{x}) y_i
+\end{align*}
+$$
+
+We can write this more compactly as:
+
+$$
+\begin{align*}
+\hat{\beta}_1 & = \sum_{i = 1}^{n} c_i y_i \\
+c_i & = \frac{x_i - \bar{x}}{n(\overline{x^2} - \bar{x}^2)}
+\end{align*}
+$${#eq-hat-beta-1-lincomb}
+
+Now it is easy to compute the conditional (given $x_i$) expectation.
+
+$$
+\begin{align*}
+E(\hat{\beta}_1 | x_i) & = E\left(\sum_{i = 1}^{n} c_i y_i | x_i\right) \\
+               & = \sum_{i = 1}^{n} E(c_i y_i | x_i) \\
+               & = \sum_{i = 1}^{n} c_i E(y_i | x_i)
+\end{align*}
+$$
+From the model definition we know that the conditional expectation $E(y_i | x_i) = \beta_0 + \beta_1 x_i$.
+
+$$
+\begin{align*}
+E(\hat{\beta}_1 | x_i) & = \sum_{i = 1}^{n} c_i (\beta_0 + \beta_1 x_i) \\
+                       & = \beta_0 \sum_{i = 1}^{n} c_i + \beta_1 \sum_{i = 1}^{n} c_i x_i
+\end{align*}
+$$
+Now notice that the sum of $c_i$ is zero:
+
+$$
+\begin{align*}
+\sum_{i = 1}^{n} c_i & = \sum_{i = 1}^{n} \left( \frac{x_i - \bar{x}}{n(\overline{x^2} - \bar{x}^2)} \right) \\
+                     & = \frac{1}{n(\overline{x^2} - \bar{x}^2)}\sum_{i = 1}^{n} (x_i - \bar{x}) \\
+                     & = 0
+\end{align*}
+$$
+The last result is due to the fact that the deviation of $x$ from its average $\bar{x}$
+sum to zero!
+
+$$
+\sum_{i = 1}^{n} (x_i - \bar{x}) = \sum_{i = 1}^{n} x_i  - \sum_{i = 1}^{n} \bar{x} = n \bar{x} - n\bar{x} = 0.
+$$
+
+The second sum in the expression for $\hat{\beta}_1$ equals 1.
+
+$$
+\begin{align*}
+\sum_{i = 1}^{n} c_i x_i & = \sum_{i = 1}^{n} \frac{x_i (x_i - \bar{x})}{n (\overline{x^2} - \bar{x}^2)} \\
+                         & = \frac{1}{n (\overline{x^2} - \bar{x}^2)} \sum_{i = 1}^{n} x_i (x_i - \bar{x}) \\
+                         & = \frac{1}{n (\overline{x^2} - \bar{x}^2)} \sum_{i = 1}^{n} (x_i^2 - \bar{x} x_i) \\
+                         & = \frac{1}{n (\overline{x^2} - \bar{x}^2)} \left(\sum_{i = 1}^{n} x_i^2 - \bar{x} \sum_{i = 1}^{n} x_i \right) \\
+                         & = \frac{1}{n (\overline{x^2} - \bar{x}^2)} (n \overline{x^2} - n \bar{x}^2) \\
+                         & = 1.
+\end{align*} 
+$$
+Finally, we obtain for the expected value of $\hat{\beta}_1$:
+
+$$
+E(\hat{\beta}_1 | x_i) = \beta_1
+$$
+For the intercept estimator we get:
+
+$$
+\begin{align*}
+E(\hat{\beta}_0 | x) & = E(\bar{y} - \hat{\beta}_1 \bar{x} | x) \\
+                       & = E(\bar{y} | x) - \bar{x} E(\hat{\beta}_1 | x) \\
+                       & = E\left(\frac{1}{n}\sum_{i = 1}^{n} y_i | x\right) - \bar{x} \beta_1 \\
+                       & = \frac{1}{n} \sum_{i = 1}^{n} E(y_i | x) - \bar{x}\beta_1 \\
+                       & = \frac{1}{n} \sum_{i = 1}^{n} (\beta_0 + \beta_1 x_i) - \bar{x}\beta_1 \\
+                       & = \frac{1}{n} \sum_{i = 1}^{n} \beta_0 + \frac{1}{n} \sum_{i = 1}^{n} \beta_1 x_i - \bar{x}\beta_1 \\
+                       & = \beta_0 + \beta_1 \bar{x} - \bar{x}\beta_1 \\
+                       & = \beta_0
+\end{align*}
+$$
+:::
+
+:::{#thm-variance-ols}
+## Variance of the OLS estimators
+
+The conditional variance of $\hat{\beta}_1$ is given by:
+
+$$
+\begin{align*}
+Var(\hat{\beta}_1 | x) & = Var\left(\sum_{i = 1}^{n} c_i y_i  | x \right) \\
+                       & = \sum_{i = 1} ^ {n} Var(c_i y_i | x) \\
+                       & = \sum_{i = 1} ^ {n} c_i ^ 2 Var(y_i | x) \\
+                       & = \sum_{i = 1} ^ {n} c_i ^ 2 \sigma^2 \\
+                       & = \sigma^2 \sum_{i = 1} ^ {n} c_i ^ 2
+\end{align*}
+$$
+$$
+\begin{align*}
+Var(\hat{\beta}_0 | x) & = Var\left(\bar{y} - \hat{\beta}_1 \bar{x} | x\right) \\
+                       & = Var\left(\frac{1}{n}\sum_{i = 1}^{n} y_i - \bar{x} \sum_{i = 1}^{n} c_i y_i | x\right) \\
+                       & = Var\left(\sum_{i = 1} ^{n} \left(\frac{y_i}{n} - \bar{x}c_i y_i \right) | x\right) \\
+                       & = Var\left(\sum_{i = 1} ^{n} \left(\frac{1}{n} - \bar{x}c_i \right) y_i | x\right) \\
+                       & = \sum_{i = 1}^{n}\left(\frac{1}{n} - \bar{x}c_i \right)^2 Var(y_i | x) \\
+                       & = \sigma^2 \sum_{i = 1}^{n}\left(\frac{1}{n} - \bar{x}c_i \right)^2
+\end{align*}
+$$
+:::
+
+:::{#thm-residuals-ols-zero}
+## Zero sum of residuals
+
+The residuals in the linear model sum to zero if the model includes a constant.
+
+$$
+\sum_{i = 1}^{n} r_i = 0
+$$
+:::
+:::{.proof}
+$$
+\begin{align*}
+\sum_{i = 1}^{n} r_i & = \sum_{i = 1}^{n} (y_i - \hat{\mu}_i) \\
+                     & = n\bar{y} - \sum_{i = 1}^{n} (\hat{\beta}_0 + \hat{\beta}_1 x_i) \\
+                     & = n\bar{y} - n \hat{\beta}_0 - n \hat{\beta}_1 \bar{x} \\
+                     & = n(\bar{y} - \hat{\beta}_0 - \hat{\beta}_1 \bar{x}) \\
+                     & = n(\bar{y} - (\bar{y} - \hat{\beta}_1 \bar{x}) - \hat{\beta}_1 \bar{x}) \\
+                     & = 0
+\end{align*}
+$$
+
+:::
+
+:::{#thm-residuals-ols-zero}
+## Orthogonality of residuals and predictors
+
+The product of the residuals and the predictor variables $x$ sums to zero.
+
+$$
+\sum_{i = 1}^{n} r_i x_i = 0
+$$
+:::
+:::{.proof}
+$$
+\begin{align*}
+\sum_{i = 1}^{n} r_i x_i & = \sum_{i = 1}^{n} (y_i - \hat{\mu}_i)x_i \\
+                         & = \sum_{i = 1}^{n} x_i y_i - \sum_{i = 1}^{n} x_i \hat{\mu}_i \\
+                         & = n \overline{xy} - \sum_{i = 1}^{n} x_i (\hat{\beta}_0 + \hat{\beta}_1 x_i) \\
+                         & = n \overline{xy} - \left( \sum_{i = 1}^{n} x_i \hat{\beta}_0 + \sum_{i = 1}^{n} \hat{\beta}_1 x_i^2 \right) \\
+                         & = n \overline{xy} - n \hat{\beta}_0 \bar{x} - n \hat{\beta}_1 \overline{x^2} \\
+                         & = n (\overline{xy} - \hat{\beta}_0 \bar{x} - \hat{\beta}_1 \overline{x^2}) \\
+                         & = n (\overline{xy} - (\bar{y} - \hat{\beta}_1 \bar{x})\bar{x} - \hat{\beta}_1 \overline{x^2}) \\ 
+                         & = n(\overline{xy} - \bar{x}\bar{y} + \hat{\beta}_1 \bar{x}^2 - \hat{\beta}_1 \bar{x}^2) \\ 
+                         & = 0.
+\end{align*}
+$$
+:::
+

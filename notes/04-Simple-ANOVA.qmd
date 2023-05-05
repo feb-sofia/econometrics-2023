@@ -1,4 +1,6 @@
-# Simple ANOVA
+# Simple ANOVA {#sec-simple-anova}
+
+## The Data
 
 ```{r setup, include=FALSE}
 ## Warning: to compile the notes you need the "bookdown" and the "broom" packages. Install them by
@@ -14,37 +16,53 @@ kids <- read_csv(
   select(kid_score, mom_hs)
 ```
 
-# Linear regression model with a single categorical predictor
-
 Variables description:
 
--   `kid_score`: (numeric) Kid's IQ score.
--   `mom_hs` (binary): 1 if the mother has finished high school, 0 otherwise.
+- `kid_score`: (numeric) Kid's IQ score.
+- `mom_hs` (numeric): This variable has only two possible values (a binary variable): 1 if the mother of the child has finished high school, and 0 otherwise.
 
-Two groups of kids: the ones whose mother had a high school degree (`mom_hs = 1`) and the rest (`mom_hs = 0`).
+For the sake of simplicity we will assume that the children in the sample (in the data set `kids`) were selected at
+random from all children living in the US at the time of the survey.
 
-Question: are this two groups different with respect to IQ (as measured by `kid_score`).
 
-Research hypothesis: children of mothers without a high school degree have lower IQ on average compared to children of mothers with a high school degree.
+Research question: Do children whose mother did not finish a high school (`mom_hs = 0`) tend to achieve lower IQ scores compared to the children of mothers with a high school degree (`mom_hs = 1`).
+
+
+## The Linear Regression Model with a single binary predictor
+
+Let us first summarize the data.
 
 ```{r}
+#| label: tbl-kids-summary
+#| tbl-cap: "Average IQ scores and number of observations (n) by the status of the mother."
+
 kids %>%
   ## Group the data according to the educational status of the mothers
   group_by(mom_hs) %>%
   ## Compute the average IQ score in each group
   summarise(
-    ## Count the number of rows (children) in each group
+    ## The function n() counts the number of rows (children) in each group
     n = n(),
     ## Compute the average IQ score for each group
-    average_IQ = mean(kid_score)
-  )
+    Average_IQ_score = mean(kid_score)
+  ) %>%
+  knitr::kable()
 ```
 
 ```{r}
+#| label: fig-kid-score-plot
+#| fig-cap: "IQ scores of the children by the status of their mother (high school degree/no high school degree).  The plot adds a    small random noise to the observations to avoid overplotting."
+
+## Where to get the data
 kids %>%
-  ggplot(aes(
-    y = factor(mom_hs),
-    x = kid_score,
+  ggplot(
+    aes(
+      ## Map the status of the mother to the y-axis.
+      ## The factor function converts mom_hs to a factor variable
+      ## so that ggplot would not treat mom_hs as a continuous variable.
+      y = factor(mom_hs),
+      ## Map the kid_score column to the x-axis.
+      x = kid_score
   )
   ) +
   geom_point(
@@ -53,386 +71,296 @@ kids %>%
     ## all dots would lie on two straight lines
     position = "jitter"
   ) +
-  geom_boxplot(alpha = 0.5)
-```
-
-Formulated as a linear regression model:
-
-$$
-i = 1,\ldots, n = 434\\
-y_i: \text{Kid IQ score} \\
-x_i \in \{0, 1\}
-$$
-
-$$
-y_i = \beta_0 + \beta_1 x_i + u_i, u_i \sim N(0, \sigma^2)
-$$
-
-Find the OLS estimates for $\beta_0$ and $\beta_1$ using the `lm` function.
-
-```{r}
-fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
-fit
-```
-
-Write the estimated regression equation
-
-```{=tex}
-\begin{align}
-\hat{\mu}_i = 77.55 + 11.77 \hat{x}_i
-\end{align}
-```
-## Simulation
-
-We want to create a simulation where we select 2000 samples of children from a given model. Fix the following code so that there are 2000 samples (currently there are 2) and so that there are exactly as many children with $mom_hs = 1$ and $mom_hs = 0$ as in the original data `kids`.
-
-$$
-y_i \sim N(\mu_i, 19.85^2) \\
-\mu_i = 77.548 + 11.771 x_i \\
-$$
-
-```{r}
-## Fix the random numbers generator so that you can reproduce your results
-set.seed(123)
-
-sim_df <- expand_grid(
-  R = 1:200,
-  mom_hs = rep(c(0, 1), c(93, 341))
-)
-
-sim_df <- sim_df %>%
-  mutate(
-    mu = 77.548 + 11.771 * mom_hs,
-    kid_score = rnorm(n = n(), mean = mu, sd = 19.85)
+  ## Draws the two boxplots to help us see the centers and the spreads
+  ## of the distributions of the scores in the two groups
+  geom_boxplot(
+    ## Makes the boxplots transparent so that we can see the dots
+    ## behind them
+    alpha = 0.5
+  ) +
+  ## Sets human-readable labels for the two axes
+  labs(
+    x = "IQ score",
+    y = "Status of the kid's mother"
   )
 ```
 
-Select the first simulated sample and find the OLS coefficient estimates using `lm`.
+Let us see how we can model the average IQ scores within a simple linear model.
 
-```{r}
-## Estimate the OLS coefficients with the data from the first sample of children
-sim_sample_1 <- sim_df %>% filter(R == 1)
-lm(kid_score ~ 1 + mom_hs, data = sim_sample_1)
-```
+$$
+\begin{align*}
+& i = 1,\ldots, n = 434 \text{ observations}\\
+& y_i: \text{Kid IQ score} \\
+& x_i \in \{0, 1\}: \text{status of the mother}
+\end{align*}
+$$
 
-The following code computes the OLS estimates for each of the samples.
+The linear model is then 
 
-```{r}
-sim_coeff <- sim_df %>%
-  group_by(R) %>%
-  ## The tidy function reformats the output of lm so that it can fit in a data frame
-  do(tidy(lm(kid_score ~ mom_hs, data = .))) %>%
-  select(R, term, estimate, std.error, statistic)
-```
+$$
+y_i = \beta_0 + \beta_1 x_i + e_i, e_i \sim N(0, \sigma^2)
+$$
+Alternatively (and more generally) we can write the model (see @sec-simple-linear-model) as:
 
-The data set `sim_coeff` now contains estimated coefficients ($\hat{\alpha}$ and $\hat{\beta}$) for every sample. Check the first two rows and compare it to your results for the first estimated sample. To plot the distribution of $\hat{\beta}_1$ (the slope coefficients) we filter the data set so that we keep only the raw where `term == "mom_hs"` (i.e our estimates for $\beta$).
+$$
+\begin{align*}
+& y_i \sim N(\mu_i, \sigma^2), \quad i = 1,\ldots,n \\
+& \mu_i = \beta_0 + \beta_1 x_i, \quad x_i \in \{0, 1\}
+\end{align*}
+$${#eq-simple-anova}
 
-```{r}
-slopes <- sim_coeff %>% filter(term == "mom_hs")
-```
+Let us see what the model coefficients mean. This becomes obvious when we consider
+the expected value of $y$ (the IQ score) for the two possible values of $x$.
+For $x = 1$ (children with a mother with a HS degree) the expected IQ score is:
 
-Plot the distribution of the slope estimates
+$$
+\mu_1 = \beta_0 + \beta_1 \cdot 1
+$${#eq-mu-x-1}
 
-```{r}
-slopes %>%
-  ggplot(aes(x = estimate)) +
-  geom_point(
-    aes(y = 0),
-    position = "jitter",
-    size = 1 / 2,
-    alpha = 0.5
+
+For $x = 0$ (children with a mother without a HS degree)
+
+$$
+\mu_0 = \beta_0 + \beta_1 \cdot 0
+$${#eq-mu-x-0}
+
+
+If you take the difference between equations [-@eq-mu-x-1] and [-@eq-mu-x-0]
+you will get:
+
+$$
+\begin{align*}
+\beta_0 & = \mu_0 \\
+\beta_1 & = \mu_1 - \mu_0
+\end{align*}
+$$
+Therefore, the constant in the model ($\beta_0$) equals the population average IQ score
+of children in the $x = 0$ group. The slope coefficient $\beta_1$ equals the difference 
+between the population average IQ scores. @fig-simple-anova-model-vis visualizes
+the population of children (as the model in @eq-simple-anova sees it). There are
+two groups of children in that population. The first has an average IQ score of $\mu_0$,
+the second group has an average IQ score of $\mu_1$. The children in both groups
+are normally distributed and the two distributions have the same standard deviation (spread).
+
+```{r, echo = FALSE}
+#| label: fig-simple-anova-model-vis
+#| fig-cap: "Distribution of IQ scores in the population of children according to @eq-simple-anova."
+
+ggplot() +
+  # Sets the range of the x-axis from -2 to 2
+  xlim(c(0, 180)) +
+  stat_function(
+    fun = dnorm, 
+    args = list(
+      mean = 77,
+      sd = 20
+      ),
+    n = 1000,
+    aes(color = "Mother without HS")
   ) +
-  geom_boxplot(alpha = 0.5) +
+  stat_function(
+    fun = dnorm, 
+    args = list(
+      mean = 100,
+      sd = 20
+      ),
+    n = 1000,
+    aes(color = "Mother with HS")
+  ) +
   labs(
-    x = "Slope estimate",
-    title = "Distribution of slope estimates (over 2000 samples)",
-    y = ""
+    x = "x",
+    y = "Density"
+  ) + 
+  scale_colour_manual("Group", values = c("steelblue", "firebrick")) + 
+  geom_vline(xintercept = 77, lty = 2, alpha = 0.5, color = "firebrick") + 
+  geom_vline(xintercept = 100, lty = 2, alpha = 0.5, color = "steelblue") + 
+  labs(
+    x = "IQ score"
+  ) + 
+  scale_x_continuous(
+    breaks = c(77, 100), 
+    labels = latex2exp::TeX(c("$\\mu_{0}$", "$\\mu_{1}$")), 
+    limits = c(0, 200)
+  ) + 
+  geom_segment(
+    data = tribble(
+      ~x, ~y, ~xend, ~yend,
+      77, 0.005, 100, 0.005
+    ),
+    aes(x = x, y = y, xend = xend, yend = yend)
+  ) + 
+  geom_text(
+    data = tibble(
+      x = 90,
+      y = 0.005,
+      z = "$\\beta_1$"
+    ),
+    aes(x = x, y = y, label = latex2exp::TeX(z, output = "character")),
+    parse = TRUE,
+    nudge_y = 0.001
   ) +
-  geom_density(color = "steelblue") +
-  geom_vline(xintercept = 11.77, color = "red")
-#  xlim(c(0, 21))
+  theme(
+    legend.position = "bottom"
+  )
 ```
 
-Copy the code above and adapt it to show the distribution of the intercept coefficients.
+Within that model our research question boils down to examining $\beta_1$ (the difference between
+the population averages). If $\beta_1$ is positive, then children born to a mother
+with a HS degree would tend to perform better at the IQ test.
+
+The first obstacle to answering the research question is that we don't know
+the value of $\beta_1$. Therefore, we would need to rely on the sample
+to learn something about the value of $\beta_1$.
+
+
+In the previous section we discussed the OLS estimator and now we will use it
+to find the best (in terms of lowest RSS) estimates for $\beta_0$ and $\beta_1$.
+As in the previous section will will find these using the `lm` function.
+We will also store the result of `lm` in an object so that we can use it later
+without running `lm` every time.
+
 
 ```{r}
-# ???
+## Run lm and save the output in an object called "fit"
+fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
+## Print the object storing the lm output
+fit
 ```
 
-## Summary of the lm output
+Look at the output of `lm` and write down the estimated regression equation: 
+
+
+$$
+\begin{align*}
+\hat{\mu} = 77.55 + 11.77 x
+\end{align*}
+$$
+
+This equation summarizes the _sample_. The children that we have selected and actually observed.
+For these children there was a difference of average IQ scores of 11.77. However, the
+sample only includes `r nrow(kids)` children. A more interesting question 
+is whether there is a difference between the average IQ scores between the two
+groups (mother with HS degree, mother without HS degree) in the _population_
+from which the sample was selected.
+
+An interesting research hypothesis that we can test is whether the 
+_population_ coefficient $\beta_1$ is equal to zero, for example against a two-sided
+alternative $\beta_1 \neq 0$.
+
+$$
+H_0: \beta_1 = 0 \\
+H_1: \beta_1 \neq 0
+$$
+A test of this hypothesis against the alternative is a t-test with a test statistic
+
+$$
+\text{t-statistic} = \frac{\hat{\beta}_1 - 0}{se(\hat{\beta}_1)}
+$$
+
+If $\beta_1$ is really equal to zero, then this statistic follows a t-distribution
+with $n - p$ degrees of freedom. The critical values of this test at $\alpha = 0.05$
+probability of wrong rejection of the null hypothesis.
+
+For the `kids` data set you can test this hypothesis using the output of `summary`.
 
 ```{r}
 summary(fit)
 ```
 
-Standard error: this is an estimate of the standard deviation of the estimator for the coefficient based on assumptions about the error term ($u_i$) in the model.
-
-The standard deviation of $\hat{\beta}_1$, computed using the simulated samples:
-
-```{r}
-## sd: standard deviation
-sd(slopes$estimate)
-```
-
-## Testing a true null hypothesis
+The second row in the coefficients table corresponds to our $\hat{\beta}_1$ in
+our model notation (the coefficient of `mom_hs`). You can find the estimated standard
+error of $\hat{\beta}_1$ in the second column (`Std. Error`).
 
 $$
-H_0: \beta_1 = 11.77\\
-H_1: \beta_1 \neq 11.77
+\text{t-statistic}^{obs} = \frac{11.77 - 0}{2.322} = 5.0689
 $$
 
-t-test
+You can find this value in the column `t value` in the `summary` above. This
+t-statistic is shown in the regression output by almost all statistical software, 
+because the hypothesis 
 
 $$
-\text{t-statistic} = \frac{\hat{\beta}_1 - 11.77}{SE(\hat{\beta}_1)}
-$$
-
-When is the value of the t-statistic close to zero? 1. The estimate is close to the value under the null hypothesis. 2. For high values of the standard error
-
-$$
-t = \frac{11.77 - 11.77}{2.322} = 0
-$$
-
-```{r}
-slopes <- slopes %>%
-  mutate(
-    t_statistic = (estimate - 11.77) / std.error
-  )
-```
-
-```{r}
-slopes %>%
-  ggplot(aes(x = t_statistic)) +
-  geom_point(
-    aes(y = 0),
-    position = "jitter",
-    size = 1 / 2,
-    alpha = 0.5
-  ) +
-  geom_boxplot(alpha = 0.5) +
-  labs(
-    x = "Value of the t-statistic",
-    title = "Distribution of t-statistic under a true null hypothesis beta_1 = 11.77 (2000 samples)",
-    y = ""
-  ) +
-  geom_density(color = "steelblue") +
-  geom_vline(xintercept = 0, color = "red") +
-  geom_vline(xintercept = c(-2, 2), color = "steelblue", lty = 2) +
-  geom_vline(xintercept = c(-3, 3), color = "firebrick", lty = 2) +
-  scale_x_continuous(breaks = c(-3, -2, 0, 2, 3))
-#  xlim(c(0, 21))
-```
-
-The real coefficient equals 11.77 (it is known, because we choose it for the simulation).
-
-Lets assume a rule that we reject the null hypothesis $H_0: \beta_1 = 0$ vs. $H_1: \beta_1 \neq 0$ if the value of the t-statistic is less than -2 or greater than +2.
-
-In how many samples will we wrongly reject the null hypothesis using this rule?
-
-```{r}
-testing_1 <- slopes %>%
-  mutate(
-    ## Logical OR: |
-    wrong_decision_blue = t_statistic < -2 | t_statistic > 2,
-    wrong_decision_red = t_statistic < -3 | t_statistic > 3
-  )
-## Share of TRUE values
-mean(testing_1$wrong_decision_blue)
-mean(testing_1$wrong_decision_red)
-```
-
-## Testing a wrong null hypothesis
-
-$$
-H_0: \beta_1 = 0\\
+H_0: \beta_1 = 0 \\
 H_1: \beta_1 \neq 0
 $$
+is particularly interesting. If true it implies that there are no 
+population-level differences between the average IQ scores of the two groups of
+children.
 
-$$
-y_i = \beta_0 + \beta_1 x_i + u_i
-$$
+In order to make a decision whether to reject this hypothesis or not, we compare
+the observed t-statistic to two critical values (because the alternative is two-sided).
 
-If $H_0$ is true, the the model is simply
+The critical values at a five percent error probability (wrong rejection of a true null hypothesis)
+are derived from the t-distribution. You can find a detailed explanation in @sec-simulation-anova.
 
-$$
-y_i = \beta_0 + u_i
-$$
-
-t-test
-
-$$
-\text{t-statistic} = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)}
-$$ 
-
-The value of the t-statistic is expected small when the estimate for the coefficient is close to the value under the null hypothesis. The value of the t-statistic will be small, if the standard error of the estimator is high.
-
-$$
-t = \frac{11.77 - 0}{2.322} = 5.069
-$$
-
-Compute the value of the t-statistic for all samples in the simulation (and compare it to the value of the `statistic` column in the `sim_coef` dataset)
+The quantiles of the t-distribution are 
 
 ```{r}
-slopes <- slopes %>%
-  mutate(
-    t_statistic0 = (estimate - 0) / std.error
-  )
+alpha <- 0.05
+qt(alpha / 2, df = nrow(kids) - 2)
+qt(1 - alpha / 2, df = nrow(kids) - 2)
 ```
 
-```{r}
-slopes %>%
-  ggplot(aes(x = t_statistic0)) +
-  geom_point(
-    aes(y = 0),
-    position = "jitter",
-    size = 1 / 2,
-    alpha = 0.5
-  ) +
-  geom_boxplot(alpha = 0.5) +
-  labs(
-    x = "Value of the t-statistic",
-    title = "Distribution of t-statistic, beta_1 = 0 (false)",
-    y = ""
-  ) +
-  geom_density(color = "steelblue") +
-  geom_vline(xintercept = 0, color = "red") +
-  geom_vline(xintercept = c(-2, 2), color = "steelblue", lty = 2) +
-  geom_vline(xintercept = c(-3, 3), color = "firebrick", lty = 2) +
-  xlim(c(-4, 8)) +
-  scale_x_continuous(breaks = c(-3, -2, 0, 2, 3))
-```
+The observed t-statistic equals 5.0689 and is therefore greater than the upper
+critical value (1.96). Therefore we reject the null hypothesis at a significance
+level $1 - \alpha = 0.95$ (this is another way to state 
+the probability of wrong rejection of a true null hypothesis).
 
-```{r}
-testing_2 <- slopes %>%
-  mutate(
-    ## Logical AND: &
-    wrong_decision_blue = t_statistic0 < 2 & t_statistic0 > -2,
-    wrong_decision_red = t_statistic0 < 3 & t_statistic0 > -3
-  )
-## Share of TRUE values
-mean(testing_2$wrong_decision_blue)
-mean(testing_2$wrong_decision_red)
-```
 
-## How to choose critical values?
+Apart from the point estimate for the difference of average IQ scores (11.77 points)
+we usually also want to communicate the uncertainty of this estimate.
+One description of that uncertainty is the (estimated) standard error of the estimator
+for the regression coefficient.
 
-Convention: choose the critical values so that the probability of rejecting a true null hypothesis is 5%.
+One way to construct a confidence interval for the coefficients is to invert the
+two-sided t-test (more details in the next section [-@sec-simulation-anova]).
 
-# t-distribution
+We will use the critical values of the t-test at the 95 percent significance 
+level to obtain an confidence interval (CI) with a 95 percent coverage probability:
 
 $$
-y_i = \beta_0 + \beta_1 x_i + u_i
-$$
+P\left(\hat{\beta}_1 - 1.96 se(\hat{\beta}_1)  < \beta_1 < \hat{\beta}_1 + 1.96 se(\hat{\beta}_1) \right) = 0.95
+$${#eq-ci-kids-beta1}
 
-Under some assumptions it can be shown that under the null hypothesis (this simply means that we assume the null hypothesis is true)
 
-$$
-H_0: \beta_1 = \beta_{H_0}\\
-H_1: \beta_1 \neq \beta_{H_0}\\
-$$
+Notice that the boundaries of the interval are random variables (because $\hat{\beta}_1$ and $se(\hat{\beta}_1)$)
+are random variables (they depend on the data). For the sample of children in `kids` we
+obtain _estimates_ for these boundaries: $[11.77 - 1.96 \cdot 2.322; 11.77 + 1.96 \cdot 2.322] \approx [7.2; 16.3]$.
+Based on these estimated boundaries we would say that range of plausible values for the  difference between the population IQ score averages between 7.2 and 16.3.
 
-$$
-\text{t-statistic} = \frac{\hat{\beta_1} -  \beta_{H_0}}{SE(\hat{\beta}_1)}
-$$
 
-$$
-\text{t-statistic} \underbrace{\sim}_{H_0} t(\text{df} = n - p)
-$$
+Notice that in interpreting the boundaries of the CI we don't say 
+that the probability of $\beta_1$ being between 7.2 and 16.3 is 0.95. Generally this statement does not 
+make any sense, because we have assumed that $\beta_1$ is a fixed number (not random). The probability statement
+in @eq-ci-kids-beta1 does make sense, because the boundaries are random variables (depend on the data), but
+the statement $P(7.2 < \beta_1 < 16.3) = 0.95$ does not!
 
-The t-statistic follow a t-distribution with $n - p$ degrees of freedom (parameter of the distribution), where $n$ is the number of observations in the linear model (in our example $n = 434$ kids) and $p$ is the number of coefficients in the linear equation. In our linear regression model the number of coefficients in $p = 2$: the intercept $\beta_0$, and the slope coefficient $\beta_1$.
-
-## Probabilities and quantiles of the t-distribution
-
-```{r, echo = FALSE}
-dt <- data.frame(
-  ## Creates a sequence of 100 numbers between -3 and 3
-  x = seq(-4, 4, length.out = 100)
-) %>%
-  mutate(
-    ## Computes the standard normal density at each of the 100 points in x
-    t_dens = dt(x, df = 434 - 2)
-  )
-
-ggplot() +
-  ## Draws the normal density line
-  geom_line(data = dt, aes(x = x, y = t_dens)) +
-  ## Draws the shaded area under the curve between
-  ## -1 and 1
-  geom_ribbon(
-    data = filter(dt, x > -1.96, x < 1.96),
-    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
-    ## Controls the transparency of the area
-    alpha = 0.5
-  ) +
-  annotate(
-    "text",
-    x = 0,
-    y = dnorm(0) / 3,
-    label = paste("Pr(-1.96 < X < 1.96) = ", round(pt(-1.96, df = 434 - 2) - pt(1.96, df = 434 - 2), 2), sep = " ")
-  ) +
-  geom_vline(xintercept = c(-1.96, 1.96), lty = 2, colour = "steelblue") +
-  # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
-  scale_x_continuous(breaks = c(-1.96, 0, 1.96))
-```
-
-### Probability
-
-```{r}
-# p: probability, t: t-distribution
-pt(-2, df = 434 - 2)
-```
-
-```{r}
-rt(1, df = 434 - 2)
-```
-
-```{r}
-# r: random, t: t-distribution
-mean(rt(1000000, df = 434 - 2) < -2)
-# mean(rt(1000000, df = 2) < -2)
-```
-
-### Quantiles
-
-```{r}
-## q: quantile, t: t-distribution
-qt(p = 0.02306292, df = 434 - 2)
-```
-
-## Critical values in t-tests
-
-```{r}
-# 0.025 quantile of the t-distribution with 2 degrees of freedom
-qt(0.025, df = 434 - 2)
-```
-
-```{r}
-# r: random, t: t-distribution
-mean(rt(1000000, df = 434 - 2) < -1.965471)
-```
-
-A convention is to use a 5% error probability of rejecting a true null hypothesis, so we use the quantiles of the t-distribution to derive critical values as follows:
-
-```{r}
-## Lower critical value: the 0.025 quantile of the t-distribution
-qt(0.025, df = 434 - 2)
-## Upper critical value: the 0.975 quantile of the t-distribution
-## lower.tail = FALSE instructs qt to calculate
-qt(0.025, df = 434 - 2, lower.tail = FALSE)
-```
-
-Both critical values are equal in absolute value.
 
 ## Mathematical Details (Optional)
 
-### OLS estimator in the binary predictor case
+### The OLS Estimator in the Binary Predictor Case
 
-In the case when $x_i \in \{0, 1\}$ the average of $x$, i.e $\overline{x}$ is simply the proportion of ones, lets say $n_1 / n$. Notice that the average of the squared $x$ is the same as the average of $x$, because $x$ only contains zeroes and ones. The average of the product of $x$ and $y$ is equal to the sum of $y$ where the $x = 1$, because the other values in $y$ are multiplied by zero.
+In the case when $x_i \in \{0, 1\}$ the average of $x$, i.e $\overline{x}$ is simply the proportion of ones, lets say $n_1 / n$. Notice that the average of the squared $x$ is the same as the average of $x$, because $x$ only contains zeroes and ones (therefore $x_i^2 = x_i$). The average of the product of $x$ and $y$ is equal to the sum of $y$ where the $x = 1$, because the other values in $y$ are multiplied by zero.
 
 $$
-\overline{x^2} = \overline{x} \\
-\overline{xy} = \frac{1}{n}\sum_{i: x_i = 1} y_i = \frac{n_1}{n_1}\frac{1}{n} \sum_{i: x_i = 1} y_i  = \frac{n_1}{n} \overline{y}_{1}
+\begin{align*}
+\overline{x^2} = & \frac{1}{n}\sum_{i = 1}^{n} x_i^2 =  \\
+               = & \frac{1}{n} \sum_{i = 1}^n x_i \\
+               = & \bar{x}
+\end{align*}
 $$
+
+$$
+\begin{align*}
+\overline{xy} = & \frac{1}{n} \sum_{i = 1}^{n} x_i y_i = \\
+              = & \frac{1}{n}\left(\sum_{i: x_i = 0} y_i \cdot 0 + \sum_{ i: x_i = 1} y_i \cdot 1 \right) \\
+              = & \frac{1}{n}\sum_{i: x_i = 1} y_i \\
+              = & \frac{n_1}{n_1}\frac{1}{n} \sum_{i: x_i = 1} y_i \\
+              = & \frac{n_1}{n} \bar{y}_{1}
+\end{align*}
+$$
+
+In the last expression we use $\bar{y}_1$ to denote the sample average of the $x = 1$ group.
 
 Therefore the expression for $\hat{\beta}_1$ simplifies to:
 
@@ -443,12 +371,14 @@ $$
 \hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{\frac{n_0}{n}} \\
 $$
 
-Furthermore the average of $y$ is simply the weighted average of the two group means. Let there be $n_0$ observations with $x_i = 0$ and $n_1$ observations with $x_i = 1$.
+Furthermore, the average of $y$ is simply the weighted average of the two group means. Let there be $n_0$ observations with $x_i = 0$ and $n_1$ observations with $x_i = 1$.
 
 $$
 \overline{y} = \frac{1}{n}\left(\sum_{x_i = 0} y_i + \sum_{x_i = 0} y_i\right) \\
 \overline{y} = \frac{1}{n}\left(n_0 \overline{y}_0 + n_1 \overline{y}_1 \right)
-$$ Substituting gives us:
+$$
+
+Substituting gives us:
 
 $$
 \hat{\beta}_1 = \frac{\overline{y}_{1} - \frac{1}{n}\left(n_0 \overline{y}_0 + n_1 \overline{y}_1 \right)}{\frac{n_0}{n}} \\
@@ -457,17 +387,119 @@ $$
 When you simplify the above expression (this is left as an exercise) you will arrive at:
 
 $$
-\hat{\beta}_1 = \overline{y}_1 - \overline{y}_0
+\hat{\beta}_1 = \bar{y}_1 - \bar{y}_0
 $$ 
 
 From the equation for $\hat{\beta}_0$ we get:
 
 $$
-\hat{\beta}_0 = \overline{y} - (\overline{y}_1 - \overline{y}_0) \overline{x}
+\hat{\beta}_0 = \bar{y} - (\bar{y}_1 - \bar{y}_0) \bar{x}
 $$ 
 
-Taking into account that $\overline{x} = n_1 / n$ this equation simplifies to
+Taking into account that $\bar{x} = n_1 / n$ this equation simplifies to
 
 $$
 \hat{\beta}_0 = \overline{y}_0
+$$
+
+### What about the standard errrors?
+
+In the case of the simple ANOVA model the standard errors of both coefficients are pretty easy to derive,
+because the estimators are simply a group average ($\hat{\beta}_0$) and the difference between
+two group averages ($\hat{\beta}_1$).
+
+We can compute the variance of $\hat{beta}_0$. Note that when studying the statistical
+properties of an estimator like the OLS estimator for $\beta_0$ we treat the 
+data $y_i$ as random variables. In the following derivation we assume that 
+the $y_i$ are not correlated.
+
+$$
+\begin{align*}
+Var(\hat{\beta}_0) & = Var\left(\frac{1}{n_0}\sum_{i: x_i = 0} y_i \right) \\
+                   & = \frac{1}{n_0^2} \sum_{i: x_i = 0} Var(y_i) \\
+                   & = \frac{1}{n_0^2} \sum_{i: x_i = 0} \sigma^2 \\
+                   & = \frac{n_0 \sigma^2}{n_0^2} \\
+                   & = \frac{\sigma^2}{n_0}
+\end{align*}
+$${#eq-simple-anova-var-beta0}
+
+
+For the variance of $\hat{beta}_1$ we obtain. In the derivation we use the assumption of $y_i$ being uncorrelated and the fact
+that the variance of a difference of uncorrelated random variables equals the sum of their variances.
+
+$$
+\begin{align*}
+Var(\hat{\beta}_1) & = Var\left(\frac{1}{n_1}\sum_{i: x_i = 1} y_i - \frac{1}{n_0}\sum_{i: x_i = 0} y_i\right) \\
+                   & = Var\left(\frac{1}{n_1}\sum_{i: x_i = 1} y_i \right) + Var\left(\frac{1}{n_0}\sum_{i: x_i = 0} y_i\right) \\
+                   & = \frac{\sigma^2}{n_1} + \frac{\sigma^2}{n_0} \\
+                   & = \sigma^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)
+\end{align*}
+$${#eq-simple-anova-var-beta1}
+
+The variances of the two coefficients involve the unknown parameter $\sigma^2$.
+From the expressions for the variances you will notice that the variances
+increase in $\sigma^2$. This should make sense intuivively. $\sigma^2$ describes
+how much noise the data contains (random deviations from the regression line).
+Estimating the coefficients from noisy data will result in uncertain estimates (high variances).
+
+In order to arrive to estimates the coefficient variances we need a way to estimate
+$\sigma^2$ from the data. Here we will take a theorem from mathematical statistics
+that says that 
+
+$$
+\hat{\sigma}^2 = \frac{1}{n - p} \text{RSS}
+$${#eq-sigma-estimator}
+
+is an unbiased estimator for $\sigma$. In the above expression $n$ is the number
+of observations and $p$ is the number of coefficients in the model. RSS is the residual sum of squares [@sec-ols-intro].
+
+$$
+E\hat{\sigma}^2 = \sigma
+$$
+
+Plugging in this estimator for $\sigma^2$ into @eq-simple-anova-var-beta0 and @eq-simple-anova-var-beta1
+yields the following estimators for the variances of the model coefficients.
+
+$$
+\begin{align*}
+Var(\hat{\beta}_0) = & \frac{\hat{\sigma}^2}{n_0} \\
+Var(\hat{\beta}_1) = & \hat{\sigma}^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)
+\end{align*}
+$$
+Let us compare the two formulas with the standard errors from the `lm` output (printed here again for convinience).
+
+```{r}
+summary(fit)
+```
+
+The number of children in the two groups are $n_0 = 93$ and $n_1 = 341$. 
+The number of observations is $n = n_0 + n_1 = 434$. The number of coefficients
+in the model is $p = 2$. We can compute the RSS by extracting the residuals
+from the model fit object (for example by using the `residuals` function).
+
+```{r}
+res <- residuals(fit)
+
+sum(res ^ 2)
+```
+
+The estimate for $\sigma^2$ is therefore:
+
+$$
+\hat{\sigma}^2 = \frac{170261.2}{434 - 2} = 394.1231 \\
+\hat{\sigma} = \sqrt{\hat{\sigma}^2} = 19.85
+$$
+
+You can find last value under _residual standard error_ in the
+summary of the `lm` output above.
+
+Now let us compute the estimated variances and standard deviations of the coefficients:
+
+$$
+\begin{align*}
+Var(\hat{\beta}_0) & = \frac{\hat{\sigma}^2}{n_0} = \frac{394.1}{93} = 4.23 \\
+se(\hat{\beta}_0) & = \sqrt{Var(\hat{\beta}_0)} = \sqrt{4.23} = 2.059 \\
+Var(\hat{\beta}_1) & = \hat{\sigma}^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)  = 394.1 \left(\frac{1}{93} + \frac{1}{341}\right) = 5.39\\
+se(\hat{\beta}_1) & = \sqrt{Var(\hat{\beta}_1)} = \sqrt{5.39} = 2.32
+\end{align*}
 $$

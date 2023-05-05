@@ -11,7 +11,7 @@ book:
     - 02-Statistics-Review.qmd
     - 03-Simple-Linear-Model.qmd
     - 04-Simple-ANOVA.qmd
-    # - 05-Hypothesis-Testing-and-CI.qmd
+    - 05-Hypothesis-Testing-and-CI.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -19,6 +19,7 @@ bibliography: references.bib
 format:
   html:
     theme: cosmo
+    html-math-method: katex
   pdf:
     documentclass: scrreprt
 

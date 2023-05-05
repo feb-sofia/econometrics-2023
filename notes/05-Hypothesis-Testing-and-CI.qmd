@@ -1,3 +1,5 @@
+# Simple ANOVA: a Simulation Study {#sec-simulation-anova}
+
 ```{r setup, include=FALSE}
 ## Warning: to compile the notes you need the "bookdown" and the "broom" packages. Install them by
 ## running install.packages, see the commented lines below
@@ -12,69 +14,58 @@ kids <- read_csv(
   select(kid_score, mom_hs)
 ```
 
-# Hypothesis testing
+In the previous section we had a sample of children and tried to figure out how the (unobserved) population of children might look like. We used OLS to compute estimates for the population coefficients and tested a hypothesis about the difference of population group averages (expected values).
 
-The previous [notebook](https://github.com/feb-sofia/econometrics-2023/blob/main/04-Simple-ANOVA.rmd) discussed the linear regression model with a single (0/1) explanatory variable. The example used the `kids` dataset, see the notes from the previous class for a description.
+In the present section we will reverse the process. We will take a population (a model with known coefficients) and we will generate random samples from that population in order to see how and why the statistical machinery works. The problem that we want to research is basically: if we know the population, how does the data look like when we start selecting samples from this population.
 
-In the previous class we studied the difference between the average IQ test scores of two groups of children: the ones with a mother with a high school degree (`mom_hs = 1`), and the ones whose mothers had no high school degree (`mom_hs = 0`).
+```{mermaid}
+flowchart LR
+  A[Population] --> B(Sample 1)
+  A --> C(Sample 2)
+  A --> D(Sample R)
+  B --> B1(Compute the OLS estimates in sample 1)
+  C --> C1(Compute the OLS estimates in sample 2)
+  D --> D1(Compute the OLS estimates in sample R)
+```
 
-We saw that the linear regression model
+## The population
+
+In order to study the statistical properties of the OLS estimators $\hat{\beta}_0$ and $\hat{\beta}_1$ we will generate a large number of samples from the following model.
 
 $$
-\text{kid_score}_i \sim N(\mu_i, \sigma^2) \\
-\mu_i = \beta_0 + \beta_1 \text{mom_hs}_i \\
-$$
+\begin{align*}
+& \text{kid\_score}_i \sim N(\mu_i, \sigma^2 = 19.85^2), \quad i = 1,\ldots, n = 434 \\
+& \mu_i = 77.548 + 11.771 \text{mom\_hs}_i, \quad \text{mom\_hs} \in \{0, 1\}
+\end{align*}
+$$ {#eq-simulation-anova-model}
 
-implied the following interpretation of the regression coefficients:
+This model takes the sample of children from @sec-simple-anova for an *inspiration*. Basically, we will study a *population* that looks exactly like the sample of children in the previous example. However, the insights gained in the next sections are more general and are not tied to that specific sample.
 
-$$
-\text{mom_hs} = 1 \implies \mu_{\text{mom_hs} = 1} = \beta_0 + \beta_1 \\
-\text{mom_hs} = 0 \implies \mu_{\text{mom_hs} = 0} = \beta_0\\
-\beta_1 = \mu_{\text{mom_hs} = 1} - \mu_{\text{mom_hs} = 0}
-$$
+## Selecting the sample
 
-The intercept in the regression equation corresponds to the expected IQ score (population IQ score) of children with `mom_hs = 0`. The slope coefficient $\beta_1$ is simply the difference between expected (population) scores of the two groups.
+This section shows presents the technical part of the simulation. In each sample we need two variables: `kid_score` and `mom_hs`. In this simulation study we will fix the number of observations with `mom_hs = 0` to be exactly 93 and the number of observations with `mom_hs = 1` to be exactly 341 (as was the case in the sample of children). The total number of observations in each sample will be $93 + 341 = 434$.
 
-We used `lm` to estimate the two coefficients
+First, we construct a column `mom_hs` variables that has two possible values: 0 and 1. We set the number of zeros and ones to the observed counts of these values in the `kids` dataset (93 zeros and 341 ones). Then `expand_grid` repeated this column as many times as the number of unique values of the column `R`. This will be the number of simulated samples that we'll generate.
+
+The role of `expand_grid` is to create a large table with $200 \cdot 434 = 86,800$ rows with two variables: `R` and `mom_hs`. Our random samples will be identified by the value of the `R` column. For the first 434 rows its value will be 1, for the next 434 observations its value will be 2 and so forth. For each value of `R` the content of `mom_hs` will be identical. The first 93 observations will have `mom_hs = 0` and the next 341 observations will have `mom_hs = 1`.
+
+Open the data set `sim_grid` in the viewer by clicking on it in the global environment. Try to change the arguments (e.g. set R to 1:2) and see how the data set changes.
 
 ```{r}
-fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
-summary(fit)
+## Create a table with two columns: R and mom_hs
+sim_grid <- expand_grid(
+  R = 1:200,
+  mom_hs = rep(c(0, 1), c(93, 341))
+)
 ```
 
-and therefore obtained the estimated regression equation:
-
-$$
-\hat{\mu}_i = \hat{\beta}_0 + \hat{\beta}_1 \text{mom_hs}_i \\
-\hat{\mu}_i = 77.55 + 11.77 \text{mom_hs}_i \\
-$$
-
-The OLS estimates of the coefficients are the average IQ score in the `mom_hs = 0` group for $\beta_0$, and the difference between the group averages for $\beta_1$.
-
-It is easy to show that the OLS estimators for $\beta_0$ and $\beta_1$ are simply the.
-
-## Simulation
-
-In order to study the distribution of the OLS estimates $\hat{\beta}_0$ and $\hat{\beta}_1$ we will generate a large number of samples from the following model.
-
-```{=tex}
-\begin{align}
-y_i \sim N(\mu_i, \sigma^2 = 19.85^2), i = 1\ldots, n = 434 \\
-\mu_i = 77.548 + 11.771 \text{mom_hs}_i \\
-\end{align}
-```
-The model mimicks the sample of children that we studied in the previous class.
-
-First, we constructed a column `mom_hs` with values 0 and 1. We set the number of zeros and ones to the observed counts of these values in the `kids` dataset (93 zeros and 341 ones). Then `expand_grid` repeated this column as many times as the number of unique values of the column `R`. This will be the number of simulated samples that we'll generate.
+In the next step we will generate values for the IQ score of each child by selecting a value at random from a normal distribution. First we create a new column called `mu` according to @eq-simulation-anova-model. It will have only two different values: $77.548$ or $77.548 + 11.771 = 89.319$ depending on the value of `mom_hs`. Finally, we select a value at random from each child's IQ scores distributions. According to the model there are two distributions: both are normal distributions but have a different expected value (population average IQ for the group). The result is stored in the `kid_score` column.
 
 ```{r}
 ## Fix the random numbers generator so that you can reproduce your results
 set.seed(123)
 
-sim_coeffs <- expand_grid(
-  R = 1:200,
-  mom_hs = rep(c(0, 1), c(93, 341))
-) %>%
+sim_samples <- sim_grid %>%
   mutate(
     ## This is the model for the mean of the IQ scores
     mu = 77.548 + 11.771 * mom_hs,
@@ -83,7 +74,15 @@ sim_coeffs <- expand_grid(
     ## rnorm will take the value of mu in each row of the 
     ## data when generating random values
     kid_score = rnorm(n = n(), mean = mu, sd = 19.85)
-  ) %>%
+  )
+```
+
+## OLS estimates in each sample
+
+Now that we have the samples in the data set `sim_samples` we can compute the OLS estimates for $\beta_0$ and $\beta_1$ in each sample.
+
+```{r}
+sim_coeffs <- sim_samples %>%
   group_by(R) %>%
   ## The tidy function reformats the output of lm so that it can fit in a data frame
   do(tidy(lm(kid_score ~ 1 + mom_hs, data = .))) %>%
@@ -94,11 +93,27 @@ slopes <- sim_coeffs %>%
         filter(term == "mom_hs")
 ```
 
-First we plot the distribution of the slope estimates for each sample. In `geom_point` we add a small random value to each estimate so that we can see all the points (this is waht \`position = "jitter" does). Otherwise all estimates would lie on the x-axis.
+The last code chunk may seem a little bit complex, but is simply groups the `sim_samples` data by the sample number and then runs the `lm` function with the data in each sample. You can verify the results in `sim_coeffs` by running the `lm` function manually with the data from the first sample (of course you can choose another sample). The coefficient estimates in `sim_coeffs` are stored in a column called `estimate`. As there are two coefficients in our model, the column `term` tells you whether a row holds the estimate for the intercept $\hat{\beta}_0$ (`term == "(Intercept)"`) or the slope $\hat{\beta}_1$ (`term == "mom_hs"`).
+
+You can use the `filter` function to select only the observations in the first sample
+
+```{r}
+sample_1 <- sim_samples %>% filter(R == 1)
+```
+
+Now apply `lm` on that sample and compare the coefficient estimates with the first two values in `sim_coeffs`.
+
+```{r}
+lm(kid_score ~ 1 + mom_hs, data = sample_1)
+```
+
+## Distribution of the OLS estimates
+
+First we plot the distribution of the slope estimates for each sample. In `geom_point` we add a small random value to each estimate so that we can see all the points (this is what `position = "jitter"` does). Otherwise all estimates would lie on the x-axis and we would not be able to see the individual points.
 
 ```{r}
 #| label: fig-sim-distr-slopes
-#| fig-cap: "Sampling distribution of $\hat{\beta}_1$. Each dot represents the slope estimate in one sample. The y-axis does not present any meaningful information and it only serves to disentagly the points so that they don't overplot."
+#| fig-cap: "Sampling distribution of $\\hat{\\beta}_1$. Each dot represents the slope estimate in one sample. The red line is drawn at the population value of $\beta_1$: 11.77. The  position of the dots on the y-axis does not convey any meaningful information and it only serves to  disentagle  the points so that they don't overplot."
 
 slopes %>%
   ggplot(aes(x = estimate)) +
@@ -121,7 +136,7 @@ slopes %>%
   )
 ```
 
-The plot reveals two insights:
+The plot reveals two key insights:
 
 1.  In most of the samples the estimate was close to the the real value of $\beta_1$ (11.77)
 2.  There is a small number of samples that resulted in extreme values of the estimate, e.g. in sample 97 $\hat{\beta}_1 = 4.7$ and in sample 44 the estimated coefficient was 18.6.
@@ -132,33 +147,30 @@ We can estimate the center (expected value) of this distribution by computing th
 mean(slopes$estimate)
 ```
 
-We see that this value is very close to the real value of 11.77. This is a consequence of a property of the OLS estimator which we call *unbiasedness*.
+We see that this value is very close to the real value of 11.77. This is a consequence of a property of the OLS estimator which we call *unbiasedness* [@thm-ols-expected-value].
 
-The standard deviation of this distribution is called the *standard error* of $\hat{\beta}_1$. It describes the spread of the distribution of estimates.
-
-## Summary of the lm output
+The standard deviation of this distribution is called the *standard error* of $\hat{\beta}_1$. It describes the spread of the sampling distribution of the estimates.
 
 ```{r}
-summary(fit)
-```
-
-Standard error: this is an estimate of the standard deviation of the estimator for the coefficient based on assumption of the normal distribution in the model.
-
-The standard deviation of $\hat{\beta}_1$, computed using the simulated samples:
-
-```{r}
-## sd: standard deviation
 sd(slopes$estimate)
 ```
 
 ## Hypothesis testing
 
-We begin with a simple test of hypotheses about the population value of one of the regression coefficients. Let us start with $\beta_1$ and let us suppose that we want to test the theory that the difference between the average IQ score of the two groups *in the population* equals exactly 11.77. Notice that this is the value of $\beta_1$ that we used in the simulation, so this theory is right. We also want to test this theory against the alternative that the difference between the average IQ scores is less than 11.77.
+In @sec-simple-anova we tested the hypothesis that $\beta_1 = 0$ vs $\beta_1 \neq 0$ and
+talked about a t-statistic, a t-distribution and about critical values derived from that
+distribution. In the present section our goal is to demystify all these words.
+
+We begin with a simple test of hypotheses about the population value of one of the regression coefficients. Let us start with $\beta_1$ and let us suppose that we want to test the theory that the difference between the average IQ score of the two groups *in the population* equals exactly 11.77. Notice that this is the value of $\beta_1$ that we used in the simulation, so this theory is correct. We also want to test this theory against the alternative that the difference between the average IQ scores is less than 11.77.
+
+### Testing a true null hypothesis
 
 $$
 H_0: \beta_1 = 11.77\\
 H_1: \beta_1 < 11.77
-$$ The mathematical statistics informs us how to summarize the data so that we can make a decision whether to reject the null hypothesis. The t-statistic is the summary that we need for this test. In general it is the difference between the estimate for $\beta_1$ and the value under the null hypothesis divided by the standard error of the estimate.
+$$
+
+The mathematical statistics informs us how to summarize the data so that we can make a decision whether to reject the null hypothesis. The t-statistic is the summary that we need for this test. In general it is the difference between the estimate for $\beta_1$ and the value under the null hypothesis divided by the standard error of the estimate.
 
 $$
 t = \frac{\hat{\beta}_1 - \beta_1^{H_o}}{se(\hat{\beta}_1)}
@@ -186,6 +198,9 @@ slopes <- slopes %>%
 ```
 
 ```{r}
+#| label: fig-sim-t-statistic-right
+#| fig-cap: "Distribution of the t-statistic when the null hypothesis is correct."
+
 slopes %>%
   ggplot(aes(x = t_statistic)) +
   geom_point(
@@ -209,7 +224,7 @@ slopes %>%
 #  xlim(c(0, 21))
 ```
 
-The real coefficient equals 11.77 (it is known, because we choose it for the simulation).
+The real coefficient equals 11.77 (it is known, because _we_ choose it for the simulation).
 
 Let's assume a rule that we reject the null hypothesis $H_0: \beta_1 = 0$ vs. $H_1: \beta_1 \neq 0$ if the value of the t-statistic is less than -2 or greater than +2.
 
@@ -232,7 +247,7 @@ sum(testing_1$wrong_decision_red)
 mean(testing_1$wrong_decision_red)
 ```
 
-## Hypothesis testing
+### Testing a wrong null hypothesis
 
 $$
 H_0: \beta_1 = 0\\
