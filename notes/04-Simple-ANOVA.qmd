@@ -313,7 +313,7 @@ One description of that uncertainty is the (estimated) standard error of the est
 for the regression coefficient.
 
 One way to construct a confidence interval for the coefficients is to invert the
-two-sided t-test (more details in the next section [-@sec-simulation-anova]).
+two-sided t-test (see @sec-sim-ci for more details).
 
 We will use the critical values of the t-test at the 95 percent significance 
 level to obtain an confidence interval (CI) with a 95 percent coverage probability:

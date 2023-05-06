@@ -113,7 +113,9 @@ First we plot the distribution of the slope estimates for each sample. In `geom_
 
 ```{r}
 #| label: fig-sim-distr-slopes
-#| fig-cap: "Sampling distribution of $\hat{\beta}_1$. Each dot represents the slope estimate in one sample. The red line is drawn at the population value of $\beta_1$: 11.77. The  position of the dots on the y-axis does not convey any meaningful information and it only serves to  disentagle  the points so that they don't overplot."
+#| fig-cap: "Sampling distribution of $\\hat{\\beta}_1$. Each dot represents the slope estimate in one sample."
+
+# The red line is drawn at the population value of $\beta_1$: 11.77. The  position of the dots on the y-axis does not convey any meaningful information and it only serves to  disentangle  the points so that they don't overplot.
 
 slopes %>%
   ggplot(aes(x = estimate)) +
@@ -668,8 +670,7 @@ $$
 H_0: \beta_1 \geq 0 \\
 H_1: \beta_1 < 0
 $$
-For this alternative extreme values of the t-statistic are large (in absolute value) negative values.
-Therefore the p-value of the test is 
+For this alternative extreme values of the t-statistic are large (in absolute value) negative values. Therefore the p-value of the test is 
 
 $$
 P(t < \text{t-statistic}^{obs} | H_0)
@@ -714,7 +715,9 @@ $$
 \text{p-value} = P(|t| > |\text{t-statistic}^{obs}| |H_0)
 $$
 
-## Confidence intervals
+
+
+## Confidence intervals {#sec-sim-ci}
 
 From the distribution of the t-statistic we can see that
 
@@ -723,15 +726,15 @@ $$
 $$
 
 Therefore the probability to observed a value of the t-statistic in the
-interval [$t_{\alpha / 2}(n - p)$, $t_{1 - \alpha / 2}$] is 95%.
+interval [$t_{\alpha / 2}(n - p)$, $t_{1 - \alpha / 2}$] is $1 - \alpha$.
 
 $$
-P\left(t_{\alpha / 2}(n - p) < \frac{\hat{\beta}_1 - \beta_1}{se(\hat{\beta}_1)} < t_{1 - \alpha / 2}\right) \implies \\
-P\left(\hat{\beta_1} + se(\hat{\beta}_1) t_{\alpha/2} < \beta_1 < \hat{\beta_1} + se(\hat{\beta}_1) t_{1 - \alpha/2} \right)
+P\left(t_{\alpha / 2}(n - p) < \frac{\hat{\beta}_1 - \beta_1}{se(\hat{\beta}_1)} < t_{1 - \alpha / 2}(n - p)\right) = \\
+P\left(\hat{\beta_1} + se(\hat{\beta}_1) t_{\alpha/2}(n - p) < \beta_1 < \hat{\beta_1} + se(\hat{\beta}_1) t_{1 - \alpha/2}(n - p) \right) = 1 - \alpha
 $$ 
 
 Compute the upper and the lower bounds of the confidence intervals
-for each sample. In how many samples did the confidence interval contain
+for each sample in the simulation with a coverage probability of $1 - \alpha = 0.9$. In how many samples did the confidence interval contain
 the real coefficient $\beta_1$?
 
 ```{r}
@@ -739,8 +742,64 @@ slopes <- slopes %>%
   mutate(
     CI_lower = estimate + std.error * qt(0.1 / 2, df = 434 - 2),
     CI_upper = estimate + std.error * qt(1 - 0.1 / 2, df = 434 - 2),
-    beta1_in_CI = CI_lower < 11.7 & 11.7 < CI_upper
+    ## Construct a new variables that is TRUE/FALSE if the
+    ## true value of beta_1 (11.77) is inside the confidence interval
+    beta1_in_CI = CI_lower < 11.77 & 11.77 < CI_upper
   )
+```
 
+```{r}
+sum(slopes$beta1_in_CI)
 mean(slopes$beta1_in_CI)
 ```
+
+The CI contained the true value of $\beta_1$ in 178 out of 200 samples (89 percent). 
+This is quite close to the coverage probability $1 - \alpha = 0.9$ The CI that we
+constructed above are visualized in @fig-sim-ci. For the sake of clarity the plot is
+limited to the first 50 samples. Confidence intervals that do not
+contain the true value of $\beta_1$ are show in red. Notice that the boundaries differ
+from sample to sample (as to the coefficient estimates).
+
+
+```{r}
+#| label: fig-sim-ci
+#| fig-cap: "Confidence intervals for the first 50 samples. The vertical line is drawn at 11.77 (the real value of $\\beta_1$)."
+
+slopes %>%
+  ungroup() %>%
+  slice_head(n = 50) %>%
+  ggplot(
+    aes(
+      x = estimate, 
+      y = factor(R),
+      xmin = CI_lower,
+      xmax = CI_upper,
+      color = beta1_in_CI
+    )
+  ) + 
+  geom_point() + 
+  geom_errorbarh() + 
+  labs(
+    x = "",
+    y = "Sample",
+    color = "Beta1 in CI"
+  ) + 
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+  ) + 
+  geom_vline(
+    xintercept = 11.77
+  )
+```
+
+```{r}
+dt <- tibble(
+  x = 1:10,
+  y = rnorm(10, mean = 2 + 0.3 * x, sd = 0.5)
+)
+
+fit <- lm(y ~ 0 + x, data = dt)
+sum(residuals(fit))
+```
+

@@ -872,6 +872,12 @@ The sum of cross-products can be decomposed in the following way
 $$
 \sum_{i = 1}^n (x_i - \bar{x})(y_i - \bar{y}) = n(\overline{xy} - \bar{x} \bar{y})
 $$
+Therefore, the covariance of $x$ and $y$ is equal to
+
+$$
+Cov(x, y) = \frac{n}{(n - 1)}(\overline{xy} - \bar{x}\bar{y})
+$$
+
 :::
 ::: {.proof}
 $$
@@ -881,7 +887,7 @@ $$
 \end{align*}
 $$
 
-:::{#thm-covar-decomp}
+:::{#thm-var-decomp}
 
 ## Variance decomposition
 
@@ -895,9 +901,15 @@ The sum of squares can be decomposed as follows
 $$
 \sum_{i = 1}^n (x_i - \bar{x})^2 = n(\overline{x^2} - \bar{x}^2)
 $$
+
+The empirical variance is therefore equal to 
+
+$$
+S^2_{x} = \frac{n}{n - 1}(\overline{x^2} - \bar{x}^2)
+$$
 :::
-:::{.poof}
-Take the expression for the sum of cross-products from @them-covar-decomp and set $y_i$ = $x_i$:
+:::{.proof}
+Take the expression for the sum of cross-products from @thm-covar-decomp and set $y_i$ = $x_i$:
 
 $$
 \begin{align*}
@@ -1041,9 +1053,10 @@ $$
 :::
 
 :::{#thm-residuals-ols-zero}
+
 ## Zero sum of residuals
 
-The residuals in the linear model sum to zero if the model includes a constant.
+The residuals in the linear model sum to zero _if the model includes a constant_.
 
 $$
 \sum_{i = 1}^{n} r_i = 0
@@ -1060,7 +1073,27 @@ $$
                      & = 0
 \end{align*}
 $$
+You can verify this property with a quick example.
 
+```{r}
+## Create some data
+dt <- tibble(
+  x = 1:10,
+  y = rnorm(10, mean = 2 + 0.5 * x, sd = 0.5)
+)
+
+## Fit a model including a constant (this is the 1 in the formula)
+fit_with_constant <- lm(y ~ 1 + x, data = dt)
+sum(residuals(fit_with_constant))
+```
+
+Suppressing the constant in the model results in a non-zero sum of the residuals.
+
+```{r}
+## The 0 in the formula removes the constant
+fit_without_constant <- lm(y ~ 0 + x, data = dt)
+sum(residuals(fit_without_constant))
+```
 :::
 
 :::{#thm-residuals-ols-zero}
@@ -1086,5 +1119,12 @@ $$
                          & = 0.
 \end{align*}
 $$
+
+You can check this property with test data that we used above.
+
+```{r}
+sum(dt$x * residuals(fit_with_constant))
+```
+
 :::
 
