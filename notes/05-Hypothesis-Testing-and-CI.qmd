@@ -113,7 +113,7 @@ First we plot the distribution of the slope estimates for each sample. In `geom_
 
 ```{r}
 #| label: fig-sim-distr-slopes
-#| fig-cap: "Sampling distribution of $\\hat{\\beta}_1$. Each dot represents the slope estimate in one sample. The red line is drawn at the population value of $\beta_1$: 11.77. The  position of the dots on the y-axis does not convey any meaningful information and it only serves to  disentagle  the points so that they don't overplot."
+#| fig-cap: "Sampling distribution of $\hat{\beta}_1$. Each dot represents the slope estimate in one sample. The red line is drawn at the population value of $\beta_1$: 11.77. The  position of the dots on the y-axis does not convey any meaningful information and it only serves to  disentagle  the points so that they don't overplot."
 
 slopes %>%
   ggplot(aes(x = estimate)) +
@@ -136,10 +136,11 @@ slopes %>%
   )
 ```
 
-The plot reveals two key insights:
+The plot reveals three key insights:
 
-1.  In most of the samples the estimate was close to the the real value of $\beta_1$ (11.77)
-2.  There is a small number of samples that resulted in extreme values of the estimate, e.g. in sample 97 $\hat{\beta}_1 = 4.7$ and in sample 44 the estimated coefficient was 18.6.
+1. The estimates for the slope ($\beta_1$) vary from sample to sample
+2. In most of the samples the estimate was close to the the real value of $\beta_1$ (11.77)
+3. There is a small number of samples that resulted in extreme values of the estimate, e.g. in sample 97 $\hat{\beta}_1 = 4.7$ and in sample 44 the estimated coefficient was 18.6.
 
 We can estimate the center (expected value) of this distribution by computing the mean estimate (i.e. the average estimate over all generated samples).
 
@@ -147,7 +148,8 @@ We can estimate the center (expected value) of this distribution by computing th
 mean(slopes$estimate)
 ```
 
-We see that this value is very close to the real value of 11.77. This is a consequence of a property of the OLS estimator which we call *unbiasedness* [@thm-ols-expected-value].
+We see that this value is very close to the real value of 11.77. This is a consequence of a property of the OLS estimator which we call *unbiasedness* [@thm-ols-expected-value]. The average estimate computed above
+estimates the expected value of the distribution of $\hat{\beta}_1$: $E\hat{\beta}_1$.
 
 The standard deviation of this distribution is called the *standard error* of $\hat{\beta}_1$. It describes the spread of the sampling distribution of the estimates.
 
@@ -163,32 +165,38 @@ distribution. In the present section our goal is to demystify all these words.
 
 We begin with a simple test of hypotheses about the population value of one of the regression coefficients. Let us start with $\beta_1$ and let us suppose that we want to test the theory that the difference between the average IQ score of the two groups *in the population* equals exactly 11.77. Notice that this is the value of $\beta_1$ that we used in the simulation, so this theory is correct. We also want to test this theory against the alternative that the difference between the average IQ scores is less than 11.77.
 
-### Testing a true null hypothesis
+### Testing a true null hypothesis {#sec-testing-true-h0}
 
 $$
-H_0: \beta_1 = 11.77\\
+H_0: \beta_1 \geq 11.77\\
 H_1: \beta_1 < 11.77
-$$
+$${#eq-hypothesis-true-one-sided}
 
 The mathematical statistics informs us how to summarize the data so that we can make a decision whether to reject the null hypothesis. The t-statistic is the summary that we need for this test. In general it is the difference between the estimate for $\beta_1$ and the value under the null hypothesis divided by the standard error of the estimate.
 
 $$
-t = \frac{\hat{\beta}_1 - \beta_1^{H_o}}{se(\hat{\beta}_1)}
+\text{t-statistic} = \frac{\hat{\beta}_1 - \beta_1^{H_o}}{se(\hat{\beta}_1)}
 $$
 
 In our case the value of $\beta_1$ under the null hypothesis is $11.77$ so the test statistic becomes:
 
 $$
-t = \frac{\hat{\beta}_1 - 11.77}{se(\hat{\beta}_1)}.
+\text{t-statistic} = \frac{\hat{\beta}_1 - 11.77}{se(\hat{\beta}_1)}.
 $$
 
-From the distribution of $\beta_1$ in
+Notice that this statistic can be large (far away from zero) in two cases:
 
-When is the value of the t-statistic close to zero? 1. The estimate is close to the value under the null hypothesis. 2. For high values of the standard error
+1. The null hypothesis is not true. As we have seen in @fig-sim-distr-slopes, the estimates $\hat{\beta}_1$ vary
+around the true value of $\beta_1$ and this behavior _does not depend on the hypothesis_ that we are testing.
+2. Large values of the t-statistic can happen by chance alone, even if the null hypothesis is true. Such
+  large values occur more often (in more samples) when the distribution of $\hat{\beta}_1$ has a high standard
+  deviation.
 
-$$
-t = \frac{11.77 - 11.77}{2.322} = 0
-$$
+
+Let us compute the t-statistic for the hypothesis pair in [-@eq-hypothesis-true-one-sided].
+In the data set `slopes` the column `estimate` holds the estimated $\beta_1$, the (estimate)
+standard error is in the column `std.error`. @fig-sim-t-statistic-h0-true shows the distribution
+of the t-statistics in our simulated samples.
 
 ```{r}
 slopes <- slopes %>%
@@ -198,7 +206,7 @@ slopes <- slopes %>%
 ```
 
 ```{r}
-#| label: fig-sim-t-statistic-right
+#| label: fig-sim-t-statistic-h0-true
 #| fig-cap: "Distribution of the t-statistic when the null hypothesis is correct."
 
 slopes %>%
@@ -217,64 +225,80 @@ slopes %>%
   ) +
   geom_density(color = "steelblue") +
   geom_vline(xintercept = 0, color = "red") +
-  geom_vline(xintercept = c(-2, 2), color = "steelblue", lty = 2) +
-  geom_vline(xintercept = c(-3, 3), color = "firebrick", lty = 2) +
+  geom_vline(xintercept = c(-2), color = "steelblue", lty = 2) +
+  geom_vline(xintercept = c(-3), color = "firebrick", lty = 2) +
   xlim(c(-4, 8)) +
-  scale_x_continuous(breaks = c(-3, -2, 0, 2, 3))
-#  xlim(c(0, 21))
+  scale_x_continuous(breaks = c(-3, -2, 0))
 ```
 
-The real coefficient equals 11.77 (it is known, because _we_ choose it for the simulation).
+We should see two things in @fig-sim-t-statistic-h0-true. 
 
-Let's assume a rule that we reject the null hypothesis $H_0: \beta_1 = 0$ vs. $H_1: \beta_1 \neq 0$ if the value of the t-statistic is less than -2 or greater than +2.
+1. First, the t-statistic is different in each sample, even though all samples come from one and the same population (model).
+2. The center of the distribution is close to zero. We should have expected this, because
+we know that the null hypothesis in [-@eq-hypothesis-true-one-sided] is true.
+3. In some samples the t-statistic has large negative values. In one sample it is 
+even less than -3.
 
-In how many samples will we wrongly reject the null hypothesis using this rule?
 
+For the hypothesis pair in [-@eq-hypothesis-true-one-sided], large negative
+values of the t-statistic are consistent with the alternative. Small values close
+to zero are consistent with the null hypothesis. However, we can see in 
+@fig-sim-t-statistic-h0-true that large negative values of the t-statistic
+can happen by pure change chance even under a true null hypothesis. Because
+such extreme values can occur by chance, any decision rule that rejects the null
+hypothesis for t-statistics lower than some threshold will inevitably produce
+wrong decision (rejection of the null hypothesis even if it is true).
+
+Let us study the two decision rules depicted as vertical dashed lines in @fig-sim-t-statistic-h0-true.
+The first rule (blue) rejects the null hypothesis in samples with a t-statistic
+less than -2. The second decision rule rejects the null hypothesis for t-statistics less than -3.
+
+
+In the simulation we can simply count the number of samples where we will 
+make a wrong decision to reject the null hypothesis (remember, in this example $H_0$ is true).
+ 
 ```{r}
-testing_1 <- slopes %>%
+slopes <- slopes %>%
   mutate(
-    ## Logical OR: |
-    wrong_decision_blue = t_statistic < -2 | t_statistic > 2,
-    wrong_decision_red = t_statistic < -3 | t_statistic > 3
+    wrong_decision_blue = t_statistic < -2,
+    wrong_decision_red = t_statistic < -3
   )
 
 ## Share of TRUE values (blue)
-sum(testing_1$wrong_decision_blue)
-mean(testing_1$wrong_decision_blue)
+sum(slopes$wrong_decision_blue)
+mean(slopes$wrong_decision_blue)
 
 ## Share of TRUE values (red)
-sum(testing_1$wrong_decision_red)
-mean(testing_1$wrong_decision_red)
+sum(slopes$wrong_decision_red)
+mean(slopes$wrong_decision_red)
 ```
 
-### Testing a wrong null hypothesis
+The "less than -2" rule makes a wrong decision in 7 out of 200 samples (3.5 percent). The
+"less than -3" rule makes a wrong decision in 2 out of 200 samples (one percent).
+
+### Testing a wrong null hypothesis {#sec-testing-wrong-h0}
+
+Now that we've seen the distribution of the t-statistic under a true null
+hypothesis, let's now examine its distribution under a wrong null hypothesis.
+
+The following hypothesis is wrong in our simulation (because the real $\beta_1 = 11.77$).
 
 $$
-H_0: \beta_1 = 0\\
-H_1: \beta_1 \neq 0
-$$
+H_0: \beta_1 \leq 0\\
+H_1: \beta_1 > 0
+$${#eq-null-wrong}
 
-$$
-y_i = \beta_0 + \beta_1 x_i + u_i
-$$
+We use the same statistic for testing this hypothesis. The only difference now
+is that the alternative is in the other direction. Therefore we would reject
+for large positive values of the t-statistic.
 
-If $H_0$ is true, the model is simply
-
-$$
-y_i = \beta_0 + u_i
-$$
-
-t-test
 
 $$
 \text{t-statistic} = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)}
-$$ The value of the t-statistic is small when the estimate for the coefficient is close to the value under the null hypothesis. The value of the t-statistic will be small, if the standard error of the estimator is high.
+$${#eq-t-statistic-h0-wrong} 
 
-$$
-t = \frac{11.77 - 0}{2.322} = 5.069
-$$
-
-Compute the value of the t-statistic for all samples in the simulation (and compare it to the value of the `statistic` column in the `sim_coef` dataset)
+We will compute the t-statistic in [-@eq-t-statistic-h0-wrong] for each sample
+and will visualize its distribution in @fig-t-statistic-h0-false.
 
 ```{r}
 slopes <- slopes %>%
@@ -284,6 +308,9 @@ slopes <- slopes %>%
 ```
 
 ```{r}
+#| label: fig-t-statistic-h0-false
+#| fig-cap: "Distribution of the t-statistic under the (wrong) null hypothesis $\beta_1 = 0$."
+
 slopes %>%
   ggplot(aes(x = t_statistic0)) +
   geom_point(
@@ -294,134 +321,426 @@ slopes %>%
   ) +
   geom_boxplot(alpha = 0.5) +
   labs(
-    x = "Value of the t-statistic",
-    title = "Distribution of t-statistic, beta_1 = 0 (false)",
-    y = ""
+    x = "t-statistic",
+    y = "Density"
   ) +
   geom_density(color = "steelblue") +
   geom_vline(xintercept = 0, color = "red") +
-  geom_vline(xintercept = c(-2, 2), color = "steelblue", lty = 2) +
-  geom_vline(xintercept = c(-3, 3), color = "firebrick", lty = 2) +
+  geom_vline(xintercept = c(2), color = "steelblue", lty = 2) +
+  geom_vline(xintercept = c(3), color = "firebrick", lty = 2) +
   xlim(c(-4, 8)) +
-  scale_x_continuous(breaks = c(-3, -2, 0, 2, 3))
+  scale_x_continuous(breaks = c(0, 2, 3))
 ```
+
+Notice that the center of the distribution of the t-statistic is no longer close
+to zero. This happens because the null hypothesis is wrong in this example.
+
+Let us consider two decision rules for rejecting $H_0$. The first one 
+rejects for t-statistics larger than 2, the other one rejects for t-statistics
+larger than 3.
+
+We can count the number of samples where these two rules lead to wrong decisions.
+A wrong decision in this case is the non-rejection of the null hypothesis.
 
 ```{r}
-testing_2 <- slopes %>%
+slopes <- slopes %>%
   mutate(
-    ## Logical AND: &
-    wrong_decision_blue = t_statistic0 < 2 & t_statistic0 > -2,
-    wrong_decision_red = t_statistic0 < 3 & t_statistic0 > -3
+    ## A wrong decision here is to not-reject the null
+    wrong_decision_blue_1 = t_statistic0 < 2,
+    wrong_decision_red_1 = t_statistic0 < 3
   )
+
+## Number of TRUE values
+sum(slopes$wrong_decision_blue_1)
+sum(slopes$wrong_decision_red_1)
+
 ## Share of TRUE values
-mean(testing_2$wrong_decision_blue)
-mean(testing_2$wrong_decision_red)
+mean(slopes$wrong_decision_blue_1)
+mean(slopes$wrong_decision_red_1)
 ```
 
-## How to choose critical values?
+The rejection rule "greater than 2" rejected the null hypothesis in all samples.
+The rejection rul "greater than 3" failed to reject the null hypothesis in 8
+out of 200 samples (four percent).
 
-Convention: choose the critical values so that the probability of rejecting a true null hypothesis is 5%.
+## The t-distribution
 
-# t-distribution
+The mathematical statistics provides us with a theorem that states that under
+certain conditions (we will talk more about these assumptions) the t-statistic
+follows a (central) t-distribution with degrees of freedom equal to $n - p$ where
+$n$ is the number of observations in the sample and $p$ is the number of 
+model coefficients (betas) in the model.
+
+The t-distributions relevant for us have zero mean and the variance determined
+by the the parameter of the distribution (the degrees of freedom). T-distributions
+with low degrees of freedom place less probability at the center (zero) and more
+in the tails of the distribution (extreme values far away from the center) [@fig-t-distribution-df].
+
+```{r}
+#| label: fig-t-distribution-df
+#| fig-cap: "Densities of t-distributions with different degrees of freedom."
+
+dt <- expand_grid(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 200),
+  df = c(1, 5, 50, 500)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = df),
+    df = factor(df)
+  )
+
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens, colour = df))
+```
+
+Knowing the distribution of the test statistic under the null hypothesis (if it is true) allows
+us to derive critical values (boundaries for the rejection rules) for the tests. These critical
+values depend on the type of the alternative in the test.
+
+For a hypothesis pair of the type considered in @sec-testing-true-h0 we reject for
+negative values ot the t-statistic.
 
 $$
-y_i = \beta_0 + \beta_1 x_i + u_i
-$$
+H_0: \beta_1 \geq \beta_1^{H_0}\\
+H_1: \beta_1 < \beta_1^{H_0}
+$${#eq-alternative-one-sided-left}
 
-Under some assumptions it can be shown that under the null hypothesis (this simply means that we assume the null hypothesis is true)
-
-$$
-H_0: \beta_1 = \beta_{H_0}\\
-H_1: \beta_1 \neq \beta_{H_0}\\
-$$
-
-$$
-\text{t-statistic} = \frac{\hat{\beta_1} -  \beta_{H_0}}{SE(\hat{\beta}_1)}
-$$
-
-$$
-\text{t-statistic} \underbrace{\sim}_{H_0} t(\text{df} = n - p)
-$$
-
-The t-statistic follow a t-distribution with $n - p$ degrees of freedom (parameter of the distribution), where $n$ is the number of observations in the linear model (in our example $n = 434$ kids) and $p$ is the number of coefficients in the linear equation. In our linear regression model the number of coefficients in $p = 2$: the intercept $\beta_0$, and the slope coefficient $\beta_1$.
-
-## Probabilities and quantiles of the t-distribution
+We want to choose the critical value that meets a predetermined probability of wrong
+rejection of a true null hypothesis.
 
 ```{r, echo = FALSE}
+#| label: fig-critical-value-left
+#| fig-cap: "Critical value for a one-sided alternative (left)."
+
 dt <- data.frame(
   ## Creates a sequence of 100 numbers between -3 and 3
-  x = seq(-4, 4, length.out = 100)
+  x = seq(-4, 4, length.out = 2000)
 ) %>%
   mutate(
     ## Computes the standard normal density at each of the 100 points in x
     t_dens = dt(x, df = 434 - 2)
   )
+
 ggplot() +
   ## Draws the normal density line
   geom_line(data = dt, aes(x = x, y = t_dens)) +
   ## Draws the shaded area under the curve between
   ## -1 and 1
   geom_ribbon(
-    data = filter(dt, x > -1.96, x < 1.96),
+    data = filter(dt, x < -1.64),
     aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
     ## Controls the transparency of the area
     alpha = 0.5
   ) +
+  labs(
+    x = "t-statistic",
+    y = "Density"
+  ) +
   annotate(
     "text",
-    x = 0,
-    y = dnorm(0) / 3,
-    label = paste("Pr(-1.96 < X < 1.96) = ", round(pt(-1.96, df = 434 - 2) - pt(1.96, df = 434 - 2), 2), sep = " ")
-  ) +
-  geom_vline(xintercept = c(-1.96, 1.96), lty = 2, colour = "steelblue") +
+    x = -3.2,
+    y = dnorm(0) / 6,
+    label = latex2exp::TeX("$P(t < t_{\\alpha}(n - p)) = \\alpha$"),
+    parse = TRUE
+  ) + 
+  geom_vline(xintercept = c(-1.64), lty = 2, colour = "steelblue") +
   # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
-  scale_x_continuous(breaks = c(-1.96, 0, 1.96))
+  scale_x_continuous(breaks = c(-1.64, 0), labels = c(latex2exp::TeX("$t_{\\alpha}(n - p)$"), "0"))
 ```
 
-### Probability
+If we choose the error probability to be $\alpha$, then the critical value for the
+one-sided alternative in [-@eq-alternative-one-sided-left] is the $\alpha$ quantile
+of the t-distribution. We write $t_{\alpha}(n - p)$ to denote this quantile.
+
+In the simulation we had sample sizes $n = 434$ and two coefficients in the model
+($\beta_0, \beta_1$), therefore $p = 2$. Let $\alpha = 0.05$. We can compute
+the quantile using the `qt` function.
 
 ```{r}
-# p: probability, t: t-distribution
-pt(-2, df = 434 - 2)
+qt(0.05, df = 434 - 2)
+```
+
+The 0.05 quantile of a t-distribution with $432$ degrees of freedom is $t_{0.05}(432) = -1.64$. Therefore
+the probability to observe samples with a t-statistic less than -1.64 (under a true) null
+hypothesis is 0.05.
+
+
+Lets consider another alternative.
+
+
+$$
+H_0: \beta_1 \leq \beta_{H_0}\\
+H_1: \beta_1 > \beta_{H_0}
+$$
+
+The t-statistic is the same as in the previous test. This time we reject for 
+t-statistics that are large (and positive), because these are the values
+expected under the alternative.
+
+```{r, echo = FALSE}
+#| label: fig-critical-value-right
+#| fig-cap: "Critical value for a one-sided alternative (right)."
+
+dt <- data.frame(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 2000)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = 434 - 2)
+  )
+
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens)) +
+  ## Draws the shaded area under the curve between
+  ## -1 and 1
+  geom_ribbon(
+    data = filter(dt, x > 1.64),
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) +
+  labs(
+    x = "t-statistic",
+    y = "Density"
+  ) +
+  annotate(
+    "text",
+    x = 3.2,
+    y = dnorm(0) / 6,
+    label = latex2exp::TeX("$P(t > t_{1 - \\alpha}(n - p)) = \\alpha$"),
+    parse = TRUE
+  ) + 
+  geom_vline(xintercept = c(1.64), lty = 2, colour = "steelblue") +
+  # geom_density(data = slopes, aes(x = t_statistic), color = "steelblue4") +
+  scale_x_continuous(breaks = c(0, 1.64), labels = c("0", latex2exp::TeX("$t_{1 - \\alpha}(n - p)$")))
+```
+
+This time the critical value of the $1 - \alpha$ quantile of the t-distribution.
+
+For $df = 432$ and $\alpha = 0.05$ this quantile is $t_{0.95}(432) = 1.64$.
+
+```{r}
+qt(1 - 0.05, df = 434 - 2)
+```
+
+Due to the symmetry of the t-distribution it is equal to the $0.05$ quantile
+in absolute value.
+
+Finally, let us consider a two sided alternative.
+
+$$
+H_0: \beta_1 = \beta_1^{H_0} \\
+H_1: \beta_1 \neq \beta_1^{H_0}
+$$
+
+In this test we would reject $H_0$ both for very large positive values and for
+large (in absolute value) negative values of the t-statistic. Again, we can 
+obtain the critical values from the t-distribution. Because we reject for
+both positive and negative values, we choose the critical value so that the _total_
+probability of t-statistics greater than the upper and less than the lower
+critical value is $\alpha$.
+
+
+```{r, echo = FALSE}
+#| label: fig-critical-value-two-sided
+#| fig-cap: "Critical values for a two-sided alternative."
+
+dt <- data.frame(
+  ## Creates a sequence of 100 numbers between -3 and 3
+  x = seq(-4, 4, length.out = 2000)
+) %>%
+  mutate(
+    ## Computes the standard normal density at each of the 100 points in x
+    t_dens = dt(x, df = 434 - 2)
+  )
+
+ggplot() +
+  ## Draws the normal density line
+  geom_line(data = dt, aes(x = x, y = t_dens)) +
+  ## Draws the shaded area under the curve between
+  ## -1 and 1
+  geom_ribbon(
+    data = filter(dt, x > 1.64),
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) +
+  geom_ribbon(
+    data = filter(dt, x < -1.64),
+    aes(x = x, y = t_dens, ymin = 0, ymax = t_dens),
+    ## Controls the transparency of the area
+    alpha = 0.5
+  ) +
+  labs(
+    x = "t-statistic",
+    y = "Density"
+  ) +
+  annotate(
+    "text",
+    x = -3.2,
+    y = dnorm(0) / 6,
+    label = latex2exp::TeX("$P(t < t_{\\alpha / 2}(n - p)) = \\alpha / 2$"),
+    parse = TRUE
+  ) + 
+  annotate(
+    "text",
+    x = 3.2,
+    y = dnorm(0) / 6,
+    label = latex2exp::TeX("$P(t > t_{1 - \\alpha / 2}(n - p)) = \\alpha / 2$"),
+    parse = TRUE
+  ) + 
+  geom_vline(xintercept = c(-1.64, 1.64), lty = 2, colour = "steelblue") +
+  scale_x_continuous(
+    breaks = c(-1.64, 0, 1.64), 
+    labels = c(
+      latex2exp::TeX("$t_{\\alpha / 2}(n - p)$"),
+      "0", 
+      latex2exp::TeX("$t_{1 - \\alpha / 2}(n - p)$")
+    )
+  )
 ```
 
 ```{r}
-rt(1, df = 434 - 2)
+qt(0.05 / 2, df = 434 - 2)
+qt(1 - 0.05 / 2, df = 434 - 2)
 ```
+
+
+For $df = 432$ and $\alpha = 0.05$ the critical values are $t_{0.05 / 2}(432) = -1.96$ 
+and $t_{1 - 0.05 / 2}(432) = 1.96$. Due to the symmetry of the t-distribution these
+critical values are equal in absolute value.
+
+### The p-value
+
+Another way to decide whether to reject a null hypothesis or not is to compute
+the p-value of the test. The p-value is conditional the probability (under the null
+hypothesis) to see samples with a t-statistic that is even more extreme than the 
+one observed in a sample. How the p-value is calculated depends on the alternative
+in the test.
+
+Let us take the example with the children from @sec-simple-anova. For convenience
+we print here again the output from `summary`.
 
 ```{r}
-# r: random, t: t-distribution
-mean(rt(1000000, df = 434 - 2) < -2)
-# mean(rt(1000000, df = 2) < -2)
+summary(lm(kid_score ~ 1 + mom_hs, data = kids))
 ```
 
-### Quantiles
+Now we consider three null-hypotehsis and alternative pairs.
+
+$$
+H_0: \beta_1 \leq 0 \\
+H_0: \beta_1 > 0
+$$
+The sample value of the t-statistic is
+
+$$
+\frac{11.77 - 0}{2.3} \approx 5.1
+$$
+
+For this alternative extreme (consistent with the alternative) values of the t-statistic are large positive values.
+Therefore the p-value of this test is
+
+$$
+P(t > \text{t-statistic}^{obs} | H_0)
+$$
+The notation $\text{t-statistic}^{obs}$ refers to the value of the statistic
+in the sample (5.1). If $H_0$ is true, i.e. $\beta_1 = 0$ we know that the 
+t-statistic follows a t-distribution with $df = 432$. We can compute the 
+probability of samples with t-statistics less than 5.1 using the `pt` function.
 
 ```{r}
-## q: quantile, t: t-distribution
-qt(p = 0.02306292, df = 434 - 2)
+1 - pt(5.1, df = 434 - 2)
 ```
 
-## Critical values in t-tests
+This probability is equal to about 2.5 out of 10 million. This means that
+samples with a t-statistic greater than the one observed (5.1) are extremely
+rare. Either we have been extremely lucky to select a very rare sample or the
+null hypothesis is wrong.
+
+Let us now consider the other one-sided alternative
+
+$$
+H_0: \beta_1 \geq 0 \\
+H_1: \beta_1 < 0
+$$
+For this alternative extreme values of the t-statistic are large (in absolute value) negative values.
+Therefore the p-value of the test is 
+
+$$
+P(t < \text{t-statistic}^{obs} | H_0)
+$$
+We can compute this probability using `pt`.
 
 ```{r}
-# 0.025 quantile of the t-distribution with 2 degrees of freedom
-qt(0.025, df = 434 - 2)
+pt(5.1, df = 434 -2)
 ```
+
+This p-value is close to one, implying that under the null hypothesis almost all samples 
+would have a t-statistic less than 5.1.
+
+
+Finally, let us consider the two-sided alternative
+
+$$
+H_0: \beta_1 = 0 \\
+H_1: \beta_1 \neq 0
+$$
+
+Now both large positive and large (in absolute value) negative values of the t-statistic
+are extreme (giving evidence against the null hypothesis). The p-value in this
+case is the sum of two probabilities. For $t = 5.1$ more extreme values against
+the null hypothesis are the ones greater than 5.1 and the ones less than -5.1.
+
+$$
+\text{p-value} = P(t < -5.1 | H_0) + P(t > 5.1 | H_0)
+$$
+We can compute it with a the `pt` function. Notice that this is the same value (up to rounding errors) as the one shown in the $Pr(>|t|)$ column in the output of `summary`.
 
 ```{r}
-# r: random, t: t-distribution
-mean(rt(10000, df = 434 - 2) < -1.965471)
+pt(-5.1, df = 434 - 2) + (1 - pt(5.1, df = 434 - 2))
 ```
 
-A convention is to use a 5% error probability of rejecting a true null hypothesis, so we use the quantiles of the t-distribution to derive critical values as follows:
+
+How would the p-value look like if the t-statistic was negative, e.g. -5.1?
+Again, extreme values are the ones less that -5.1 and greater than the absolute
+value, i.e. 5.1. We can write this more succinctly (and this explains the notation for the column in the `summary` output):
+
+$$
+\text{p-value} = P(|t| > |\text{t-statistic}^{obs}| |H_0)
+$$
+
+## Confidence intervals
+
+From the distribution of the t-statistic we can see that
+
+$$
+\text{t-statistic} = \frac{\hat{\beta}_1 - \beta_1}{se(\hat{\beta}_1)} \sim t(n - p)
+$$
+
+Therefore the probability to observed a value of the t-statistic in the
+interval [$t_{\alpha / 2}(n - p)$, $t_{1 - \alpha / 2}$] is 95%.
+
+$$
+P\left(t_{\alpha / 2}(n - p) < \frac{\hat{\beta}_1 - \beta_1}{se(\hat{\beta}_1)} < t_{1 - \alpha / 2}\right) \implies \\
+P\left(\hat{\beta_1} + se(\hat{\beta}_1) t_{\alpha/2} < \beta_1 < \hat{\beta_1} + se(\hat{\beta}_1) t_{1 - \alpha/2} \right)
+$$ 
+
+Compute the upper and the lower bounds of the confidence intervals
+for each sample. In how many samples did the confidence interval contain
+the real coefficient $\beta_1$?
 
 ```{r}
-## Lower critical value: the 0.025 quantile of the t-distribution
-qt(0.025, df = 434 - 2)
-## Upper critical value: the 0.975 quantile of the t-distribution
-## lower.tail = FALSE instructs qt to calculate
-qt(0.025, df = 434 - 2, lower.tail = FALSE)
-```
+slopes <- slopes %>%
+  mutate(
+    CI_lower = estimate + std.error * qt(0.1 / 2, df = 434 - 2),
+    CI_upper = estimate + std.error * qt(1 - 0.1 / 2, df = 434 - 2),
+    beta1_in_CI = CI_lower < 11.7 & 11.7 < CI_upper
+  )
 
-Both critical values are equal in absolute value.
+mean(slopes$beta1_in_CI)
+```
