@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to linear regression analysis - 4&nbsp; Simple ANOVA</title>
+<title>Introduction to linear regression analysis - 5&nbsp; Simple ANOVA</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,7 +93,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./05-Hypothesis-Testing-and-CI.html" rel="next">
 <link href="./03-Simple-Linear-Model.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -124,7 +124,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 </head>
 
@@ -134,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -164,22 +179,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-Introduction-to-R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to R</span></a>
+  <a href="./00-Recommended-Literature.html" class="sidebar-item-text sidebar-link">Recommended reading</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-Statistics-Review.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistics Review</span></a>
+  <a href="./02-Statistics-Review.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Statistics Review (Optional)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-Simple-Linear-Model.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></a>
+  <a href="./01-Introduction-to-R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-Simple-ANOVA.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></a>
+  <a href="./02a-Continuous-Distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Continuous Distributions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-Simple-Linear-Model.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Simple-ANOVA.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-Hypothesis-Testing-and-CI.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">A Simulation Study</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -196,22 +226,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#linear-regression-model-with-a-single-categorical-predictor" id="toc-linear-regression-model-with-a-single-categorical-predictor" class="nav-link active" data-scroll-target="#linear-regression-model-with-a-single-categorical-predictor"><span class="toc-section-number">5</span>  Linear regression model with a single categorical predictor</a>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link active" data-scroll-target="#the-data"><span class="toc-section-number">5.1</span>  The Data</a></li>
+  <li><a href="#the-linear-regression-model-with-a-single-binary-predictor" id="toc-the-linear-regression-model-with-a-single-binary-predictor" class="nav-link" data-scroll-target="#the-linear-regression-model-with-a-single-binary-predictor"><span class="toc-section-number">5.2</span>  The Linear Regression Model with a single binary predictor</a></li>
+  <li><a href="#mathematical-details-optional" id="toc-mathematical-details-optional" class="nav-link" data-scroll-target="#mathematical-details-optional"><span class="toc-section-number">5.3</span>  Mathematical Details (Optional)</a>
   <ul class="collapse">
-  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation"><span class="toc-section-number">5.1</span>  Simulation</a></li>
-  <li><a href="#summary-of-the-lm-output" id="toc-summary-of-the-lm-output" class="nav-link" data-scroll-target="#summary-of-the-lm-output"><span class="toc-section-number">5.2</span>  Summary of the lm output</a></li>
-  <li><a href="#testing-a-true-null-hypothesis" id="toc-testing-a-true-null-hypothesis" class="nav-link" data-scroll-target="#testing-a-true-null-hypothesis"><span class="toc-section-number">5.3</span>  Testing a true null hypothesis</a></li>
-  <li><a href="#testing-a-wrong-null-hypothesis" id="toc-testing-a-wrong-null-hypothesis" class="nav-link" data-scroll-target="#testing-a-wrong-null-hypothesis"><span class="toc-section-number">5.4</span>  Testing a wrong null hypothesis</a></li>
-  <li><a href="#how-to-choose-critical-values" id="toc-how-to-choose-critical-values" class="nav-link" data-scroll-target="#how-to-choose-critical-values"><span class="toc-section-number">5.5</span>  How to choose critical values?</a></li>
-  </ul></li>
-  <li><a href="#t-distribution" id="toc-t-distribution" class="nav-link" data-scroll-target="#t-distribution"><span class="toc-section-number">6</span>  t-distribution</a>
-  <ul class="collapse">
-  <li><a href="#probabilities-and-quantiles-of-the-t-distribution" id="toc-probabilities-and-quantiles-of-the-t-distribution" class="nav-link" data-scroll-target="#probabilities-and-quantiles-of-the-t-distribution"><span class="toc-section-number">6.1</span>  Probabilities and quantiles of the t-distribution</a>
-  <ul class="collapse">
-  <li><a href="#probability" id="toc-probability" class="nav-link" data-scroll-target="#probability"><span class="toc-section-number">6.1.1</span>  Probability</a></li>
-  <li><a href="#quantiles" id="toc-quantiles" class="nav-link" data-scroll-target="#quantiles"><span class="toc-section-number">6.1.2</span>  Quantiles</a></li>
-  </ul></li>
-  <li><a href="#critical-values-in-t-tests" id="toc-critical-values-in-t-tests" class="nav-link" data-scroll-target="#critical-values-in-t-tests"><span class="toc-section-number">6.2</span>  Critical values in t-tests</a></li>
+  <li><a href="#the-ols-estimator-in-the-binary-predictor-case" id="toc-the-ols-estimator-in-the-binary-predictor-case" class="nav-link" data-scroll-target="#the-ols-estimator-in-the-binary-predictor-case"><span class="toc-section-number">5.3.1</span>  The OLS Estimator in the Binary Predictor Case</a></li>
+  <li><a href="#what-about-the-standard-errrors" id="toc-what-about-the-standard-errrors" class="nav-link" data-scroll-target="#what-about-the-standard-errrors"><span class="toc-section-number">5.3.2</span>  What about the standard errrors?</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -221,7 +241,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></h1>
+<h1 class="title"><span id="sec-simple-anova" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></span></h1>
 </div>
 
 
@@ -236,66 +256,153 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="linear-regression-model-with-a-single-categorical-predictor" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Linear regression model with a single categorical predictor</h1>
+<section id="the-data" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="the-data"><span class="header-section-number">5.1</span> The Data</h2>
 <p>Variables description:</p>
 <ul>
 <li><code>kid_score</code>: (numeric) Kid’s IQ score.</li>
-<li><code>mom_hs</code> (binary): 1 if the mother has finished high school, 0 otherwise.</li>
+<li><code>mom_hs</code> (numeric): This variable has only two possible values (a binary variable): 1 if the mother of the child has finished high school, and 0 otherwise.</li>
 </ul>
-<p>Two groups of kids: the ones whose mother had a high school degree (<code>mom_hs = 1</code>) and the rest (<code>mom_hs = 0</code>).</p>
-<p>Question: are this two groups different with respect to IQ (as measured by <code>kid_score</code>).</p>
-<p>Research hypothesis: children of mothers without a high school degree have lower IQ on average compared to children of mothers with a high school degree.</p>
+<p>For the sake of simplicity we will assume that the children in the sample (in the data set <code>kids</code>) were selected at random from all children living in the US at the time of the survey.</p>
+<p>Research question: Do children whose mother did not finish a high school (<code>mom_hs = 0</code>) tend to achieve lower IQ scores compared to the children of mothers with a high school degree (<code>mom_hs = 1</code>).</p>
+</section>
+<section id="the-linear-regression-model-with-a-single-binary-predictor" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="the-linear-regression-model-with-a-single-binary-predictor"><span class="header-section-number">5.2</span> The Linear Regression Model with a single binary predictor</h2>
+<p>Let us first summarize the data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>kids <span class="sc">%&gt;%</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Group the data according to the educational status of the mothers</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(mom_hs) <span class="sc">%&gt;%</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Compute the average IQ score in each group</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Count the number of rows (children) in each group</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## The function n() counts the number of rows (children) in each group</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Compute the average IQ score for each group</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">average_IQ =</span> <span class="fu">mean</span>(kid_score)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  mom_hs     n average_IQ
-   &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;
-1      0    93       77.5
-2      1   341       89.3</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kids <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">factor</span>(mom_hs),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> kid_score,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Add some noise to each observation so that we can </span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="do">## see the collection of dots. Without this noise</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="do">## all dots would lie on two straight lines</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"jitter"</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Average_IQ_score =</span> <span class="fu">mean</span>(kid_score)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="04-Simple-ANOVA_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div id="tbl-kids-summary" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;5.1: Average IQ scores and number of observations (n) by the status of the mother.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mom_hs</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Average_IQ_score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">77.54839</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">341</td>
+<td style="text-align: right;">89.31965</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<p>Formulated as a linear regression model:</p>
-<p><span class="math display">\[
-i = 1,\ldots, n = 434\\
-y_i: \text{Kid IQ score} \\
-x_i \in \{0, 1\}
-\]</span></p>
-<p><span class="math display">\[
-y_i = \beta_0 + \beta_1 x_i + u_i, u_i \sim N(0, \sigma^2)
-\]</span></p>
-<p>Find the OLS estimates for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> using the <code>lm</code> function.</p>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(kid_score <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> mom_hs, <span class="at">data =</span> kids)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Where to get the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>kids <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="do">## Map the status of the mother to the y-axis.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="do">## The factor function converts mom_hs to a factor variable</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="do">## so that ggplot would not treat mom_hs as a continuous variable.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="fu">factor</span>(mom_hs),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="do">## Map the kid_score column to the x-axis.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> kid_score</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Add some noise to each observation so that we can </span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## see the collection of dots. Without this noise</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="do">## all dots would lie on two straight lines</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"jitter"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Draws the two boxplots to help us see the centers and the spreads</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## of the distributions of the scores in the two groups</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Makes the boxplots transparent so that we can see the dots</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="do">## behind them</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Sets human-readable labels for the two axes</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"IQ score"</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Status of the kid's mother"</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-kid-score-plot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-Simple-ANOVA_files/figure-html/fig-kid-score-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.1: IQ scores of the children by the status of their mother (high school degree/no high school degree). The plot adds a small random noise to the observations to avoid overplotting.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let us see how we can model the average IQ scores within a simple linear model.</p>
+<p><span class="math display">
+\begin{align*}
+&amp; i = 1,\ldots, n = 434 \text{ observations}\\
+&amp; y_i: \text{Kid IQ score} \\
+&amp; x_i \in \{0, 1\}: \text{status of the mother}
+\end{align*}
+</span></p>
+<p>The linear model is then</p>
+<p><span class="math display">
+y_i = \beta_0 + \beta_1 x_i + e_i, e_i \sim N(0, \sigma^2)
+</span> Alternatively (and more generally) we can write the model (see <a href="03-Simple-Linear-Model.html"><span>Chapter&nbsp;4</span></a>) as:</p>
+<p><span id="eq-simple-anova"><span class="math display">
+\begin{align*}
+&amp; y_i \sim N(\mu_i, \sigma^2), \quad i = 1,\ldots,n \\
+&amp; \mu_i = \beta_0 + \beta_1 x_i, \quad x_i \in \{0, 1\}
+\end{align*}
+\tag{5.1}</span></span></p>
+<p>Let us see what the model coefficients mean. This becomes obvious when we consider the expected value of <span class="math inline">y</span> (the IQ score) for the two possible values of <span class="math inline">x</span>. For <span class="math inline">x = 1</span> (children with a mother with a HS degree) the expected IQ score is:</p>
+<p><span id="eq-mu-x-1"><span class="math display">
+\mu_1 = \beta_0 + \beta_1 \cdot 1
+\tag{5.2}</span></span></p>
+<p>For <span class="math inline">x = 0</span> (children with a mother without a HS degree)</p>
+<p><span id="eq-mu-x-0"><span class="math display">
+\mu_0 = \beta_0 + \beta_1 \cdot 0
+\tag{5.3}</span></span></p>
+<p>If you take the difference between equations <a href="#eq-mu-x-1"><span>5.2</span></a> and <a href="#eq-mu-x-0"><span>5.3</span></a> you will get:</p>
+<p><span class="math display">
+\begin{align*}
+\beta_0 &amp; = \mu_0 \\
+\beta_1 &amp; = \mu_1 - \mu_0
+\end{align*}
+</span> Therefore, the constant in the model (<span class="math inline">\beta_0</span>) equals the population average IQ score of children in the <span class="math inline">x = 0</span> group. The slope coefficient <span class="math inline">\beta_1</span> equals the difference between the population average IQ scores. <a href="#fig-simple-anova-model-vis">Figure&nbsp;<span>5.2</span></a> visualizes the population of children (as the model in <a href="#eq-simple-anova">Equation&nbsp;<span>5.1</span></a> sees it). There are two groups of children in that population. The first has an average IQ score of <span class="math inline">\mu_0</span>, the second group has an average IQ score of <span class="math inline">\mu_1</span>. The children in both groups are normally distributed and the two distributions have the same standard deviation (spread).</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Scale for x is already present.
+Adding another scale for x, which will replace the existing scale.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-simple-anova-model-vis" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-Simple-ANOVA_files/figure-html/fig-simple-anova-model-vis-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.2: Distribution of IQ scores in the population of children according to <a href="#eq-simple-anova">Equation&nbsp;<span>5.1</span></a>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Within that model our research question boils down to examining <span class="math inline">\beta_1</span> (the difference between the population averages). If <span class="math inline">\beta_1</span> is positive, then children born to a mother with a HS degree would tend to perform better at the IQ test.</p>
+<p>The first obstacle to answering the research question is that we don’t know the value of <span class="math inline">\beta_1</span>. Therefore, we would need to rely on the sample to learn something about the value of <span class="math inline">\beta_1</span>.</p>
+<p>In the previous section we discussed the OLS estimator and now we will use it to find the best (in terms of lowest RSS) estimates for <span class="math inline">\beta_0</span> and <span class="math inline">\beta_1</span>. As in the previous section will will find these using the <code>lm</code> function. We will also store the result of <code>lm</code> in an object so that we can use it later without running <code>lm</code> every time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Run lm and save the output in an object called "fit"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(kid_score <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> mom_hs, <span class="at">data =</span> kids)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Print the object storing the lm output</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -306,91 +413,25 @@ Coefficients:
       77.55        11.77  </code></pre>
 </div>
 </div>
-<p>Write the estimated regression equation</p>
-<p><span class="math display">\[\begin{align}
-\hat{\mu}_i = 77.55 + 11.77 \hat{x}_i
-\end{align}\]</span></p>
-<section id="simulation" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="simulation"><span class="header-section-number">5.1</span> Simulation</h2>
-<p>We want to create a simulation where we select 2000 samples of children from a given model. Fix the following code so that there are 2000 samples (currently there are 2) and so that there are exactly as many children with <span class="math inline">\(mom_hs = 1\)</span> and <span class="math inline">\(mom_hs = 0\)</span> as in the original data <code>kids</code>.</p>
-<p><span class="math display">\[
-y_i \sim N(\mu_i, 19.85^2) \\
-\mu_i = 77.548 + 11.771 x_i \\
-\]</span></p>
+<p>Look at the output of <code>lm</code> and write down the estimated regression equation:</p>
+<p><span class="math display">
+\begin{align*}
+\hat{\mu} = 77.55 + 11.77 x
+\end{align*}
+</span></p>
+<p>This equation summarizes the <em>sample</em>. The children that we have selected and actually observed. For these children there was a difference of average IQ scores of 11.77. However, the sample only includes 434 children. A more interesting question is whether there is a difference between the average IQ scores between the two groups (mother with HS degree, mother without HS degree) in the <em>population</em> from which the sample was selected.</p>
+<p>An interesting research hypothesis that we can test is whether the <em>population</em> coefficient <span class="math inline">\beta_1</span> is equal to zero, for example against a two-sided alternative <span class="math inline">\beta_1 \neq 0</span>.</p>
+<p><span class="math display">
+H_0: \beta_1 = 0 \\
+H_1: \beta_1 \neq 0
+</span> A test of this hypothesis against the alternative is a t-test with a test statistic</p>
+<p><span class="math display">
+\text{t-statistic} = \frac{\hat{\beta}_1 - 0}{se(\hat{\beta}_1)}
+</span></p>
+<p>If <span class="math inline">\beta_1</span> is really equal to zero, then this statistic follows a t-distribution with <span class="math inline">n - p</span> degrees of freedom. The critical values of this test at <span class="math inline">\alpha = 0.05</span> probability of wrong rejection of the null hypothesis.</p>
+<p>For the <code>kids</code> data set you can test this hypothesis using the output of <code>summary</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Fix the random numbers generator so that you can reproduce your results</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>sim_df <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mom_hs =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">93</span>, <span class="dv">341</span>))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>sim_df <span class="ot">&lt;-</span> sim_df <span class="sc">%&gt;%</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> <span class="fl">77.548</span> <span class="sc">+</span> <span class="fl">11.771</span> <span class="sc">*</span> mom_hs,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">kid_score =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> mu, <span class="at">sd =</span> <span class="fl">19.85</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Select the first simulated sample and find the OLS coefficient estimates using <code>lm</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimate the OLS coefficients with the data from the first sample of children</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sim_sample_1 <span class="ot">&lt;-</span> sim_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(R <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(kid_score <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> mom_hs, <span class="at">data =</span> sim_sample_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = kid_score ~ 1 + mom_hs, data = sim_sample_1)
-
-Coefficients:
-(Intercept)       mom_hs  
-      78.92        10.42  </code></pre>
-</div>
-</div>
-<p>The following code computes the OLS estimates for each of the samples.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sim_coeff <span class="ot">&lt;-</span> sim_df <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(R) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## The tidy function reformats the output of lm so that it can fit in a data frame</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do</span>(<span class="fu">tidy</span>(<span class="fu">lm</span>(kid_score <span class="sc">~</span> mom_hs, <span class="at">data =</span> .))) <span class="sc">%&gt;%</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(R, term, estimate, std.error, statistic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The data set <code>sim_coeff</code> now contains estimated coefficients (<span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\beta}\)</span>) for every sample. Check the first two rows and compare it to your results for the first estimated sample. To plot the distribution of <span class="math inline">\(\hat{\beta}_1\)</span> (the slope coefficients) we filter the data set so that we keep only the raw where <code>term == "mom_hs"</code> (i.e our estimates for <span class="math inline">\(\beta\)</span>).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> sim_coeff <span class="sc">%&gt;%</span> <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"mom_hs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Plot the distribution of the slope estimates</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> estimate)) <span class="sc">+</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">0</span>),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"jitter"</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Slope estimate"</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of slope estimates (over 2000 samples)"</span>,</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">11.77</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="04-Simple-ANOVA_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  xlim(c(0, 21))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Copy the code above and adapt it to show the distribution of the intercept coefficients.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ???</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="summary-of-the-lm-output" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="summary-of-the-lm-output"><span class="header-section-number">5.2</span> Summary of the lm output</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -412,251 +453,175 @@ Multiple R-squared:  0.05613,   Adjusted R-squared:  0.05394
 F-statistic: 25.69 on 1 and 432 DF,  p-value: 5.957e-07</code></pre>
 </div>
 </div>
-<p>Standard error: this is an estimate of the standard deviation of the estimator for the coefficient based on assumptions about the error term (<span class="math inline">\(u_i\)</span>) in the model.</p>
-<p>The standard deviation of <span class="math inline">\(\hat{\beta}_1\)</span>, computed using the simulated samples:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## sd: standard deviation</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(slopes<span class="sc">$</span>estimate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.504912</code></pre>
-</div>
-</div>
-</section>
-<section id="testing-a-true-null-hypothesis" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="testing-a-true-null-hypothesis"><span class="header-section-number">5.3</span> Testing a true null hypothesis</h2>
-<p><span class="math display">\[
-H_0: \beta_1 = 11.77\\
-H_1: \beta_1 \neq 11.77
-\]</span></p>
-<p>t-test</p>
-<p><span class="math display">\[
-\text{t-statistic} = \frac{\hat{\beta}_1 - 11.77}{SE(\hat{\beta}_1)}
-\]</span></p>
-<p>When is the value of the t-statistic close to zero? 1. The estimate is close to the value under the null hypothesis. 2. For high values of the standard error</p>
-<p><span class="math display">\[
-t = \frac{11.77 - 11.77}{2.322} = 0
-\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> slopes <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">t_statistic =</span> (estimate <span class="sc">-</span> <span class="fl">11.77</span>) <span class="sc">/</span> std.error</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> t_statistic)) <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">0</span>),</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"jitter"</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Value of the t-statistic"</span>,</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of t-statistic under a true null hypothesis beta_1 = 11.77 (2000 samples)"</span>,</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>), <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="04-Simple-ANOVA_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  xlim(c(0, 21))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The real coefficient equals 11.77 (it is known, because we choose it for the simulation).</p>
-<p>Lets assume a rule that we reject the null hypothesis <span class="math inline">\(H_0: \beta_1 = 0\)</span> vs.&nbsp;<span class="math inline">\(H_1: \beta_1 \neq 0\)</span> if the value of the t-statistic is less than -2 or greater than +2.</p>
-<p>In how many samples will we wrongly reject the null hypothesis using this rule?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>testing_1 <span class="ot">&lt;-</span> slopes <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Logical OR: |</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">wrong_decision_blue =</span> t_statistic <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">2</span> <span class="sc">|</span> t_statistic <span class="sc">&gt;</span> <span class="dv">2</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">wrong_decision_red =</span> t_statistic <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">3</span> <span class="sc">|</span> t_statistic <span class="sc">&gt;</span> <span class="dv">3</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Share of TRUE values</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(testing_1<span class="sc">$</span>wrong_decision_blue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.065</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(testing_1<span class="sc">$</span>wrong_decision_red)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01</code></pre>
-</div>
-</div>
-</section>
-<section id="testing-a-wrong-null-hypothesis" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="testing-a-wrong-null-hypothesis"><span class="header-section-number">5.4</span> Testing a wrong null hypothesis</h2>
-<p><span class="math display">\[
-H_0: \beta_1 = 0\\
+<p>The second row in the coefficients table corresponds to our <span class="math inline">\hat{\beta}_1</span> in our model notation (the coefficient of <code>mom_hs</code>). You can find the estimated standard error of <span class="math inline">\hat{\beta}_1</span> in the second column (<code>Std. Error</code>).</p>
+<p><span class="math display">
+\text{t-statistic}^{obs} = \frac{11.77 - 0}{2.322} = 5.0689
+</span></p>
+<p>You can find this value in the column <code>t value</code> in the <code>summary</code> above. This t-statistic is shown in the regression output by almost all statistical software, because the hypothesis</p>
+<p><span class="math display">
+H_0: \beta_1 = 0 \\
 H_1: \beta_1 \neq 0
-\]</span></p>
-<p><span class="math display">\[
-y_i = \beta_0 + \beta_1 x_i + u_i
-\]</span></p>
-<p>If <span class="math inline">\(H_0\)</span> is true, the the model is simply</p>
-<p><span class="math display">\[
-y_i = \beta_0 + u_i
-\]</span></p>
-<p>t-test</p>
-<p><span class="math display">\[
-\text{t-statistic} = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)}
-\]</span> The value of the t-statistic is small when the estimate for the coefficient is close to the value under the null hypothesis. The value of the t-statistic will be small, if the standard error of the estimator is high.</p>
-<p><span class="math display">\[
-t = \frac{11.77 - 0}{2.322} = 5.069
-\]</span></p>
-<p>Compute the value of the t-statistic for all samples in the simulation (and compare it to the value of the <code>statistic</code> column in the <code>sim_coef</code> dataset)</p>
+</span> is particularly interesting. If true it implies that there are no population-level differences between the average IQ scores of the two groups of children.</p>
+<p>In order to make a decision whether to reject this hypothesis or not, we compare the observed t-statistic to two critical values (because the alternative is two-sided).</p>
+<p>The critical values at a five percent error probability (wrong rejection of a true null hypothesis) are derived from the t-distribution. You can find a detailed explanation in <a href="05-Hypothesis-Testing-and-CI.html"><span>Chapter&nbsp;7</span></a>.</p>
+<p>The quantiles of the t-distribution are</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> slopes <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">t_statistic0 =</span> (estimate <span class="sc">-</span> <span class="dv">0</span>) <span class="sc">/</span> std.error</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="sc">%&gt;%</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> t_statistic0)) <span class="sc">+</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">0</span>),</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"jitter"</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Value of the t-statistic"</span>,</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of t-statistic, beta_1 = 0 (false)"</span>,</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>), <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Scale for x is already present.
-Adding another scale for x, which will replace the existing scale.</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="04-Simple-ANOVA_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>testing_2 <span class="ot">&lt;-</span> slopes <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Logical AND: &amp;</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">wrong_decision_blue =</span> t_statistic0 <span class="sc">&lt;</span> <span class="dv">2</span> <span class="sc">&amp;</span> t_statistic0 <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">2</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">wrong_decision_red =</span> t_statistic0 <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> t_statistic0 <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">3</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Share of TRUE values</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(testing_2<span class="sc">$</span>wrong_decision_blue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(testing_2<span class="sc">$</span>wrong_decision_red)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.04</code></pre>
-</div>
-</div>
-</section>
-<section id="how-to-choose-critical-values" class="level2" data-number="5.5">
-<h2 data-number="5.5" class="anchored" data-anchor-id="how-to-choose-critical-values"><span class="header-section-number">5.5</span> How to choose critical values?</h2>
-<p>Convention: choose the critical values so that the probability of rejecting a true null hypothesis is 5%.</p>
-</section>
-</section>
-<section id="t-distribution" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> t-distribution</h1>
-<p><span class="math display">\[
-y_i = \beta_0 + \beta_1 x_i + u_i
-\]</span></p>
-<p>Under some assumptions it can be shown that under the null hypothesis (this simply means that we assume the null hypothesis is true)</p>
-<p><span class="math display">\[
-H_0: \beta_1 = \beta_{H_0}\\
-H_1: \beta_1 \neq \beta_{H_0}\\
-\]</span></p>
-<p><span class="math display">\[
-\text{t-statistic} = \frac{\hat{\beta_1} -  \beta_{H_0}}{SE(\hat{\beta}_1)}
-\]</span></p>
-<p><span class="math display">\[
-\text{t-statistic} \underbrace{\sim}_{H_0} t(\text{df} = n - p)
-\]</span></p>
-<p>The t-statistic follow a t-distribution with <span class="math inline">\(n - p\)</span> degrees of freedom (parameter of the distribution), where <span class="math inline">\(n\)</span> is the number of observations in the linear model (in our example <span class="math inline">\(n = 434\)</span> kids) and <span class="math inline">\(p\)</span> is the number of coefficients in the linear equation. In our linear regression model the number of coefficients in <span class="math inline">\(p = 2\)</span>: the intercept <span class="math inline">\(\beta_0\)</span>, and the slope coefficient <span class="math inline">\(\beta_1\)</span>.</p>
-<section id="probabilities-and-quantiles-of-the-t-distribution" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="probabilities-and-quantiles-of-the-t-distribution"><span class="header-section-number">6.1</span> Probabilities and quantiles of the t-distribution</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="04-Simple-ANOVA_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<section id="probability" class="level3" data-number="6.1.1">
-<h3 data-number="6.1.1" class="anchored" data-anchor-id="probability"><span class="header-section-number">6.1.1</span> Probability</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># p: probability, t: t-distribution</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pt</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.02306292</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rt</span>(<span class="dv">1</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6343223</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># r: random, t: t-distribution</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">rt</span>(<span class="dv">1000000</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.022944</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(rt(1000000, df = 2) &lt; -2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="quantiles" class="level3" data-number="6.1.2">
-<h3 data-number="6.1.2" class="anchored" data-anchor-id="quantiles"><span class="header-section-number">6.1.2</span> Quantiles</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="do">## q: quantile, t: t-distribution</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.02306292</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -2</code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="critical-values-in-t-tests" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="critical-values-in-t-tests"><span class="header-section-number">6.2</span> Critical values in t-tests</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.025 quantile of the t-distribution with 2 degrees of freedom</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="fl">0.025</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(alpha <span class="sc">/</span> <span class="dv">2</span>, <span class="at">df =</span> <span class="fu">nrow</span>(kids) <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -1.965471</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># r: random, t: t-distribution</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">rt</span>(<span class="dv">1000000</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">1.965471</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.024963</code></pre>
-</div>
-</div>
-<p>A convention is to use a 5% error probability of rejecting a true null hypothesis, so we use the quantiles of the t-distribution to derive critical values as follows:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Lower critical value: the 0.025 quantile of the t-distribution</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="fl">0.025</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -1.965471</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Upper critical value: the 0.975 quantile of the t-distribution</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="do">## lower.tail = FALSE instructs qt to calculate</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="fl">0.025</span>, <span class="at">df =</span> <span class="dv">434</span> <span class="sc">-</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alpha <span class="sc">/</span> <span class="dv">2</span>, <span class="at">df =</span> <span class="fu">nrow</span>(kids) <span class="sc">-</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.965471</code></pre>
 </div>
 </div>
-<p>Both critical values are equal in absolute value.</p>
+<p>The observed t-statistic equals 5.0689 and is therefore greater than the upper critical value (1.96). Therefore we reject the null hypothesis at a significance level <span class="math inline">1 - \alpha = 0.95</span> (this is another way to state the probability of wrong rejection of a true null hypothesis).</p>
+<p>Apart from the point estimate for the difference of average IQ scores (11.77 points) we usually also want to communicate the uncertainty of this estimate. One description of that uncertainty is the (estimated) standard error of the estimator for the regression coefficient.</p>
+<p>One way to construct a confidence interval for the coefficients is to invert the two-sided t-test (see <a href="05-Hypothesis-Testing-and-CI.html#sec-sim-ci"><span>Section&nbsp;7.7</span></a> for more details).</p>
+<p>We will use the critical values of the t-test at the 95 percent significance level to obtain an confidence interval (CI) with a 95 percent coverage probability:</p>
+<p><span id="eq-ci-kids-beta1"><span class="math display">
+P\left(\hat{\beta}_1 - 1.96 se(\hat{\beta}_1)  &lt; \beta_1 &lt; \hat{\beta}_1 + 1.96 se(\hat{\beta}_1) \right) = 0.95
+\tag{5.4}</span></span></p>
+<p>Notice that the boundaries of the interval are random variables (because <span class="math inline">\hat{\beta}_1</span> and <span class="math inline">se(\hat{\beta}_1)</span>) are random variables (they depend on the data). For the sample of children in <code>kids</code> we obtain <em>estimates</em> for these boundaries: <span class="math inline">[11.77 - 1.96 \cdot 2.322; 11.77 + 1.96 \cdot 2.322] \approx [7.2; 16.3]</span>. Based on these estimated boundaries we would say that range of plausible values for the difference between the population IQ score averages between 7.2 and 16.3.</p>
+<p>Notice that in interpreting the boundaries of the CI we don’t say that the probability of <span class="math inline">\beta_1</span> being between 7.2 and 16.3 is 0.95. Generally this statement does not make any sense, because we have assumed that <span class="math inline">\beta_1</span> is a fixed number (not random). The probability statement in <a href="#eq-ci-kids-beta1">Equation&nbsp;<span>5.4</span></a> does make sense, because the boundaries are random variables (depend on the data), but the statement <span class="math inline">P(7.2 &lt; \beta_1 &lt; 16.3) = 0.95</span> does not!</p>
+</section>
+<section id="mathematical-details-optional" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="mathematical-details-optional"><span class="header-section-number">5.3</span> Mathematical Details (Optional)</h2>
+<section id="the-ols-estimator-in-the-binary-predictor-case" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="the-ols-estimator-in-the-binary-predictor-case"><span class="header-section-number">5.3.1</span> The OLS Estimator in the Binary Predictor Case</h3>
+<p>In the case when <span class="math inline">x_i \in \{0, 1\}</span> the average of <span class="math inline">x</span>, i.e <span class="math inline">\overline{x}</span> is simply the proportion of ones, lets say <span class="math inline">n_1 / n</span>. Notice that the average of the squared <span class="math inline">x</span> is the same as the average of <span class="math inline">x</span>, because <span class="math inline">x</span> only contains zeroes and ones (therefore <span class="math inline">x_i^2 = x_i</span>). The average of the product of <span class="math inline">x</span> and <span class="math inline">y</span> is equal to the sum of <span class="math inline">y</span> where the <span class="math inline">x = 1</span>, because the other values in <span class="math inline">y</span> are multiplied by zero.</p>
+<p><span class="math display">
+\begin{align*}
+\overline{x^2} = &amp; \frac{1}{n}\sum_{i = 1}^{n} x_i^2 =  \\
+               = &amp; \frac{1}{n} \sum_{i = 1}^n x_i \\
+               = &amp; \bar{x}
+\end{align*}
+</span></p>
+<p><span class="math display">
+\begin{align*}
+\overline{xy} = &amp; \frac{1}{n} \sum_{i = 1}^{n} x_i y_i = \\
+              = &amp; \frac{1}{n}\left(\sum_{i: x_i = 0} y_i \cdot 0 + \sum_{ i: x_i = 1} y_i \cdot 1 \right) \\
+              = &amp; \frac{1}{n}\sum_{i: x_i = 1} y_i \\
+              = &amp; \frac{n_1}{n_1}\frac{1}{n} \sum_{i: x_i = 1} y_i \\
+              = &amp; \frac{n_1}{n} \bar{y}_{1}
+\end{align*}
+</span></p>
+<p>In the last expression we use <span class="math inline">\bar{y}_1</span> to denote the sample average of the <span class="math inline">x = 1</span> group.</p>
+<p>Therefore the expression for <span class="math inline">\hat{\beta}_1</span> simplifies to:</p>
+<p><span class="math display">
+\hat{\beta}_1 = \frac{ \frac{n_1}{n} \overline{y}_{1} - \overline{x}\overline{y}}{\overline{x} - \overline{x}^2} \\
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{1 - \frac{n_1}{n}} \\
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{\frac{n - n_1}{n}} \\
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \overline{y}}{\frac{n_0}{n}} \\
+</span></p>
+<p>Furthermore, the average of <span class="math inline">y</span> is simply the weighted average of the two group means. Let there be <span class="math inline">n_0</span> observations with <span class="math inline">x_i = 0</span> and <span class="math inline">n_1</span> observations with <span class="math inline">x_i = 1</span>.</p>
+<p><span class="math display">
+\overline{y} = \frac{1}{n}\left(\sum_{x_i = 0} y_i + \sum_{x_i = 0} y_i\right) \\
+\overline{y} = \frac{1}{n}\left(n_0 \overline{y}_0 + n_1 \overline{y}_1 \right)
+</span></p>
+<p>Substituting gives us:</p>
+<p><span class="math display">
+\hat{\beta}_1 = \frac{\overline{y}_{1} - \frac{1}{n}\left(n_0 \overline{y}_0 + n_1 \overline{y}_1 \right)}{\frac{n_0}{n}} \\
+</span></p>
+<p>When you simplify the above expression (this is left as an exercise) you will arrive at:</p>
+<p><span class="math display">
+\hat{\beta}_1 = \bar{y}_1 - \bar{y}_0
+</span></p>
+<p>From the equation for <span class="math inline">\hat{\beta}_0</span> we get:</p>
+<p><span class="math display">
+\hat{\beta}_0 = \bar{y} - (\bar{y}_1 - \bar{y}_0) \bar{x}
+</span></p>
+<p>Taking into account that <span class="math inline">\bar{x} = n_1 / n</span> this equation simplifies to</p>
+<p><span class="math display">
+\hat{\beta}_0 = \overline{y}_0
+</span></p>
+</section>
+<section id="what-about-the-standard-errrors" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="what-about-the-standard-errrors"><span class="header-section-number">5.3.2</span> What about the standard errrors?</h3>
+<p>In the case of the simple ANOVA model the standard errors of both coefficients are pretty easy to derive, because the estimators are simply a group average (<span class="math inline">\hat{\beta}_0</span>) and the difference between two group averages (<span class="math inline">\hat{\beta}_1</span>).</p>
+<p>We can compute the variance of <span class="math inline">\hat{beta}_0</span>. Note that when studying the statistical properties of an estimator like the OLS estimator for <span class="math inline">\beta_0</span> we treat the data <span class="math inline">y_i</span> as random variables. In the following derivation we assume that the <span class="math inline">y_i</span> are not correlated.</p>
+<p><span id="eq-simple-anova-var-beta0"><span class="math display">
+\begin{align*}
+Var(\hat{\beta}_0) &amp; = Var\left(\frac{1}{n_0}\sum_{i: x_i = 0} y_i \right) \\
+                   &amp; = \frac{1}{n_0^2} \sum_{i: x_i = 0} Var(y_i) \\
+                   &amp; = \frac{1}{n_0^2} \sum_{i: x_i = 0} \sigma^2 \\
+                   &amp; = \frac{n_0 \sigma^2}{n_0^2} \\
+                   &amp; = \frac{\sigma^2}{n_0}
+\end{align*}
+\tag{5.5}</span></span></p>
+<p>For the variance of <span class="math inline">\hat{beta}_1</span> we obtain. In the derivation we use the assumption of <span class="math inline">y_i</span> being uncorrelated and the fact that the variance of a difference of uncorrelated random variables equals the sum of their variances.</p>
+<p><span id="eq-simple-anova-var-beta1"><span class="math display">
+\begin{align*}
+Var(\hat{\beta}_1) &amp; = Var\left(\frac{1}{n_1}\sum_{i: x_i = 1} y_i - \frac{1}{n_0}\sum_{i: x_i = 0} y_i\right) \\
+                   &amp; = Var\left(\frac{1}{n_1}\sum_{i: x_i = 1} y_i \right) + Var\left(\frac{1}{n_0}\sum_{i: x_i = 0} y_i\right) \\
+                   &amp; = \frac{\sigma^2}{n_1} + \frac{\sigma^2}{n_0} \\
+                   &amp; = \sigma^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)
+\end{align*}
+\tag{5.6}</span></span></p>
+<p>The variances of the two coefficients involve the unknown parameter <span class="math inline">\sigma^2</span>. From the expressions for the variances you will notice that the variances increase in <span class="math inline">\sigma^2</span>. This should make sense intuitively. <span class="math inline">\sigma^2</span> describes how much noise the data contains (random deviations from the regression line). Estimating the coefficients from noisy data will result in uncertain estimates (high variances).</p>
+<p>In order to arrive to estimates the coefficient variances we need a way to estimate <span class="math inline">\sigma^2</span> from the data. Here we will take a theorem from mathematical statistics that says that</p>
+<p><span id="eq-sigma-estimator"><span class="math display">
+\hat{\sigma}^2 = \frac{1}{n - p} \text{RSS}
+\tag{5.7}</span></span></p>
+<p>is an unbiased estimator for <span class="math inline">\sigma</span>. In the above expression <span class="math inline">n</span> is the number of observations and <span class="math inline">p</span> is the number of coefficients in the model. RSS is the residual sum of squares <a href="03-Simple-Linear-Model.html#sec-ols-intro"><span>Section&nbsp;4.2</span></a>.</p>
+<p><span class="math display">
+E\hat{\sigma}^2 = \sigma
+</span></p>
+<p>Plugging in this estimator for <span class="math inline">\sigma^2</span> into <a href="#eq-simple-anova-var-beta0">Equation&nbsp;<span>5.5</span></a> and <a href="#eq-simple-anova-var-beta1">Equation&nbsp;<span>5.6</span></a> yields the following estimators for the variances of the model coefficients.</p>
+<p><span class="math display">
+\begin{align*}
+Var(\hat{\beta}_0) = &amp; \frac{\hat{\sigma}^2}{n_0} \\
+Var(\hat{\beta}_1) = &amp; \hat{\sigma}^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)
+\end{align*}
+</span> Let us compare the two formulas with the standard errors from the <code>lm</code> output (printed here again for convinience).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = kid_score ~ 1 + mom_hs, data = kids)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-57.55 -13.32   2.68  14.68  58.45 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   77.548      2.059  37.670  &lt; 2e-16 ***
+mom_hs        11.771      2.322   5.069 5.96e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 19.85 on 432 degrees of freedom
+Multiple R-squared:  0.05613,   Adjusted R-squared:  0.05394 
+F-statistic: 25.69 on 1 and 432 DF,  p-value: 5.957e-07</code></pre>
+</div>
+</div>
+<p>The number of children in the two groups are <span class="math inline">n_0 = 93</span> and <span class="math inline">n_1 = 341</span>. The number of observations is <span class="math inline">n = n_0 + n_1 = 434</span>. The number of coefficients in the model is <span class="math inline">p = 2</span>. We can compute the RSS by extracting the residuals from the model fit object (for example by using the <code>residuals</code> function).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">residuals</span>(fit)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(res <span class="sc">^</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 170261.2</code></pre>
+</div>
+</div>
+<p>The estimate for <span class="math inline">\sigma^2</span> is therefore:</p>
+<p><span class="math display">
+\hat{\sigma}^2 = \frac{170261.2}{434 - 2} = 394.1231 \\
+\hat{\sigma} = \sqrt{\hat{\sigma}^2} = 19.85
+</span></p>
+<p>You can find last value under <em>residual standard error</em> in the summary of the <code>lm</code> output above.</p>
+<p>Now let us compute the estimated variances and standard deviations of the coefficients:</p>
+<p><span class="math display">
+\begin{align*}
+Var(\hat{\beta}_0) &amp; = \frac{\hat{\sigma}^2}{n_0} = \frac{394.1}{93} = 4.23 \\
+se(\hat{\beta}_0) &amp; = \sqrt{Var(\hat{\beta}_0)} = \sqrt{4.23} = 2.059 \\
+Var(\hat{\beta}_1) &amp; = \hat{\sigma}^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)  = 394.1 \left(\frac{1}{93} + \frac{1}{341}\right) = 5.39\\
+se(\hat{\beta}_1) &amp; = \sqrt{Var(\hat{\beta}_1)} = \sqrt{5.39} = 2.32
+\end{align*}
+</span></p>
 
 
 </section>
@@ -799,12 +764,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./03-Simple-Linear-Model.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./05-Hypothesis-Testing-and-CI.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">A Simulation Study</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

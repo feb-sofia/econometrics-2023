@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to linear regression analysis - 3&nbsp; Simple Linear Model</title>
+<title>Introduction to linear regression analysis - 4&nbsp; Simple Linear Model</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -94,7 +94,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./04-Simple-ANOVA.html" rel="next">
-<link href="./02-Statistics-Review.html" rel="prev">
+<link href="./02a-Continuous-Distributions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -124,7 +124,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 </head>
 
@@ -134,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -164,22 +179,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-Introduction-to-R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to R</span></a>
+  <a href="./00-Recommended-Literature.html" class="sidebar-item-text sidebar-link">Recommended reading</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-Statistics-Review.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistics Review</span></a>
+  <a href="./02-Statistics-Review.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Statistics Review (Optional)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-Simple-Linear-Model.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></a>
+  <a href="./01-Introduction-to-R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-Simple-ANOVA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></a>
+  <a href="./02a-Continuous-Distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Continuous Distributions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-Simple-Linear-Model.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Simple-ANOVA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-Hypothesis-Testing-and-CI.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">A Simulation Study</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -196,12 +226,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#interpretation-of-the-linear-equation" id="toc-interpretation-of-the-linear-equation" class="nav-link active" data-scroll-target="#interpretation-of-the-linear-equation"><span class="toc-section-number">4</span>  Interpretation of the linear equation</a></li>
-  <li><a href="#ordinary-least-squares" id="toc-ordinary-least-squares" class="nav-link" data-scroll-target="#ordinary-least-squares"><span class="toc-section-number">5</span>  Ordinary Least Squares</a></li>
-  <li><a href="#interpretation-of-the-model-coefficients" id="toc-interpretation-of-the-model-coefficients" class="nav-link" data-scroll-target="#interpretation-of-the-model-coefficients"><span class="toc-section-number">6</span>  Interpretation of the model coefficients</a>
+  <li><a href="#interpretation-of-the-linear-equation" id="toc-interpretation-of-the-linear-equation" class="nav-link active" data-scroll-target="#interpretation-of-the-linear-equation"><span class="toc-section-number">4.1</span>  Interpretation of the linear equation</a></li>
+  <li><a href="#sec-ols-intro" id="toc-sec-ols-intro" class="nav-link" data-scroll-target="#sec-ols-intro"><span class="toc-section-number">4.2</span>  Ordinary Least Squares</a></li>
+  <li><a href="#finding-the-ols-solution" id="toc-finding-the-ols-solution" class="nav-link" data-scroll-target="#finding-the-ols-solution"><span class="toc-section-number">4.3</span>  Finding the OLS solution</a></li>
+  <li><a href="#predictions" id="toc-predictions" class="nav-link" data-scroll-target="#predictions"><span class="toc-section-number">4.4</span>  Predictions</a></li>
+  <li><a href="#interpretation-of-the-estimated-coefficients" id="toc-interpretation-of-the-estimated-coefficients" class="nav-link" data-scroll-target="#interpretation-of-the-estimated-coefficients"><span class="toc-section-number">4.5</span>  Interpretation of the estimated coefficients</a></li>
+  <li><a href="#mathematical-details-optional" id="toc-mathematical-details-optional" class="nav-link" data-scroll-target="#mathematical-details-optional"><span class="toc-section-number">4.6</span>  Mathematical Details (optional)</a>
   <ul class="collapse">
-  <li><a href="#interpretation-of-the-model-coefficients-1" id="toc-interpretation-of-the-model-coefficients-1" class="nav-link" data-scroll-target="#interpretation-of-the-model-coefficients-1"><span class="toc-section-number">6.1</span>  Interpretation of the model coefficients</a></li>
-  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation"><span class="toc-section-number">6.2</span>  Simulation</a></li>
+  <li><a href="#the-conditional-expectation-as-prediction" id="toc-the-conditional-expectation-as-prediction" class="nav-link" data-scroll-target="#the-conditional-expectation-as-prediction"><span class="toc-section-number">4.6.1</span>  The conditional expectation as prediction</a></li>
+  <li><a href="#sec-ols-derivation" id="toc-sec-ols-derivation" class="nav-link" data-scroll-target="#sec-ols-derivation"><span class="toc-section-number">4.6.2</span>  Derivation of the OLS estimator</a></li>
+  <li><a href="#properties-of-the-ols-estimator" id="toc-properties-of-the-ols-estimator" class="nav-link" data-scroll-target="#properties-of-the-ols-estimator"><span class="toc-section-number">4.6.3</span>  Properties of the OLS estimator</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -211,7 +245,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></h1>
+<h1 class="title"><span id="sec-simple-linear-model" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple Linear Model</span></span></h1>
 </div>
 
 
@@ -226,8 +260,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<p>We begin the introduction to linear regression analysis using a simple example with one response variable and one explanatory (predictor) variable. Let us first load the data and the <code>tidyverse</code> packages.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(invoices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ ggplot2 3.4.2     ✔ purrr   1.0.1
+✔ tibble  3.2.1     ✔ dplyr   1.1.1
+✔ tidyr   1.3.0     ✔ stringr 1.5.0
+✔ readr   2.1.4     ✔ forcats 1.0.0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">'https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/invoices.txt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The dataset <code>invoices</code> contains 30 rows and 3 columns. The data was provided by an accounting firm which processes invoices on behalf of its clients. Each observation corresponds to one working day of this firm. The number of invoices processed each day is given in the column <code>Invoices</code> and the processing time for that number of invoices is given in the column <code>Time</code>. Both columns are numeric.</p>
+<ul>
+<li><code>Time</code>: (numeric) Processing time in hours</li>
+<li><code>Invoices</code> (numeric): Number of invoices</li>
+</ul>
+<p>You can see the first few values of each column by calling <code>glimpse</code>. You can also find the <code>kids</code> object in the global environment (right part of R studio) and click on it to view the whole table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(invoices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 30
 Columns: 3
@@ -236,408 +295,1037 @@ $ Invoices &lt;int&gt; 149, 60, 188, 23, 201, 58, 77, 222, 181, 30, 110, 83, 60,
 $ Time     &lt;dbl&gt; 2.1, 1.8, 2.3, 0.8, 2.7, 1.0, 1.7, 3.1, 2.8, 1.0, 1.5, 1.2, 0…</code></pre>
 </div>
 </div>
-<p>Variables description:</p>
-<ul>
-<li><code>Day</code> (numeric): day</li>
-<li><code>Invoices</code> (numeric): number of invoices</li>
-<li><code>Time</code> (numeric): Time needed to process the invoices (hours)</li>
-</ul>
-<p>Our task is to predict the time needed to process 50, 120, 201, 250, 400 invoices.</p>
+<p>Our goal in this exercise is to develop a simple model that can predict the processing time given a number of invoices, for example 50, 120, 201, 250 or 400 invoices.</p>
+<p>First we will visualize the data using a scatterplot <a href="#fig-invoices-scatter">Figure&nbsp;<span>4.1</span></a>. In that plot each dot represents one row in the data. Here each row is one working day of the firm, therefore each</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> invoices, <span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>)) <span class="sc">+</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="fl">0.015</span>, <span class="at">intercept =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="fl">0.001</span>, <span class="at">intercept =</span> <span class="fl">0.1</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>invoices_plt <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The data argument tells the plotting function</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># where to find the data</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> invoices, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The aes (aesthetics function) maps columns in the dataset to visual elements</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># of the plot, in this case the x and y axes.</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_point draws the actual dots on the plot</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the plot</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(invoices_plt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div id="fig-invoices-scatter" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-invoices-scatter-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.1: Processing time and number of invoices</figcaption><p></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># +</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># geom_vline(xintercept = 120, lty = 2) +</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># geom_hline(yintercept = 2.110) +</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># geom_abline(intercept = 0.1, slope = 0.015, colour = "steelblue2")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Estimate the expected processing time for 50, 120, 201, 250, 400 invoices (3 estimates).</p>
-<p>Strategy 1: Use the average processing time for the predictions</p>
-<p><span class="math display">\[
-i = 1,\ldots,n = 30\\
-x_i: \text{ number of invoices on day } i \\
-y_i: \text{ processing time on day } i \\
-\]</span></p>
-<p>Assume a simple (linear) functional relationship between the processing time and the number of invoices.</p>
-<p><span class="math display">\[
-y_i = 0.1 + 0.015x_i
-\]</span></p>
-<p>This equation cannot describe the relation between the processing time and the number of invoices is too restrictive. It implies that all dots in the scatterplot must lie on the line with intercept 0.1 and with a slope equal to 0.015.</p>
-<p><span class="math display">\[
-y_i = 0.1 + 0.015x_i + e_i
-\]</span></p>
-<p>The extra term <span class="math inline">\(e_i\)</span> accounts for the deviations of the observed processing times from the line.</p>
-<p>We will assume that <span class="math inline">\(e_i\)</span> follows a normal distribution with expected value (mean) of zero and variance <span class="math inline">\(\sigma^2\)</span>. We will also assume that <span class="math inline">\(e_i\)</span> are independent and that <span class="math inline">\(e_i\)</span> are independent of <span class="math inline">\(x_i\)</span>.</p>
-<p><span class="math display">\[
+</div>
+<p>We will start by assuming a linear relationship between the processing time and the the number of invoices.</p>
+<p><span class="math display">
+\begin{align*}
+&amp; i = 1,\ldots,n = 30\\
+&amp; x_i: \text{ number of invoices on day } i \\
+&amp; y_i: \text{ processing time on day } i \\
+\end{align*}
+</span></p>
+<p><span id="eq-linear-nonstoch"><span class="math display">
+y_i = \beta_0 + \beta_1 x_i
+\tag{4.1}</span></span></p>
+<p>Where the coefficients <span class="math inline">\beta_0</span> and <span class="math inline">\beta_1</span> are fixed but unknown. When you look at the scatterplot in <a href="#fig-invoices-scatter">Figure&nbsp;<span>4.1</span></a> you will notice that <a href="#eq-linear-nonstoch">Equation&nbsp;<span>4.1</span></a> cannot possibly describe the data as it implies that all points must lie on a single straight line. Therefore we need to relax this equation by adding a term for the deviation of each dot from that straight line. Let us call this term <span class="math inline">e_i</span>.</p>
+<p><span class="math display">\begin{align}
+y_i = \beta_0 + \beta_1 x_i + e_i
+\end{align}</span>{#eq-linear-model}</p>
+<p>The extra term <span class="math inline">e_i</span> accounts for the deviations of the observed processing times from the line.</p>
+<p>We will assume that <span class="math inline">e_i</span> follows a normal distribution with expected value (mean) of zero and variance <span class="math inline">\sigma^2</span>. We will also assume that <span class="math inline">e_i</span> are independent and that <span class="math inline">e_i</span> are independent of <span class="math inline">x_i</span>.</p>
+<p><span class="math display">
 e_i \sim N(0, \sigma^2)
-\]</span></p>
-<p>Under the assumption that <span class="math inline">\(E(e_i) = 0\)</span> we can compute the conditional (given the number of invoices) expected value of <span class="math inline">\(y_i\)</span>. We use the linearity of the expected value:</p>
-<p><span class="math display">\[\begin{align}
-E(y_i | x_i) = E(0.1 + 0.015x_i + e_i)\\
-E(y_i| x_i) = E(0.1) + E(0.015x_i) + E(e_i) \\
-E(y_i| x_i) = 0.1 + 0.015x_i + 0 \\
-E(y_i| x_i) = 0.1 + 0.015x_i
-\end{align}\]</span></p>
-<p>The <em>expected</em> processing time <span class="math inline">\(E(y_i|x_i)\)</span> is equal to <span class="math inline">\(0.1 + 0.015x_i\)</span>.</p>
-<p><span class="math display">\[
-y_i = \underbrace{0.1 + 0.015x_i}_{\text{Systematic part}} + \underbrace{e_i}_{\text{Random part}}
-\]</span></p>
-<p><span class="math display">\[
-y_i = E(y_i) + e_i
-\]</span></p>
-<p>An alternative (and more general) way to describe the model is:</p>
-<p><span class="math display">\[
+</span></p>
+<p>Under the assumption that <span class="math inline">E(e_i) = 0</span> we can compute the conditional (given the number of invoices) expected value of <span class="math inline">y_i</span>. We use the linearity of the expected value:</p>
+<p><span class="math display">
+\begin{align*}
+E(y_i | x_i) &amp; = E(0.1 + 0.015x_i + e_i)\\
+E(y_i| x_i)  &amp; = E(0.1) + E(0.015x_i) + E(e_i) \\
+E(y_i| x_i)  &amp; = 0.1 + 0.015x_i + 0 \\
+E(y_i| x_i)  &amp; = 0.1 + 0.015x_i
+\end{align*}
+</span></p>
+<p>Because we condition on the value of <span class="math inline">x</span> we treat <span class="math inline">x_i</span> as a constant under the conditional expectation.</p>
+<p>The <em>expected</em> processing time conditional on <span class="math inline">x_i</span>: <span class="math inline">E(y_i|x_i)</span> equals <span class="math inline">0.1 + 0.015x_i</span>.</p>
+<p><span class="math display">
+y_i = \underbrace{0.5 + 0.01x_i}_{\text{systematic part}} + \underbrace{e_i}_{\text{random part}}, i = 1,\ldots,n
+</span></p>
+<p><span class="math display">
+y_i = E(y_i | x_i) + e_i
+</span></p>
+<p>A more general way to describe the model is:</p>
+<p><span class="math display">
 y_i \sim N(\mu_i, \sigma^2) \\
 \mu_i = \beta_0 + \beta_1 x_i
-\]</span></p>
-<section id="interpretation-of-the-linear-equation" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Interpretation of the linear equation</h1>
-<p><span class="math display">\[
-i = 1,\ldots,n = 30\\
-x_i: \text{ number of invoices on day } i \\
-y_i: \text{ processing time on day } i \text{ (hours)} \\
-\]</span></p>
-<p>Units of measurement?</p>
-<p><span class="math display">\[
-y_i [hours] = 0.1 [hours] + 0.015 [\frac{hours}{invoice}] x_i[\#invoices] + e_i[hours]\\
-\]</span></p>
+</span></p>
+<p>The last formula says that <span class="math inline">y</span> follows a normal distribution with a center (mean/expected value) that varies with <span class="math inline">x_i</span> according to the linear equation. The standard deviation of these distributions is one and the same and does not vary with <span class="math inline">x</span>. The latter property is called <em>homoscedasticity</em> (this derives from Ancient Greek, where the word <em>skedastikos</em> has to do with “scatter” or “disperse”).</p>
+<p>For the sake of the example, let’s assume that <span class="math inline">\beta_0 = 0.5, \beta_1 = 0.01</span>.</p>
+<p>For <span class="math inline">x \in \{50, 150, 250\}</span> the expected values of <span class="math inline">y</span> are:</p>
+<p><span class="math display">
+E(y | x = 50) = 0.5 + 0.01 \cdot 50 = 1 [hours]\\
+E(y | x = 150) = 0.5  + 0.01 \cdot 150 = 2 [hours] \\
+E(y | x = 150) = 0.5  + 0.01 \cdot 250 = 3 [hours]\\
+</span> Note that the expected value of <span class="math inline">y</span> has the same unit of measurement as <span class="math inline">y</span>. If <span class="math inline">y</span> is measured in hours, then <span class="math inline">E(y | x)</span> is also measured in hours.</p>
+<p><a href="#fig-conditional-distributions-y-line">Figure&nbsp;<span>4.2</span></a> visualizes the conditional distributions of <span class="math inline">y</span> given <span class="math inline">x</span>. For each value of <span class="math inline">x</span>, the line <span class="math inline">\beta_0 + \beta_1 x</span> determines the expected value of <span class="math inline">y</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-conditional-distributions-y-line" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-conditional-distributions-y-line-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.2: Conditional distributions of y given x for three values of x: 50, 150, and 250 invoices.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretation-of-the-linear-equation" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="interpretation-of-the-linear-equation"><span class="header-section-number">4.1</span> Interpretation of the linear equation</h2>
+<p>The first thing that you should consider are the units of measurement of the various variables in your model. <span class="math inline">y</span>, the processing time is measured in hours (you seed that in the data description), <span class="math inline">x</span> is the number of invoices. Both sides of any equation need to have the same unit of measurement, otherwise the equation would not make any sense. Therefore the constant in the equation is measured in the same units as <span class="math inline">y</span> (hours) and the coefficient of <span class="math inline">x</span> must be in hours per invoice.</p>
+<p><span class="math display">
+\begin{align*}
+\mu(x) = E(y | x) \left[\text{hours}\right] = 0.5 [\text{hours}] + 0.01 \left[\frac{\text{hours}}{\text{invoice}}\right] x [\#\text{invoices}]
+\end{align*}
+</span></p>
+<p>If you have trouble understanding the unit of measurement of <span class="math inline">\beta_1</span>, think about how you would calculate your rent for three months. Let’s say that you apartment rent is given in EUR per month and that you pay 500 EUR per month. Your total rent for three months would amount to:</p>
+<p><span class="math display">
+3 [\text{months}] \times 500 \left[\frac{\text{EUR}}{\text{month}}\right] = 1500 [\text{EUR}]
+</span></p>
+<p>(XXX, fix) In general, how you would interpret the interpretation of the model coefficients vary depending on the context of the model (the data). In this example you can think about the processing time as the costs of the firm for processing a given number of invoices.</p>
+<p>The the <span class="math inline">\beta_1</span> coefficient would correspond to the marginal cost as it describes how much the expected processing time would change for one additional invoice. The constant (<span class="math inline">\beta_0</span>) is the expected processing time for <span class="math inline">x = 0</span> invoices, thus it corresponds to (expected) fixed costs of the firm (production costs that do not depend on the actual number of invoices).</p>
 <!-- $$ -->
 <!-- 1 [m] \times 2 [m] = 2 [m^2] \text{ example with area} \\ -->
 <!-- 300 [\frac{BGN}{month}]* 2 [months] = 600 [BGN] \text{ example with monthly rent} -->
 <!-- $$ -->
 </section>
-<section id="ordinary-least-squares" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Ordinary Least Squares</h1>
-<p><span class="math display">\[
-y_i = 0.1 + 0.015 x_i + e_i\quad \text{black line}\\
-y_i =  0.1 + 0.001 x_i + e_i\quad \text{red line}
-\]</span></p>
+<section id="sec-ols-intro" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="sec-ols-intro"><span class="header-section-number">4.2</span> Ordinary Least Squares</h2>
+<p>Up to now we have considered a model with known coefficients <span class="math inline">\beta_0</span> and <span class="math inline">\beta_1</span>. In general, these coefficients are not known and we need to make reasonable guesses about them using the observed data. Lets compare two guesses about the coefficients. We will write a “hat” over the expected value of <span class="math inline">y</span> to make clear that this is an estimated value and not the true (and unknown) <span class="math inline">\mu_i</span>.</p>
+<p><span class="math display">
+\hat{\mu}^{(1)}_i = 0.1 + 0.015 x_i \quad \text{(blue line)} \\
+\hat{\mu}^{(2)}_i =  0.2 + 0.005 x_i \quad \text{(red line)}
+</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> invoices, <span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="fl">0.015</span>, <span class="at">intercept =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="fl">0.001</span>, <span class="at">intercept =</span> <span class="fl">0.1</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Draws the blue line</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">0.1</span>, <span class="at">slope =</span> <span class="fl">0.015</span>, <span class="at">color =</span> <span class="st">"steelblue4"</span>) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Draws the red line</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">0.2</span>, <span class="at">slope =</span> <span class="fl">0.005</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span> </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Sets the range of the y-axis. We use this here in order to</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## clearly see both lines</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>)) <span class="sc">+</span> </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="do">## (Optional) write the equations as annotation in the plot</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">tribble</span>(</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>      <span class="sc">~</span>x,  <span class="sc">~</span>y,  <span class="sc">~</span>label,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>      <span class="dv">250</span>, <span class="fl">4.5</span>, <span class="st">"mu_hat_1 = 0.1 + 0.015 x"</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>      <span class="dv">200</span>, <span class="fl">1.5</span>, <span class="st">"mu_hat_2 = 0.2 + 0.005 x"</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">label =</span> label)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div id="fig-two-guesses" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-two-guesses-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.3: The lines corresponding to the two guesses about the model coefficients.</figcaption><p></p>
+</figure>
 </div>
 </div>
-<p><span class="math display">\[
-y_i = \beta_0 + \beta_1 x_i + e_i
-\]</span></p>
-<p>where <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are unknown coefficients. Because the coefficients are unknown, we must guess these from the data.</p>
-<p>We can compare different guesses about the coefficients using the distance between the regression line (the model) and the dots (the observed data).</p>
-<p><span class="math display">\[
-\hat{y}_i = \hat{\mu}_i= \hat{\beta}_0 + \hat{\beta}_1 x_i \text{ regression line (model)}
-\]</span></p>
-<p>For example with <span class="math inline">\(\hat{\beta}_0 = 0.1, \hat{\beta}_1 = 0.015\)</span> and <span class="math inline">\(x = 120\)</span>:</p>
-<p><span class="math display">\[
-y_{26} = 2.5, x_{26} = 120\\
-\hat{y}_{26} = 0.1 + 0.015 * 120  = 1.9
-\]</span></p>
-<p>The <em>observed</em> processing time on the 26-th day was 2.5 hours, leading to difference of 0.6 hours between observed and predicted processing time. We call this difference the <em>residual</em> (on day 26 in this example).</p>
-<p><span class="math display">\[
-r_{26} = y_{26} - \hat{y}_{26} = 2.5 - 1.9 = 0.6 [hours]
-\]</span></p>
+</div>
+<p>Clearly, the red line would provide poor predictions, because it would underestimate the processing time for each of the observed days (because all dots line above the line).</p>
+<p>The blue line appears to fit the data much better, as it lies close to the points and does not systematically under or overestimate the observed processing time.</p>
+<p>Let us formalize the idea about closeness to the data. A model that produces “good” predictions should have “small” prediction errors for the observed values. Let the predictionerror be the difference between the observed processing time and the predicted processing time. We call this difference the residual for observation <span class="math inline">i</span>.</p>
+<p><span class="math display">
+r_i = y_i - \hat{\mu}_i
+</span> Let us calculate the residuals for the two models: red and blue. We will do this by adding four new columns to the <code>invoices</code> data set.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="ot">&lt;-</span> invoices <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_hat_manual =</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.015</span> <span class="sc">*</span> Invoices,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_manual =</span> Time <span class="sc">-</span> y_hat_manual</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="ot">&lt;-</span> invoices <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Calculate the predictions using the model equation (blue)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_hat_1 =</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.015</span> <span class="sc">*</span> Invoices,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="do">## The residuals are the differences between observed value (Time) and predicted value</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_1 =</span> Time <span class="sc">-</span> mu_hat_1,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="do">## We do the same for the second model (red)</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_hat_2 =</span> <span class="fl">0.2</span> <span class="sc">+</span> <span class="fl">0.005</span> <span class="sc">*</span> Invoices,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_2 =</span> Time <span class="sc">-</span> mu_hat_2</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> invoices, <span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="fl">0.015</span>, <span class="at">intercept =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> Invoices, <span class="at">yend =</span> y_hat_manual), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> residuals_manual))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Select the first few observations (head)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(invoices) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## (Optional) used to produce the html table that you see below</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div id="tbl-manual-residuals" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;4.1: Predicted values and residuals for the two guesses. For the sake of brevity the table only shows the first few observations.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Day</th>
+<th style="text-align: right;">Invoices</th>
+<th style="text-align: right;">Time</th>
+<th style="text-align: right;">mu_hat_1</th>
+<th style="text-align: right;">residuals_1</th>
+<th style="text-align: right;">mu_hat_2</th>
+<th style="text-align: right;">residuals_2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: right;">2.335</td>
+<td style="text-align: right;">-0.235</td>
+<td style="text-align: right;">0.945</td>
+<td style="text-align: right;">1.155</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">0.800</td>
+<td style="text-align: right;">0.500</td>
+<td style="text-align: right;">1.300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">188</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">2.920</td>
+<td style="text-align: right;">-0.620</td>
+<td style="text-align: right;">1.140</td>
+<td style="text-align: right;">1.160</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0.445</td>
+<td style="text-align: right;">0.355</td>
+<td style="text-align: right;">0.315</td>
+<td style="text-align: right;">0.485</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">3.115</td>
+<td style="text-align: right;">-0.415</td>
+<td style="text-align: right;">1.205</td>
+<td style="text-align: right;">1.495</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">0.970</td>
+<td style="text-align: right;">0.030</td>
+<td style="text-align: right;">0.490</td>
+<td style="text-align: right;">0.510</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<p>Residual for obs. <span class="math inline">\(i\)</span>.</p>
-<p><span class="math display">\[
-r_i = y_i - \hat{y}_i
-\]</span></p>
-<p>Let us formalize the idea that small residuals lead to better prediction.</p>
-<p><span class="math display">\[
-\frac{1}{n}\sum_{i = 1}^{n}r_i
-\]</span></p>
-<p><span class="math display">\[
-\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i
-\]</span></p>
-<p><span class="math display">\[
-\min_{\hat{\beta}_0, \hat{\beta}_1} RSS(\hat{\beta}_0, \hat{\beta}_1) = \sum_{i = 1}^n r_i ^ 2 = \sum_{i = 1}^n (y_i - \hat{y}_i) ^ 2 =\sum_{i = 1}^n (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
-\]</span></p>
-<p>RSS: Residual Sum of Squares. When we solve this minimization problem we get the Ordinary Least Squares (OLS) estimators for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>.</p>
-<p>Calculation of the OLS coefficient estimates given data and the model</p>
-<p><span class="math display">\[
-y_i \sim N(\mu_i, \sigma^2)\\
-\mu_i = \beta_0 + \beta_1 x_i + e_i
-\]</span></p>
+</div>
+<p>You can see the full table with all predicted values and residuals by running the code above and clicking on the <code>invoices</code> object in the global environment in R Studio. In the scatterplot the residuals correspond to the vertical distance between the dots (observed processing time) and the two lines (predicted processing times). Figures <a href="#fig-manual-residuals-blue"><span>4.4</span></a> and <a href="#fig-manual-residuals-red"><span>4.5</span></a> visualise these residuals.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## lm: Linear Model</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="do">## y: Time</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="do">## x: Invoices</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Time <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Invoices, <span class="at">data =</span> invoices)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = Time ~ 1 + Invoices, data = invoices)
-
-Coefficients:
-(Intercept)     Invoices  
-    0.64171      0.01129  </code></pre>
-</div>
-</div>
-<p>Using OLS we get the estimated (“guessed”)</p>
-<p><span class="math display">\[
-\hat{\beta}_0 = 0.64171; \hat{\beta}_1 = 0.01129\\
-\hat{y}_i = 0.64171 + 0.01129 x_i
-\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> invoices, <span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="fl">0.015</span>, <span class="at">intercept =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_point() +</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">0.1</span>, <span class="at">slope =</span> <span class="fl">0.015</span>, <span class="at">color =</span> <span class="st">"steelblue4"</span>) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> Invoices, <span class="at">yend =</span> mu_hat_1), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"steelblue4"</span>) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">round</span>(residuals_1, <span class="dv">2</span>)),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.5</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<div id="fig-manual-residuals-blue" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-manual-residuals-blue-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.4: Residuals of the two models</figcaption><p></p>
+</figure>
 </div>
 </div>
-<p>Calculating the residual sum of squares (RSS) for different lines: a line with manually chosen (arbitrary) coefficients, and the OLS estimates of the coefficients.</p>
-<p><span class="math display">\[
-\hat{y}_i = 0.64171 + 0.01129 x_i
-\]</span></p>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="ot">&lt;-</span> invoices <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_hat_manual =</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.015</span> <span class="sc">*</span> Invoices,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_manual =</span> Time <span class="sc">-</span> y_hat_manual,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_hat_ols =</span> <span class="fl">0.64171</span> <span class="sc">+</span> <span class="fl">0.01129</span> <span class="sc">*</span> Invoices,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_ols =</span> Time <span class="sc">-</span> y_hat_ols</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>RSS for the manually chosen coefficients (0.1; 0.015)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(invoices<span class="sc">$</span>residuals_manual<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5.384075</code></pre>
-</div>
-</div>
-<p>RSS for the OLS coefficients (intercept = 0.64171; slope = 0.01129)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(invoices<span class="sc">$</span>residuals_ols<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.045014</code></pre>
-</div>
-</div>
-<p>Let us get back to the original task to predict the time needed to process 50, 120, 201, 250, 400 invoices.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Where to get the data?</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="do">## How to map data to elements in the graphic</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> Invoices,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> Time</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">## How to visualise the data</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the regression line (least squares) to the graphic</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Where should the vertical lines intercept with the x-axis</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>),</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Alpha channel: controls transparency</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="do">## lty: line type</span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> <span class="dv">2</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Controls the x-axis</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>)) <span class="sc">+</span></span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">yintercept =</span> <span class="fu">c</span>(</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>      <span class="fl">1.206292</span>,</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>      <span class="fl">1.996707</span>,</span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>      <span class="fl">2.911330</span>,</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>      <span class="fl">3.464621</span>,</span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>      <span class="fl">5.158368</span>),</span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> <span class="dv">2</span>,</span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span></span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(</span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.206292</span>,</span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.996707</span>,</span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    <span class="fl">2.911330</span>,</span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>    <span class="fl">3.464621</span>,</span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    <span class="fl">5.158368</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_point() +</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">0.2</span>, <span class="at">slope =</span> <span class="fl">0.005</span>, <span class="at">color =</span> <span class="st">"firebrick4"</span>) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> Invoices, <span class="at">yend =</span> mu_hat_2), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"firebrick4"</span>) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">round</span>(residuals_2, <span class="dv">2</span>)),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.5</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div id="fig-manual-residuals-red" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-manual-residuals-red-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.5: Residuals of the two models</figcaption><p></p>
+</figure>
 </div>
 </div>
-<p><span class="math display">\[
-\hat{y} = 0.64 + 0.011 x
-\]</span> <span class="math display">\[
-\hat{y}_{x = 50} = 0.64 + 0.011 * 50 = 1.19 [hours]
-\]</span> <span class="math display">\[
-\hat{y}_{x = 120} = 0.64 + 0.011 * 120 = 1.96 [hours]
-\]</span></p>
+</div>
+<p>Now let us imagine that we pay the accounting firm a compensation each time that our prediction (for the observed days) is off-target (i.e.&nbsp;has a non-zero residuals). The accounting firm considers both underestimation and overestimation of the observed processing a bad thing and they know that any reasonable model such as the blue line would yield negative residuals for some of the observations and positive residuals for the rest of the observations.</p>
+<p>If the fine is proportional to the sum of the residuals, the even terrible models can have a low residual sum (and we will get away with a low fine), because positive and negative residuals will cancel in the sum. If you are not convinced, consider the following (much simpler) model</p>
+<p><span class="math display">
+\hat{\mu}_i^{(3)} = 2.11
+</span></p>
+<p>This model predicts the processing time with the average processing time (which is about 2.11 hours) and does not consider the number of invoices. The residuals for the first few days are shown in <a href="#tbl-residuals-avg">Table&nbsp;<span>4.2</span></a> and <a href="#fig-residuals-avg">Figure&nbsp;<span>4.6</span></a> plots all the residuals.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_for_predictions <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Invoices =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="ot">&lt;-</span> invoices <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_hat_3 =</span> <span class="fl">2.11</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_3 =</span> Time <span class="sc">-</span> mu_hat_3</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(invoices) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Day, Time, Invoices, mu_hat_3, residuals_3) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="tbl-residuals-avg" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;4.2: Residuals for the third model</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Day</th>
+<th style="text-align: right;">Time</th>
+<th style="text-align: right;">Invoices</th>
+<th style="text-align: right;">mu_hat_3</th>
+<th style="text-align: right;">residuals_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">-0.01</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">-0.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">188</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">-1.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">0.59</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">-1.11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?predict.lm</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit, <span class="at">newdata =</span> data_for_predictions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_point() +</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">2.11</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> Invoices, <span class="at">yend =</span> <span class="fl">2.11</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">round</span>(residuals_3, <span class="dv">2</span>)),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.5</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-residuals-avg" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-residuals-avg-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.6: Residuals for the thrid model, using only the average</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Even though the third model produces much worse predictions than the blue model, the sum of its residuals is zero.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_residuals_1 =</span> <span class="fu">sum</span>(residuals_1),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_residuals_2 =</span> <span class="fu">sum</span>(residuals_2),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_residuals_3 =</span> <span class="fu">sum</span>(residuals_3),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">sum_residuals_1</th>
+<th style="text-align: right;">sum_residuals_2</th>
+<th style="text-align: right;">sum_residuals_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1.785</td>
+<td style="text-align: right;">37.795</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>That is why the accounting firm comes up with the idea to base our fine not on the sum of the residuals but on the sum of the squared residuals.</p>
+<p><span class="math display">
+r_i^2 = (y_i - \hat{\mu}_i)^2
+</span></p>
+<p>Our fine would be proportional to the residual sum of squares (RSS).</p>
+<p><span class="math display">
+RSS = \sum_{i = 1}^n r_i ^ 2 = \sum_{i = 1}^n (y_i - \hat{\mu}_i) ^ 2
+</span></p>
+<p>Let us calculate the RSS for the three models considered thus far:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_1 =</span> <span class="fu">sum</span>(residuals_1 <span class="sc">^</span> <span class="dv">2</span>),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_2 =</span> <span class="fu">sum</span>(residuals_2 <span class="sc">^</span> <span class="dv">2</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_3 =</span> <span class="fu">sum</span>(residuals_3 <span class="sc">^</span> <span class="dv">2</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="tbl-squard-res" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;4.3: Sums of squared residuals for the three models.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rss_1</th>
+<th style="text-align: right;">rss_2</th>
+<th style="text-align: right;">rss_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5.384075</td>
+<td style="text-align: right;">57.08767</td>
+<td style="text-align: right;">23.747</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The RSS of the third model is now larger than the RSS of the first model which makes intuitive sense, because we agreed that the blue line is much more closer to the points in the scatterplots than the other two lines. From <a href="#tbl-squard-res">Table&nbsp;<span>4.3</span></a> it should become clear that the RSS depends on our choice of coefficients.</p>
+<p>Because we would like to avoid paying too much for wrong predictions, let us find the coefficients that make our penalty as small as possible. Let use use <span class="math inline">\hat{\beta}_0</span> and <span class="math inline">\hat{\beta}_1</span> to denote our guesses about <span class="math inline">\beta_0</span> and <span class="math inline">\beta_1</span>. Our predictions for the observed values are then</p>
+<p><span class="math display">
+\hat{\mu}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i, \quad i = 1,\ldots,n
+</span> The RSS therefore depends on these guesses. To emphasize this point we will write <span class="math inline">RRS(\hat{\beta}_0, \hat{\beta}_1)</span>.</p>
+<p><span class="math display">
+RSS(\hat{\beta}_0, \hat{\beta}_1) = \sum_{i = 1}^{n} (y_i - \hat{\mu}_i)^2 = \sum_{i = 1}^n (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
+</span></p>
+<p>The values of <span class="math inline">\hat{\beta}_0</span> and <span class="math inline">\hat{\beta}_1</span> that make the RSS as small as possible are called the Ordinary Least Squares (OLS) estimates for <span class="math inline">\beta_0</span> and <span class="math inline">\beta_1</span>.</p>
+<p><span class="math display">
+\hat{\beta}^{\text{OLS}}_0, \hat{\beta}^{\text{OLS}}_1 = \arg\min_{\hat{\beta}_0, \hat{\beta}_1} RSS(\hat{\beta}_0, \hat{\beta}_1)
+</span></p>
+<p>Because we will deal almost exclusively with OLS estimates we will not write the OLS label every time. You can see how the minimization problem is solved in <a href="#sec-ols-derivation"><span>Section&nbsp;4.6.2</span></a>.</p>
+</section>
+<section id="finding-the-ols-solution" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="finding-the-ols-solution"><span class="header-section-number">4.3</span> Finding the OLS solution</h2>
+<p>To find the OLS solution we can use a R function called <code>lm</code>. This function takes a formula as its first argument that describes the model.</p>
+<p>Our model for the processing time is</p>
+<p><span class="math display">
+\text{Time}_i = \beta_0 + \beta_1 \text{Invoices}_i + e_i, e_i \sim N(0, \sigma^2)
+</span> On the left hand side of the formula you write the name of the variable in the data that you want to model (<code>Time</code> in our case). On the right hand side of the formula you write the names of the predictor variables in the model. Your model has only one predictor variables: <code>Invoices</code>. Finally, the data argument instructs <code>lm</code> where to look for this variables. In our case they reside in the object <code>invoices</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Time <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Invoices, <span class="at">data =</span> invoices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Printing the output from <code>lm</code> shows you the OLS solution for <span class="math inline">\hat{beta}_0</span> and <span class="math inline">\hat{\beta}_1</span>. Now you can write the estimated regression equation</p>
+<p><span id="eq-ols-eq"><span class="math display">
+\hat{\mu} = \hat{\beta}_0 + \hat{\beta}_1 x \\
+\hat{\mu} = 0.64 + 0.011 x \\
+\tag{4.2}</span></span></p>
+<p>Lets plot the OLS regression line.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">0.64</span>, <span class="at">slope =</span> <span class="fl">0.011</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-ols-line" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="03-Simple-Linear-Model_files/figure-html/fig-ols-line-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.7: OLS regression line</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let us also calculate the residual sum of squares:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="ot">&lt;-</span> invoices <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_hat_ols =</span> <span class="fl">0.64</span> <span class="sc">+</span> <span class="fl">0.011</span> <span class="sc">*</span> Invoices,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals_ols =</span> Time <span class="sc">-</span> y_hat_ols,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_1 =</span> <span class="fu">sum</span>(residuals_1 <span class="sc">^</span> <span class="dv">2</span>),</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_2 =</span> <span class="fu">sum</span>(residuals_2 <span class="sc">^</span> <span class="dv">2</span>),</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_3 =</span> <span class="fu">sum</span>(residuals_3 <span class="sc">^</span> <span class="dv">2</span>),</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">rss_ols =</span> <span class="fu">sum</span>(residuals_ols <span class="sc">^</span> <span class="dv">2</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="tbl-rss-with-ols" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;4.4: Residuals sums of squares</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rss_1</th>
+<th style="text-align: right;">rss_2</th>
+<th style="text-align: right;">rss_3</th>
+<th style="text-align: right;">rss_ols</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5.384075</td>
+<td style="text-align: right;">57.08767</td>
+<td style="text-align: right;">23.747</td>
+<td style="text-align: right;">3.105947</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>In <a href="#tbl-rss-with-ols">Table&nbsp;<span>4.4</span></a> you can see that the OLS estimates resulted in the lowest RSS among the three models that we compared.</p>
+</section>
+<section id="predictions" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="predictions"><span class="header-section-number">4.4</span> Predictions</h2>
+<p>Once you have a estimates for the unknown coefficients in the model you can use these to make predictions about <span class="math inline">y</span>. The predicted value of <span class="math inline">y</span> is simply the estimated expected value of <span class="math inline">y</span>. Using <a href="#eq-ols-eq">Equation&nbsp;<span>4.2</span></a> we can compute the predictions for <span class="math inline">x = 50, x = 150</span>, and <span class="math inline">x = 250</span> (our original goal).</p>
+<p><span class="math display">
+\begin{align}
+&amp; \hat{\mu}_{x = 50} = 0.64 + 0.011\cdot 50 =  1.19 \\
+&amp; \hat{\mu}_{x = 150} = 0.64 + 0.011\cdot 50 =  2.29 \\
+&amp; \hat{\mu}_{x = 250} = 0.64 + 0.011\cdot 250 =  3.39
+\end{align}
+</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Where to get the data?</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="do">## How to map data to elements in the graphic</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> Invoices,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> Time</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">## How to visualise the data</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the regression line (least squares) to the graphic</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">0.64</span>, <span class="at">slope =</span> <span class="fl">0.011</span>) <span class="sc">+</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Where should the vertical lines intercept with the x-axis</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">250</span>),</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Alpha channel: controls transparency</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="do">## lty: line type</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> <span class="dv">2</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Controls the x-axis</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">250</span>)) <span class="sc">+</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">tibble</span>(</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">250</span>),</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">1.19</span>, <span class="fl">2.29</span>, <span class="fl">3.39</span>),</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">xend =</span> <span class="dv">0</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> y),</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> <span class="dv">2</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.19</span>,</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>    <span class="fl">2.29</span>,</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>    <span class="fl">3.39</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Instead of doing the calculations manually, you can use the <code>predict</code> function. It takes a model object (in our case the result from running <code>lm</code>) and a data object (e.g.&nbsp;a <code>tibble</code>). The data object must have the same variables (columns) as the ones specified in the formula, otherwise <code>predict</code> would fail.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">tibble</span>(<span class="at">Invoices =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">250</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       1        2        3        4        5 
-1.206292 1.996707 2.911330 3.464621 5.158368 </code></pre>
+<pre><code>       1        2        3 
+1.206292 2.335456 3.464621 </code></pre>
 </div>
+</div>
+<p>The results from predict differ slightly from our own calculations above due to rounding errors in our calculations.</p>
+</section>
+<section id="interpretation-of-the-estimated-coefficients" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="interpretation-of-the-estimated-coefficients"><span class="header-section-number">4.5</span> Interpretation of the estimated coefficients</h2>
+<p><span class="math display">
+\hat{\mu} = 0.64 + 0.011 x
+</span> As previously discussed the estimated fixed costs are 0.64 hours. The estimated cost of processing one additional invoice is 0.011 hours.</p>
+<!-- ## Simulation -->
+<!-- Normal distribution -->
+<!-- ```{r} -->
+<!-- # r: random, norm: normal -->
+<!-- # mean: expected value of the distribution, -->
+<!-- # sd: standard deviation of the distribution = square root of the variance -->
+<!-- u <- rnorm(1000, mean = 0, sd = 1) -->
+<!-- # u -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- mean(u) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- tibble(u) %>% -->
+<!--   ggplot(aes(x = u)) + -->
+<!--   geom_histogram(bins = 20) -->
+<!-- ``` -->
+<!-- Lets us assume, that we know a linear relationship between $y$ and $x$. -->
+<!-- $$ -->
+<!-- y =  0.1 + 0.015 x + u, \quad u \sim N(0, \sigma^2 = 0.5^2) -->
+<!-- $$ -->
+<!-- ```{r} -->
+<!-- ## Number of observations -->
+<!-- n <- 30 -->
+<!-- ## Generate a grid of 30 values for x between 10 and 250 -->
+<!-- x <- round(seq(10, 250, length.out = n), 0) -->
+<!-- x -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- ## Select values at random from a standard -->
+<!-- ## normal distribution, i.e. mean (expected value) = 0, standard dev. = 0.5 -->
+<!-- u <- rnorm(n, mean = 0, sd = 0.5) -->
+<!-- y <- 0.1 + 0.015 * x + u -->
+<!-- sim_data <- tibble(x = x, y = y) -->
+<!-- # sim_data %>% -->
+<!-- #   ggplot(aes(x = x, y = y)) + -->
+<!-- #     geom_point() + -->
+<!-- #     geom_abline(intercept = 0.1, slope = 0.015) + -->
+<!-- #     ## Controls the range of the y-axis -->
+<!-- #     ylim(c(0, 5)) + -->
+<!-- #     ## Controls the range of the x-axis -->
+<!-- #     xlim(c(0, 260)) -->
+<!-- lm(y ~ 1 + x) -->
+<!-- ``` -->
+</section>
+<section id="mathematical-details-optional" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="mathematical-details-optional"><span class="header-section-number">4.6</span> Mathematical Details (optional)</h2>
+<section id="the-conditional-expectation-as-prediction" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="the-conditional-expectation-as-prediction"><span class="header-section-number">4.6.1</span> The conditional expectation as prediction</h3>
+<p>Until now we have used the expected value of <span class="math inline">y</span> given <span class="math inline">x</span> as a prediction for <span class="math inline">y</span> without a justification. Assume that we offer the accounting firm a prediction quality guarantee. Each time that our prediction (<span class="math inline">\hat{y}</span>) fails to hit the real <span class="math inline">y</span> we pay a penalty that is equal to</p>
+<p><span class="math display">
+(y - \hat{y})^2
+</span> If our model is adequate, then future values of for let’s say <span class="math inline">x = 50</span> invoices will be generated from a normal distribution with mean <span class="math inline">1</span> and standard deviation 0.3. Now the question is, how should we make our prediction so that the penalties that we expect to pay are as small as possible.</p>
+<p>Our expected loss would be:</p>
+<p><span class="math display">
+\text{Expected Loss}(\hat{y}) = E\left((y - \hat{y})^2 | x = 50\right)
+</span></p>
+<p><span class="math display">
+\begin{align}
+\text{Expected Loss} &amp; = E\left((y - \hat{y})^2 | x = 50\right)\\
+&amp; = E\left(y^2 - 2 y \hat{y} + \hat{y}^2 | x = 50\right) \\
+&amp; = E(y^2 | x = 50) - 2\hat{y}E(y | x = 50) + \hat{y}^2 \\
+\end{align}
+</span></p>
+<p>Now let’s find the minimal expected loss by setting the first derivative of the loss function equal to zero:</p>
+<p><span class="math display">
+\frac{\partial \text{Expected Loss}(\hat{y})}{\partial \hat{y}} = -2 E(y | x = 50) + 2\hat{y} = 0
+</span> Solving this equation is very easy.</p>
+<p><span class="math display">
+\hat{y} = E(y | x = 50)
+</span> You should also check the sufficient condition for a local minium (positive second derivative!). If the second derivative is negative, then you have found a local <em>maximum</em>, not a minimum.</p>
+<p><span class="math display">
+\frac{\partial^2 \text{Expected Loss}(\hat{y})}{\partial^2 \hat{y}} = 2 &gt; 0
+</span> The second derivative is positive, so our solution (predicting the random variable with its expected value) yields the best prediction in the sense of minimizing the quadratic loss function.</p>
+<p>To strenghten your understanding, take a couple of minutes to play the following game. You would like to predict the value of random variable generated from <span class="math inline">N(1, 0.3^2)</span>. You want to compare two predictions: the first using the expected value of the distribution (<span class="math inline">\hat{y} = 1</span>), the second one using another value: <span class="math inline">\hat{y}^{(1)} = 2</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sim_loss <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Generate value from N(1, 0.3^2)</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.3</span>),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Compute the error of each prediction (you are always predicting with the expected value, i.e. 1)</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> y <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Compute the loss for each prediction</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss =</span> error<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Now compute the error and the loss when using the second prediction</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">error1 =</span> y <span class="sc">-</span> <span class="dv">2</span>,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss1 =</span> error1 <span class="sc">^</span> <span class="dv">2</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>sim_loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 5
+       y   error    loss error1 loss1
+   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+ 1 0.475 -0.525  0.276   -1.53  2.33 
+ 2 0.724 -0.276  0.0762  -1.28  1.63 
+ 3 0.700 -0.300  0.0897  -1.30  1.69 
+ 4 1.11   0.114  0.0130  -0.886 0.785
+ 5 1.56   0.562  0.316   -0.438 0.192
+ 6 1.20   0.200  0.0399  -0.800 0.640
+ 7 0.951 -0.0494 0.00244 -1.05  1.10 
+ 8 0.876 -0.124  0.0153  -1.12  1.26 
+ 9 0.934 -0.0659 0.00434 -1.07  1.14 
+10 1.24   0.240  0.0574  -0.760 0.578</code></pre>
+</div>
+</div>
+<p>Finally, calculate the total lossese for the two predictions and compare the two.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>sim_loss <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_loss =</span> <span class="fu">sum</span>(loss),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_loss1 =</span> <span class="fu">sum</span>(loss1)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  total_loss total_loss1
+       &lt;dbl&gt;       &lt;dbl&gt;
+1      0.890        11.3</code></pre>
+</div>
+</div>
+<p>Notice that the prediction using <span class="math inline">\hat{y} = 2</span> yields a much worse total loss than the prediction using the conditional expected value <span class="math inline">\hat{y} = 1</span>. Change the value of the second prediction (some other value instead of 2) and re-play the game a couple of times.</p>
+</section>
+<section id="sec-ols-derivation" class="level3" data-number="4.6.2">
+<h3 data-number="4.6.2" class="anchored" data-anchor-id="sec-ols-derivation"><span class="header-section-number">4.6.2</span> Derivation of the OLS estimator</h3>
+<p>As we have already discussed, the OLS estimator looks for guesses <span class="math inline">\hat{\beta}_0</span> and <span class="math inline">\hat{\beta}_1</span> that minimize the residual sum of squares (RSS).</p>
+<p><span class="math display">
+\begin{align}
+\text{RSS}(\hat{\beta}_0, \hat{\beta}_1) = \sum_{i = 1}^{n}\left(y_i - \hat{y}_i \right)^2 = \sum_{i = 1}^{n}\left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i \right)^2
+\end{align}
+</span></p>
+<p>To find the minimum we compute the first derivatives of <span class="math inline">\text{RSS}(\hat{\beta}_0, \hat{\beta}_1)</span> with respect to its two arguments and set these derivatives to zero.</p>
+<p><span class="math display">
+\begin{align}
+\frac{\partial \text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{\partial \hat{\beta}_0} = 0 \\
+\frac{\partial \text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{\partial \hat{\beta}_1} = 0 \\
+\end{align}
+</span></p>
+<p>The first partial derivative is:</p>
+<p><span class="math display">
+\begin{align}
+\frac{\partial \text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{\partial \hat{\beta}_0} =  - 2 \sum_{i = 1}^{n}\left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i \right) = 0\\
+\end{align}
+</span></p>
+<p>We can simplify the left hand side of the equation. We devide by -2 and expand the expression in the paranthesis.</p>
+<p><span class="math display">
+\begin{align}
+- 2 \sum_{i = 1}^{n}\left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i \right) = 0 \\
+\sum_{i = 1}^{n}\left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i \right) = 0 \\
+\sum_{i = 1}^{n} y_i - \sum_{i = 1}^{n} \hat{\beta}_0 - \sum_{i = 1}^{n} \hat{\beta}_1 x_i = 0
+\end{align}
+</span></p>
+<p>Now we can notice that <span class="math inline">\hat{\beta}_0</span> and <span class="math inline">\hat{\beta}_1</span> do not depend on the index of the sums, so we can write <span class="math inline">\hat{\beta}_1</span> in front of the sum.</p>
+<p><span class="math display">
+\begin{align}
+\sum_{i = 1}^{n} y_i - n \hat{\beta}_0 - \hat{\beta}_1 \sum_{i = 1}^{n} x_i = 0
+\end{align}
+</span></p>
+<p>If we devide the equation by <span class="math inline">n</span> we get</p>
+<p><span class="math display">
+\begin{align}
+\frac{1}{n}\sum_{i = 1}^{n} y_i - \frac{n}{n} \hat{\beta}_0 - \hat{\beta}_1 \frac{1}{n} \sum_{i = 1}^{n} x_i = 0 \\
+\bar{y} - \hat{\beta}_0 - \hat{\beta}_1 \bar{x} = 0 \implies \\
+\end{align}
+</span> To simplify the notation we use the following shorthands:</p>
+<p><span class="math display">
+\begin{align}
+\bar{x} = \frac{1}{n}\sum_{i = 1}^{n} x_i \quad \text{ the arithmetic average of } x \\
+\bar{y} = \frac{1}{n}\sum_{i = 1}^{n} y_i \quad \text{ the arithmetic average of } y \\
+\overline{y^2} = \frac{1}{n}\sum_{i = 1}^{n} y_i^2 \quad \text{ the arithmetic average of } y^2 \\
+\overline{x^2} = \frac{1}{n}\sum_{i = 1}^{n} x_i^2 \quad \text{ the arithmetic average of } x^2 \\
+\overline{xy} = \frac{1}{n}\sum_{i = 1}^{n} x_i y_i \quad \text{ the arithmetic average of } x\cdot y  \\
+\end{align}
+</span></p>
+<p>Finally we bring all term except <span class="math inline">\bar{y}</span> to the right hand side of the equation to obtain:</p>
+<p><span class="math display">
+\bar{y} = \hat{\beta}_0 + \hat{\beta}_1 \bar{x}
+</span> This equation informs us that the OLS regression line passes through the center of the observations: <span class="math inline">(\bar{x}, \bar{y})</span>.</p>
+<p>Now we can calculate the other derivative.</p>
+<p><span class="math display">
+\begin{align}
+\frac{\partial \text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{\partial \hat{\beta}_1} =  - 2 \sum_{i = 1}^{n} x_i \left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i \right) = 0\\
+\end{align}
+</span></p>
+<p>As with the previous derivative we simplify the expression by dividing by -2 and expanding</p>
+<p><span class="math display">
+\begin{align}
+- 2 \sum_{i = 1}^{n}\left(x_i y_i - \hat{\beta}_0 x_i - \hat{\beta}_1 x_i^2 \right) = 0\\
+\sum_{i = 1}^{n}\left(x_i y_i - \hat{\beta}_0 x_i - \hat{\beta}_1 x_i^2 \right) = 0 \\
+\sum_{i = 1}^{n} x_i y_i - \sum_{i = 1}^{n} \hat{\beta}_0 x_i - \sum_{i = 1}^{n} \hat{\beta}_1 x_i^2 = 0 \\
+\frac{1}{n}\sum_{i = 1}^{n} x_i y_i - \hat{\beta}_0 \frac{1}{n} \sum_{i = 1}^{n} x_i - \hat{\beta}_1 \frac{1}{n} \sum_{i = 1}^{n} x_i^2 = 0 \\
+\overline{xy} - \hat{\beta}_0 \bar{x} - \hat{\beta}_1 \overline{x^2} = 0 \\
+\overline{xy}  = \hat{\beta}_0 \bar{x} + \hat{\beta}_1 \overline{x^2}
+\end{align}
+</span></p>
+<p>Now we have a system of two linear equations for <span class="math inline">\hat{\beta}_0</span> and <span class="math inline">\hat{\beta}_0</span>.</p>
+<p><span class="math display">
+\begin{align}
+\bar{y} = \hat{\beta}_0 + \hat{\beta}_1 \bar{x} \\
+\overline{xy}  = \hat{\beta}_0 \bar{x} + \hat{\beta}_1 \overline{x^2}
+\end{align}
+</span></p>
+<p>An easy way to solve the system of equations is to multiply the first equation by <span class="math inline">\bar{x}</span> and subtract the first equation from the second one. This will eliminate <span class="math inline">\hat{\beta}_0</span> and allow us to solve for <span class="math inline">\hat{\beta}_1</span>.</p>
+<p><span class="math display">
+\begin{align}
+\overline{xy} - \bar{x}\bar{y} = \hat{\beta}_0 \bar{x} + \hat{\beta}_1 \overline{x^2} - \hat{\beta}_0 \bar{x} - \hat{\beta}_1 \bar{x}^2 \\
+\overline{xy} - \bar{x}\bar{y} = \hat{\beta}_1 \overline{x^2}- \hat{\beta}_1 \bar{x}^2 \\
+\overline{xy} - \bar{x}\bar{y} = \hat{\beta}_1 (\overline{x^2} - \bar{x}^2) \implies \\
+\hat{\beta}_1 = \frac{\overline{xy} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
+\end{align}
+</span></p>
+<p>Finally, we obtain the whole solution:</p>
+<p><span id="eq-ols-simple"><span class="math display">
+\begin{align}
+  \bar{y} &amp; = \hat{\beta}_0 + \hat{\beta}_1 \bar{x} \\
+  \hat{\beta}_1 &amp; = \frac{\overline{xy} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
+\end{align}
+\tag{4.3}</span></span></p>
+<p>The equation for the intercept in <a href="#eq-ols-simple">Equation&nbsp;<span>4.3</span></a> simply says that the OLS regression line passes through the center of the observations. The second equation says that the slope estimate equals the covariance of <span class="math inline">x</span> and <span class="math inline">y</span> scaled with the variance of <span class="math inline">x</span>.</p>
+<p>The (empirical) covariance between two variables is defined as the average cross-product of the deviations of <span class="math inline">x</span> and <span class="math inline">y</span> from their respective means (<span class="math inline">\bar{x}</span>) and <span class="math inline">\bar{y}</span>.</p>
+<p><span class="math display">
+Cov(x, y) = \frac{1}{n - 1} \sum_{i = 1}^n (x_i - \bar{x})(y_i - \bar{y})
+</span></p>
+<p>We can prove the following theorem</p>
+<div id="thm-covar-decomp" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.1 (Covariance decomposition) </strong></span>The sum of cross-products can be decomposed in the following way</p>
+<p><span class="math display">
+\sum_{i = 1}^n (x_i - \bar{x})(y_i - \bar{y}) = n(\overline{xy} - \bar{x} \bar{y})
+</span> Therefore, the covariance of <span class="math inline">x</span> and <span class="math inline">y</span> is equal to</p>
+<p><span class="math display">
+Cov(x, y) = \frac{n}{(n - 1)}(\overline{xy} - \bar{x}\bar{y})
+</span></p>
+</div>
+<p>::: {.proof} <span class="math display">
+\begin{align*}
+\sum_{i = 1}^n (x_i - \bar{x})(y_i - \bar{y}) &amp; = \sum_{i = 1}^n (x_i y_i - x_i \bar{y} - \bar{x} y_i + \bar{x} \bar{y}) \\
+&amp; = \sum_{i = 1}^{n} x_i y_i - \sum_{i = 1}^{n} x_i \bar{y} - \sum_{i = 1}^{n} \bar{x} y_i + \sum_{i = 1}^{n} \bar{x} \bar{y}
+\end{align*}
+</span></p>
+<div id="thm-var-decomp" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.2 (Variance decomposition) </strong></span>The (empirical) variance of a numeric variable <span class="math inline">x</span> is given by</p>
+<p><span class="math display">
+S^2(x)  = \frac{1}{n - 1}\sum_{i = 1}^n (x_i - \bar{x})^2
+</span> The sum of squares can be decomposed as follows</p>
+<p><span class="math display">
+\sum_{i = 1}^n (x_i - \bar{x})^2 = n(\overline{x^2} - \bar{x}^2)
+</span></p>
+<p>The empirical variance is therefore equal to</p>
+<p><span class="math display">
+S^2_{x} = \frac{n}{n - 1}(\overline{x^2} - \bar{x}^2)
+</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Take the expression for the sum of cross-products from <a href="#thm-covar-decomp">Theorem&nbsp;<span>4.1</span></a> and set <span class="math inline">y_i</span> = <span class="math inline">x_i</span>:</p>
+<p><span class="math display">
+\begin{align*}
+\sum_{i = 1}^n (x_i - \bar{x})(y_i - \bar{y}) &amp; = n(\overline{xy} - \bar{x}\bar{y}) \implies \\
+\sum_{i = 1}^n (x_i - \bar{x})(x_i - \bar{x}) = \sum_{i = 1}^n (x_i - \bar{x})^2 = n(\overline{x \cdot x} - \bar{x}\bar{x}) = n(\overline{x^2} - \bar{x}^2
+)
+\end{align*}
+</span></p>
 </div>
 </section>
-<section id="interpretation-of-the-model-coefficients" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Interpretation of the model coefficients</h1>
-<p><span class="math display">\[
-\hat{y} = 0.64 + 0.011 x
-\]</span></p>
-<p><span class="math display">\[
-\hat{y}_{x = 0} = 0.64 + 0.011 * 0 = 0.64 [hours]
-\]</span> The intercept estimates the expected fixed costs (in terms of time) of the firm.</p>
-<p>The slope is 0.011 [hours/invoice]: marginal costs: these are the additional costs (in terms of time) for one additional unit of input (one invoice).</p>
-<p>The predicted processing time for 50 invoices (given the linear model that we assumed and method for estimating its coefficients) is 1.2 hours.</p>
-<p>Prediction for 50 invoices:</p>
-<p><span class="math display">\[
-\hat{y}_{x = 50} = 0.64171 + 0.01129*50 = 1.20621 [hours]
-\]</span> Prediction for 120 invoices:</p>
-<p><span class="math display">\[
-\hat{y}_{x = 120} = 0.64171 + 0.01129*120 = 1.99651 [hours]
-\]</span></p>
-<p>Create a data object that holds the values for which we want to make a prediction.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>data_for_predictions <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Invoices =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">201</span>, <span class="dv">250</span>, <span class="dv">400</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="properties-of-the-ols-estimator" class="level3" data-number="4.6.3">
+<h3 data-number="4.6.3" class="anchored" data-anchor-id="properties-of-the-ols-estimator"><span class="header-section-number">4.6.3</span> Properties of the OLS estimator</h3>
+<p>The OLS estimators are unbiased for the coefficients.</p>
+<div id="thm-ols-expected-value" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.3 (Expected value of the OLS estimator) </strong></span><span class="math display">
+E\hat{\beta}_0 = \beta_0 \\
+E\hat{\beta}_1 = \beta_1
+</span></p>
 </div>
-<p>To compute the predictions using R we can use the <code>predict</code> function.</p>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>From <a href="#eq-ols-simple">Equation&nbsp;<span>4.3</span></a> we know that the OLS estimator for <span class="math inline">\beta_1</span> is</p>
+<p><span class="math display">
+\hat{\beta}_1 = \frac{\overline{xy} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
+</span></p>
+<p>To investigate the statistical properties (expected value and variance) of this estimator it is convenient to write is as a linear combination of <span class="math inline">y</span>.</p>
+<p><span class="math display">
+\begin{align*}
+\hat{\beta}_1 &amp; = \frac{1}{n} \frac{1}{\overline{x^2} - \bar{x}^2} \left(\sum_{i = 1}^{n} x_i y_i - \bar{x} \sum_{i = 1}^{n} y_i \right) \\
+        &amp; = \frac{1}{n} \frac{1}{\overline{x^2} - \bar{x}^2} \sum_{i = 1}^{n} (x_i - \bar{x}) y_i
+\end{align*}
+</span></p>
+<p>We can write this more compactly as:</p>
+<p><span id="eq-hat-beta-1-lincomb"><span class="math display">
+\begin{align*}
+\hat{\beta}_1 &amp; = \sum_{i = 1}^{n} c_i y_i \\
+c_i &amp; = \frac{x_i - \bar{x}}{n(\overline{x^2} - \bar{x}^2)}
+\end{align*}
+\tag{4.4}</span></span></p>
+<p>Now it is easy to compute the conditional (given <span class="math inline">x_i</span>) expectation.</p>
+<p><span class="math display">
+\begin{align*}
+E(\hat{\beta}_1 | x_i) &amp; = E\left(\sum_{i = 1}^{n} c_i y_i | x_i\right) \\
+               &amp; = \sum_{i = 1}^{n} E(c_i y_i | x_i) \\
+               &amp; = \sum_{i = 1}^{n} c_i E(y_i | x_i)
+\end{align*}
+</span> From the model definition we know that the conditional expectation <span class="math inline">E(y_i | x_i) = \beta_0 + \beta_1 x_i</span>.</p>
+<p><span class="math display">
+\begin{align*}
+E(\hat{\beta}_1 | x_i) &amp; = \sum_{i = 1}^{n} c_i (\beta_0 + \beta_1 x_i) \\
+                       &amp; = \beta_0 \sum_{i = 1}^{n} c_i + \beta_1 \sum_{i = 1}^{n} c_i x_i
+\end{align*}
+</span> Now notice that the sum of <span class="math inline">c_i</span> is zero:</p>
+<p><span class="math display">
+\begin{align*}
+\sum_{i = 1}^{n} c_i &amp; = \sum_{i = 1}^{n} \left( \frac{x_i - \bar{x}}{n(\overline{x^2} - \bar{x}^2)} \right) \\
+                     &amp; = \frac{1}{n(\overline{x^2} - \bar{x}^2)}\sum_{i = 1}^{n} (x_i - \bar{x}) \\
+                     &amp; = 0
+\end{align*}
+</span> The last result is due to the fact that the deviation of <span class="math inline">x</span> from its average <span class="math inline">\bar{x}</span> sum to zero!</p>
+<p><span class="math display">
+\sum_{i = 1}^{n} (x_i - \bar{x}) = \sum_{i = 1}^{n} x_i  - \sum_{i = 1}^{n} \bar{x} = n \bar{x} - n\bar{x} = 0.
+</span></p>
+<p>The second sum in the expression for <span class="math inline">\hat{\beta}_1</span> equals 1.</p>
+<p><span class="math display">
+\begin{align*}
+\sum_{i = 1}^{n} c_i x_i &amp; = \sum_{i = 1}^{n} \frac{x_i (x_i - \bar{x})}{n (\overline{x^2} - \bar{x}^2)} \\
+                         &amp; = \frac{1}{n (\overline{x^2} - \bar{x}^2)} \sum_{i = 1}^{n} x_i (x_i - \bar{x}) \\
+                         &amp; = \frac{1}{n (\overline{x^2} - \bar{x}^2)} \sum_{i = 1}^{n} (x_i^2 - \bar{x} x_i) \\
+                         &amp; = \frac{1}{n (\overline{x^2} - \bar{x}^2)} \left(\sum_{i = 1}^{n} x_i^2 - \bar{x} \sum_{i = 1}^{n} x_i \right) \\
+                         &amp; = \frac{1}{n (\overline{x^2} - \bar{x}^2)} (n \overline{x^2} - n \bar{x}^2) \\
+                         &amp; = 1.
+\end{align*}
+</span> Finally, we obtain for the expected value of <span class="math inline">\hat{\beta}_1</span>:</p>
+<p><span class="math display">
+E(\hat{\beta}_1 | x_i) = \beta_1
+</span> For the intercept estimator we get:</p>
+<p><span class="math display">
+\begin{align*}
+E(\hat{\beta}_0 | x) &amp; = E(\bar{y} - \hat{\beta}_1 \bar{x} | x) \\
+                       &amp; = E(\bar{y} | x) - \bar{x} E(\hat{\beta}_1 | x) \\
+                       &amp; = E\left(\frac{1}{n}\sum_{i = 1}^{n} y_i | x\right) - \bar{x} \beta_1 \\
+                       &amp; = \frac{1}{n} \sum_{i = 1}^{n} E(y_i | x) - \bar{x}\beta_1 \\
+                       &amp; = \frac{1}{n} \sum_{i = 1}^{n} (\beta_0 + \beta_1 x_i) - \bar{x}\beta_1 \\
+                       &amp; = \frac{1}{n} \sum_{i = 1}^{n} \beta_0 + \frac{1}{n} \sum_{i = 1}^{n} \beta_1 x_i - \bar{x}\beta_1 \\
+                       &amp; = \beta_0 + \beta_1 \bar{x} - \bar{x}\beta_1 \\
+                       &amp; = \beta_0
+\end{align*}
+</span></p>
+</div>
+<div id="thm-variance-ols" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.4 (Variance of the OLS estimators) </strong></span>The conditional variance of <span class="math inline">\hat{\beta}_1</span> is given by:</p>
+<p><span class="math display">
+\begin{align*}
+Var(\hat{\beta}_1 | x) &amp; = Var\left(\sum_{i = 1}^{n} c_i y_i  | x \right) \\
+                       &amp; = \sum_{i = 1} ^ {n} Var(c_i y_i | x) \\
+                       &amp; = \sum_{i = 1} ^ {n} c_i ^ 2 Var(y_i | x) \\
+                       &amp; = \sum_{i = 1} ^ {n} c_i ^ 2 \sigma^2 \\
+                       &amp; = \sigma^2 \sum_{i = 1} ^ {n} c_i ^ 2
+\end{align*}
+</span> <span class="math display">
+\begin{align*}
+Var(\hat{\beta}_0 | x) &amp; = Var\left(\bar{y} - \hat{\beta}_1 \bar{x} | x\right) \\
+                       &amp; = Var\left(\frac{1}{n}\sum_{i = 1}^{n} y_i - \bar{x} \sum_{i = 1}^{n} c_i y_i | x\right) \\
+                       &amp; = Var\left(\sum_{i = 1} ^{n} \left(\frac{y_i}{n} - \bar{x}c_i y_i \right) | x\right) \\
+                       &amp; = Var\left(\sum_{i = 1} ^{n} \left(\frac{1}{n} - \bar{x}c_i \right) y_i | x\right) \\
+                       &amp; = \sum_{i = 1}^{n}\left(\frac{1}{n} - \bar{x}c_i \right)^2 Var(y_i | x) \\
+                       &amp; = \sigma^2 \sum_{i = 1}^{n}\left(\frac{1}{n} - \bar{x}c_i \right)^2
+\end{align*}
+</span></p>
+</div>
+<div id="thm-residuals-ols-zero" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.5 (Zero sum of residuals) </strong></span>The residuals in the linear model sum to zero <em>if the model includes a constant</em>.</p>
+<p><span class="math display">
+\sum_{i = 1}^{n} r_i = 0
+</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math display">
+\begin{align*}
+\sum_{i = 1}^{n} r_i &amp; = \sum_{i = 1}^{n} (y_i - \hat{\mu}_i) \\
+                     &amp; = n\bar{y} - \sum_{i = 1}^{n} (\hat{\beta}_0 + \hat{\beta}_1 x_i) \\
+                     &amp; = n\bar{y} - n \hat{\beta}_0 - n \hat{\beta}_1 \bar{x} \\
+                     &amp; = n(\bar{y} - \hat{\beta}_0 - \hat{\beta}_1 \bar{x}) \\
+                     &amp; = n(\bar{y} - (\bar{y} - \hat{\beta}_1 \bar{x}) - \hat{\beta}_1 \bar{x}) \\
+                     &amp; = 0
+\end{align*}
+</span> You can verify this property with a quick example.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit, <span class="at">newdata =</span> data_for_predictions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Create some data</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> x, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit a model including a constant (this is the 1 in the formula)</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>fit_with_constant <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> x, <span class="at">data =</span> dt)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">residuals</span>(fit_with_constant))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       1        2        3        4        5 
-1.206292 1.996707 2.911330 3.464621 5.158368 </code></pre>
+<pre><code>[1] 2.498002e-16</code></pre>
 </div>
 </div>
-<p><span class="math display">\[
-\hat{y}_{x = 50} = 0.6417 + 0.01129 * 50 = 1.206292
-\]</span></p>
-<p>Prediction for 120 invoices:</p>
-<p><span class="math display">\[
-\hat{y}_{x = 120} = 0.6417 + 0.01129 * 120 = 1.996707
-\]</span></p>
-<section id="interpretation-of-the-model-coefficients-1" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="interpretation-of-the-model-coefficients-1"><span class="header-section-number">6.1</span> Interpretation of the model coefficients</h2>
-<p><span class="math display">\[
-\hat{y} = 0.64 + 0.011 x
-\]</span></p>
-<p><span class="math display">\[
-\hat{y}_{x=0} = 0.64 + 0.011*0 = 0.64 [hours]
-\]</span></p>
-<p>For <span class="math inline">\(x = 0\)</span> (zero invoices) the expected processing time (<span class="math inline">\(\hat{y}\)</span>) equals 0.64 hours. These correspond to the fixed costs of the firm (in terms of time). 0.011 (hours/invoice) is the estimated marginal cost for an additional invoice (in terms of time).</p>
-<p>To plot the OLS regression line quickly:</p>
+<p>Suppressing the constant in the model results in a non-zero sum of the residuals.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>invoices <span class="sc">%&gt;%</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Invoices, <span class="at">y =</span> Time)) <span class="sc">+</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="simulation" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="simulation"><span class="header-section-number">6.2</span> Simulation</h2>
-<p>Normal distribution</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># r: random, norm: normal</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mean: expected value of the distribution,</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sd: standard deviation of the distribution = square root of the variance</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># u</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(u)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## The 0 in the formula removes the constant</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>fit_without_constant <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> x, <span class="at">data =</span> dt)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">residuals</span>(fit_without_constant))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.005486152</code></pre>
+<pre><code>[1] 3.783743</code></pre>
 </div>
 </div>
+</div>
+<div id="thm-residuals-ols-zero" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.6 (Orthogonality of residuals and predictors) </strong></span>The product of the residuals and the predictor variables <span class="math inline">x</span> sums to zero.</p>
+<p><span class="math display">
+\sum_{i = 1}^{n} r_i x_i = 0
+</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math display">
+\begin{align*}
+\sum_{i = 1}^{n} r_i x_i &amp; = \sum_{i = 1}^{n} (y_i - \hat{\mu}_i)x_i \\
+                         &amp; = \sum_{i = 1}^{n} x_i y_i - \sum_{i = 1}^{n} x_i \hat{\mu}_i \\
+                         &amp; = n \overline{xy} - \sum_{i = 1}^{n} x_i (\hat{\beta}_0 + \hat{\beta}_1 x_i) \\
+                         &amp; = n \overline{xy} - \left( \sum_{i = 1}^{n} x_i \hat{\beta}_0 + \sum_{i = 1}^{n} \hat{\beta}_1 x_i^2 \right) \\
+                         &amp; = n \overline{xy} - n \hat{\beta}_0 \bar{x} - n \hat{\beta}_1 \overline{x^2} \\
+                         &amp; = n (\overline{xy} - \hat{\beta}_0 \bar{x} - \hat{\beta}_1 \overline{x^2}) \\
+                         &amp; = n (\overline{xy} - (\bar{y} - \hat{\beta}_1 \bar{x})\bar{x} - \hat{\beta}_1 \overline{x^2}) \\
+                         &amp; = n(\overline{xy} - \bar{x}\bar{y} + \hat{\beta}_1 \bar{x}^2 - \hat{\beta}_1 \bar{x}^2) \\
+                         &amp; = 0.
+\end{align*}
+</span></p>
+<p>You can check this property with test data that we used above.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(u) <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> u)) <span class="sc">+</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="03-Simple-Linear-Model_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Lets us assume, that we know a linear relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span>.</p>
-<p><span class="math display">\[
-y =  0.1 + 0.015 x + u, \quad u \sim N(0, \sigma^2 = 0.5^2)
-\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Number of onservations</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate a grid of 30 values for x between 10 and 250</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">250</span>, <span class="at">length.out =</span> n), <span class="dv">0</span>)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(dt<span class="sc">$</span>x <span class="sc">*</span> <span class="fu">residuals</span>(fit_with_constant))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  10  18  27  35  43  51  60  68  76  84  93 101 109 118 126 134 142 151 159
-[20] 167 176 184 192 200 209 217 225 233 242 250</code></pre>
+<pre><code>[1] 2.63678e-16</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Select values at random from a standard</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="do">## normal distribution, i.e. mean (expected value) = 0, standard dev. = 0.5</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.015</span> <span class="sc">*</span> x <span class="sc">+</span> u</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"># sim_data %&gt;%</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ggplot(aes(x = x, y = y)) +</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_point() +</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_abline(intercept = 0.1, slope = 0.015) +</span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     ## Controls the range of the y-axis</span></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     ylim(c(0, 5)) +</span></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     ## Controls the range of the x-axis</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     xlim(c(0, 260))</span></span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ 1 + x)
-
-Coefficients:
-(Intercept)            x  
-    -0.0216       0.0163  </code></pre>
 </div>
 </div>
 
@@ -781,13 +1469,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-Statistics-Review.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistics Review</span></span>
+      <a href="./02a-Continuous-Distributions.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Continuous Distributions</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./04-Simple-ANOVA.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Simple ANOVA</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
