@@ -7,8 +7,11 @@ book:
   date: "4/11/2023"
   chapters:
     - index.qmd
-    - 01-Introduction-to-R.qmd
+    - 00-Recommended-Literature.qmd
+    - 00-Homework-Instructions.qmd
     - 02-Statistics-Review.qmd
+    - 01-Introduction-to-R.qmd
+    - 02a-Continuous-Distributions.qmd
     - 03-Simple-Linear-Model.qmd
     - 04-Simple-ANOVA.qmd
     - 05-Hypothesis-Testing-and-CI.qmd

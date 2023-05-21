@@ -1,0 +1,355 @@
+
+# Departures from linearity
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+
+## Interactions
+
+### A binary and a continuous predictor
+
+
+```{r}
+gdp <- read_excel("../data/imf-dm-export-gdp-pcap.xls") %>% 
+  pivot_longer(cols = -country, values_to = "gdppc", names_to = "year")
+
+gov <- read_excel("../data/imf-dm-export-spending.xls") %>% 
+  mutate(
+    across(-country, as.character)
+  ) %>%
+  pivot_longer(cols = -country, values_to = "spending", names_to = "year")
+
+gdpgov <- gdp %>%
+  left_join(gov, by = c("country", "year")) %>%
+  mutate(
+    year = as.integer(year),
+    spending = as.numeric(spending),
+    gdppc = as.numeric(gdppc)
+  ) %>%
+  filter(
+    !(country %in% c(
+      "Advanced economies",
+      "Africa (Region)",
+      "ASEAN-5",
+      "Asia and Pacific",
+      "Australia and New Zealand",
+      "Central America",
+      "Central Asia and the Caucasus",
+      "Emerging and Developing Asia",          
+      "Emerging and Developing Europe",           
+      "Emerging market and developing economies",
+      "Ethiopia",
+      "Euro area",                               
+      "Europe",                               
+      "European Union", 
+      "Latin America and the Caribbean",
+      "Major advanced economies (G7)",
+      "Middle East (Region)",
+      "Middle East and Central Asia",
+      "North America",
+      "Other advanced economies",
+      "Pacific Islands",
+      "South Africa",
+      "South America",
+      "South Asia",
+      "South Sudan, Republic of",
+      "Southeast Asia",
+      "Sub-Saharan Africa (Region)",
+      "Western Europe",
+      "Western Hemisphere (Region)",
+      "World"
+    ))
+  )
+gdpgov2019 <- gdpgov %>% filter(year == 2019)
+write_csv(gdpgov2019, file = "../data/gdpgov2019.csv")
+```
+
+```{r}
+gdpgov2019 <- gdpgov %>% filter(year == 2019)
+```
+
+```{r}
+gdpgov2019 %>%
+  ggplot(aes(x = spending, y = gdppc)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+
+Group `gddppc` according to worldbank classification:
+
+- Low-income countries (Gross national income [GNI] per capita less than $1,025 per year; 30 countries)
+- Medium-low-income countries (GNI per capita is $1,026 to $3,995 per year; 46 countries)
+- Medium-high-income countries (GNI per capita $3,996 to $12,375 per year; 58 countries)
+- High-income countries (GNI per capita greater than $12,376 per year; 60 countries)
+
+```{r}
+gdpgov2019 <- gdpgov2019 %>%
+  mutate(
+    gdppc_gr = cut(gdppc, breaks = c(0, 1025, 3995, 12375, 30000, Inf), labels = c("Low", "Medium-low", "Medium-high", "High", "Very high"))
+  )
+```
+
+```{r}
+table(gdpgov2019$gdppc_gr)
+```
+
+```{r}
+median(gdpgov2019$gdppc, na.rm = TRUE)
+```
+
+```{r}
+gdpgov2019 %>%
+  ggplot(aes(x = spending, y = gdppc, color = gdppc_gr)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+summary(lm(gdppc ~ 1 + spending, data = gdpgov2019))
+```
+
+```{r}
+fit2 <- lm(gdppc ~ 1 + spending + gdppc_gr, data = gdpgov2019)
+fit3 <- lm(gdppc ~ 1 + spending, data = gdpgov2019)
+summary(fit2)
+```
+
+```{r}
+kids <- read_csv(
+  "https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/childiq.csv") %>%
+  select(kid_score, mom_hs, mom_iq) %>%
+  mutate(
+    mom_hs = factor(mom_hs)
+  )
+```
+
+```{r}
+kids_splt <- kids %>%
+  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
+  geom_point()
+
+kids_splt
+```
+```{r}
+lm(kid_score ~ 1 + mom_hs, data = kids)
+```
+
+```{r}
+lm(mom_iq ~ 1 + mom_hs, data = kids)
+```
+
+
+```{r}
+fit1 <- lm(kid_score ~ 1 + mom_hs + mom_iq, data = kids)
+summary(fit1)
+```
+
+```{r}
+kids_splt + 
+  geom_abline(intercept = 25.73154, slope = 0.56, color = "firebrick") + 
+  geom_abline(intercept = 25.73154 + 5.95012, slope = 0.56, color = "steelblue")
+```
+```{r}
+fit2 <- lm(kid_score ~ 1 + mom_hs * mom_iq, data = kids)
+summary(fit2)
+```
+
+```{r}
+kids_splt + 
+  geom_abline(intercept = -11.4820, slope = 0.9689, color = "firebrick") + 
+  geom_abline(intercept = -11.4820 + 51.2682 + 5.95012, slope = 0.9689 -0.4843, color = "steelblue")
+```
+
+### Two continuous predictors
+
+
+
+```{r}
+fit <- lm(survived_pct ~ 1 + Sex*Class + Class + Age, data = titanic)
+summary(fit)
+```
+```{r}
+library(rethinking)
+
+data(tulips) 
+d <- tulips
+str(d)
+
+write_csv(tulips, file = "../data/tulips.csv")
+```
+
+```{r}
+plot(d$water, d$blooms)
+```
+
+```{r}
+plot(d$shade, d$blooms)
+```
+
+```{r}
+summary(lm(blooms ~ 1 + water + shade, data = d))
+```
+
+```{r}
+summary(lm(blooms ~ 1 + water * shade, data = d))
+```
+
+## Polynomial regression
+
+
+```{r}
+sim_n <- 100
+
+poly_dt <- tibble(
+  x = runif(n = sim_n, min = -4, max = 3),
+  y = 2 +  x +  x^2 + rnorm(n = sim_n, mean = 0, sd = 1)
+)
+
+poly_plt <- poly_dt %>%
+  ggplot(aes(x = x, y = y)) + 
+  geom_point()
+
+poly_plt
+```
+
+```{r}
+fit1 <- lm(y ~ x, data = poly_dt)
+summary(fit1)
+```
+
+```{r}
+poly_plt + 
+  geom_smooth(method = "lm")
+```
+```{r}
+poly_dt <- poly_dt %>%
+  mutate(
+    res1 = residuals(fit1),
+    pred1 = predict(fit1)
+)
+```
+
+## Diagnostic plots
+
+```{r}
+poly_dt %>%
+  ggplot(aes(x = pred1, y = res1)) + 
+  geom_point()
+```
+
+```{r}
+fit2 <- update(fit1, . ~ . + I(x^2))
+summary(fit2)
+```
+
+```{r}
+?predict.lm
+```
+
+```{r}
+fit2_pred <- predict(fit2, interval = "confidence") %>%
+  as_tibble() %>%
+  rename(
+    fitted2 = fit,
+    upr2 = upr,
+    lwr2 = lwr
+  )
+
+poly_dt <- poly_dt %>%
+  bind_cols(fit2_pred)
+```
+
+```{r}
+poly_dt %>%
+  ggplot(aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_line(
+    aes(y = fitted2),
+    color = "steelblue2"
+  ) + 
+  geom_ribbon(
+    aes(ymin = upr2, ymax = lwr2), 
+    alpha = 0.2, 
+    fill = "steelblue2"
+  )
+```
+
+```{r}
+fit3 <- update(fit2, . ~ . + I(x ^ 3) + I(x ^ 4))
+summary(fit3)
+```
+
+
+```{r}
+fit3_pred <- predict(fit3, interval = "confidence") %>%
+  as_tibble() %>%
+  rename(
+    fitted3 = fit,
+    lwr3 = lwr,
+    upr3 = upr
+  ) %>%
+  mutate(
+    res3 = residuals(fit3)
+  )
+
+poly_dt <- poly_dt %>%
+  bind_cols(fit3_pred)
+```
+
+```{r}
+fit3
+```
+
+
+```{r}
+
+fitted3_grid <- tibble(
+      x = seq(-5, 5, length.out = 300),
+    )
+
+tmp <- predict(fit3, newdata = fitted3_grid, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(fitted3_grid)
+
+ggplot() + 
+  geom_point(
+    data = poly_dt,
+    aes(x = x, y = y)
+  ) + 
+  geom_line(
+    data = tmp,
+    aes(x = x, y = fit)) + 
+  geom_ribbon(
+    data = tmp,
+    aes(x = x, ymin = lwr, ymax = upr),
+    alpha = 0.2,
+    fill = "steelblue2"
+    )
+```
+
+```{r}
+poly_dt %>%
+  ggplot(aes(x = fitted3, y = res3)) + 
+  geom_point()
+```
+
+```{r}
+summary(fit1)$r.squared
+summary(fit2)$r.squared
+summary(fit3)$r.squared
+```
+
+
+```{r}
+AIC(fit1)
+AIC(fit2)
+AIC(fit3)
+```
+
+```{r}
+?poly
+```

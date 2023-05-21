@@ -1,10 +1,26 @@
 # Introduction to R
 
-## Arithmetic Operations
+During the first classes we discussed the basic structure of an R Markdown document and how we can mix `R` code and text to create documents.
 
-Shortcut to insert a code chunk: Ctrl-Alt-i
-Shortcut to run a single line of code: Ctrl-Enter
-Shortcut to run the whole chunk: Ctrl-Shift-Enter
+A R Markdown document is a pure text file that you can open in any text editor (e.g. Notepad, Emacs, Kate, etc.). It consists of two parts: the header at the top of the file. The header starts with three dashes on a separate line and ends with three dashes on a separate line. Between the dashes you can specify different options in a `yml` format such as the author and title of the document, but these will be generally irrelevant for our course and we will ignore them.
+
+In the body of the document we write code in code chunks that start with three backticks and end with three backticks. After the first sequence of backticks there is a language identifier which in our case will always be `r`.
+
+It may be easier to work with R Markdown documents in R Studio's `Visual` mode. After opening a R Markdown document, you will find two buttons (`Source` and `Visual`) just below the file name (below the save file icon). Click the `Visual` button to activate it. After that\
+you will be able to click on the `Insert` menu and add code chunks from `Insert` -\> `Code Chunk` -\> `R`.
+
+To run a code chunk, find the green `Run` button on the right side of the chunk and click on it. You will see the printed output of the chunk below it. Note that some chunks do not print any output (e.g. chunks that only contain assignments).
+
+```{r}
+
+```
+
+You can find more information and video tutorials about R Markdown [here](https://rmarkdown.rstudio.com/).
+
+An often used shortcut for inserting R code chunks is Ctrl-Alt-i. You can find more shortcuts and a concise overview of the elements of R Studio in the\
+[R Studio Cheatsheet](https://posit.co/wp-content/uploads/2022/10/rstudio-ide-1.pdf).
+
+## Arithmetic Operations
 
 ```{r}
 1 + 4
@@ -16,18 +32,23 @@ Shortcut to run the whole chunk: Ctrl-Shift-Enter
 
 ## Assignment
 
-Shortcut for the assignment operator: Alt - (minus)
+Very often we want to store a value in the memory of the computer so that we can reuse it later. In R we store values under *names* (variables) by using the assignment operator \`\<-\` Shortcut for the assignment operator: Alt - (minus)
+
 ```{r}
 y <- 34
 y - 40
 ```
 
+Run this chunks and look at the global environment (right side of R Studio) to see it appear\
+in the list of objects.
+
 ## Vectors
+
+It is very common to group values that belong together in a single structure.
 
 ```{r}
 x <- c(1, 4)
 ```
-
 
 ```{r}
 ## Length, average, sum of a numeric vector
@@ -35,7 +56,6 @@ mean(x)
 sum(x)
 length(x)
 ```
-
 
 ```{r}
 ## Documentation
@@ -48,12 +68,24 @@ length(x)
 z <- "Hello, world!"
 ```
 
-
 ## Logical values and logical operators
 
+There are two logical values: `TRUE` and `FALSE`. These emerge from logical operations and indicate whether some condition is fulfilled (`TRUE`) or not `FALSE`. You will find similar constructs in all other languages, where this type of data is commonly known as *boolean* or *binary* (i.e., only two values).
+
+The basic logical operators in `R` are
+
 ```{r}
+## Less than
 2 < 5
+## Less than or equal
+2 <= 5
+## Greater than
 2 > 5
+## Greater or equal
+2 >= 5
+## Exactly equal
+2 == 5
+
 "Text 2" == "Text 2"
 ```
 
@@ -63,31 +95,44 @@ z == "Text 2"
 
 ## Data
 
+In most of our work we will use data tables containing variables (columns) that describe characteristics of observations (rows). Most of the time we will use `tibble` objects to hold the data. `tibble` objects are a modern rewrite of the `data.frame` (an older object type for storing data).
+
+To use it we need to load the `tidyvsere` packages
+
 ```{r}
 library(tidyverse)
 ```
 
+In a limited number of cases we need to construct tables by hand. You can find out more about `tibble` [here](https://tibble.tidyverse.org/articles/tibble.html).
 
 ```{r}
 dt <- tibble(
+  ## Shorthand syntax for creating a sequence of integers from one to five
   id = 1:5,
   y = c(2, 2.5, 3, 8, 12)
 )
 dt
 ```
 
+Most of our data will come from external sources such as text files in a csv format. For the purpose of this course you don't need to worry about reading these files, you will always have a starter code chunk that imports the data.
+
+The `earnings` data set contains data on 1816 customers of a shopping mall. The customers have answered a short interview and gave information about their sex, age, ethnicity, annual income, weight and height.
+
+We will use this data set to demonstrate some common operations and basic data summaries.
+
 ```{r}
 earnings <- read_csv("https://raw.githubusercontent.com/feb-uni-sofia/econometrics2021/main/data/earnings.csv")
 ```
 
-- _height_ (numeric): Height in inches (1 inch = 2.54 cm)
-- _weight_ (numeric): Weight in pounds (1 pound $\approx$ 0.45 kilograms)
-- _male_ (numeric): 1: Male, 0: Female
-- _earn_ (numeric): Annual income in USD
-- _earnk_ (numeric): Annual income in 1,000 USD
-- _ethnicity_ (character): Ethnicity
-- _age_ (numeric): Age
+-   *height* (numeric): Height in inches (1 inch = 2.54 cm)
+-   *weight* (numeric): Weight in pounds (1 pound $\approx$ 0.45 kilograms)
+-   *male* (numeric): 1: Male, 0: Female
+-   *earn* (numeric): Annual income in USD
+-   *earnk* (numeric): Annual income in 1,000 USD
+-   *ethnicity* (character): Ethnicity
+-   *age* (numeric): Age
 
+First we will convert the height and weight measurements from their original scales (inch, pound) to cm and kg. We will create two new columns with informative names using the `mutate` function.
 
 ```{r}
 earnings <- mutate(
@@ -109,81 +154,180 @@ earnings1 <- earnings %>%
   select(height_cm, weight_kg)
 ```
 
-Note that the object holding the original data is unaffected by mutate and select.
-
+Note that the object holding the original data is unaffected by mutate and select. The reason for this is that functions in R generally do not change their arguments. If you want to add the two new columns to the original data set `earnings`, you need to overwrite it with an assignment.
 
 ## Basic data summaries
 
+The first step in any data analysis is to gain an initial understanding of the context of the data and the distributions of the variables of interest. In this course our main focus will be on two features of the variables: their location and their variability (how different are the observations between each other).
+
 ### Location
 
+The most important measure of location for us will be the empirical mean of a variable (arithmetic average). Let $i$ index the observation in our data set from the first ($i = 1$) to the last $i = n$. In our case $n = 1816$: the number of all interviewed customers. We can represent the values of some (numeric) characteristic (e.g., the persons' weight) as a vector of values $x = (x_1, \ldots, x_n)$. In this notation $x_1$ is the weight of the first customer in the data set ($x_1 = 210$ pounds). The arithmetic average is defined as the sum of all values divided by the number of observations:
+
 $$
-x = (x_1, x_2,\ldots, x_n)\\
-\bar{x} = \frac{1}{n}\sum_{i = 1}^{n} x_i
+\bar{x} = \frac{1}{n}(x_1 + x_2 + \ldots + x_n) = \frac{1}{n}\sum_{i = 1}^{n} x_i
 $$
 
-$n = 1816$.
+Let us now compute the arithmetic average of `weight` and `height`. One way to access the columns of the data set `earnings` is to write the name of the data set and then after a $ sign the name of the column.
 
 ```{r}
-mean(earnings1$height_cm)
-mean(earnings1$weight_kg, na.rm = TRUE)
+mean(earnings$height)
+mean(earnings$weight, na.rm = TRUE)
 ```
+
+Another measure of location is the (empirical) median. You can compute it using 
+the `median` function.
 
 ```{r}
-max(earnings1$height_cm) - min(earnings1$height_cm)
+median(earnings$height)
 ```
 
-```{r}
-var(c(1, 3))
-```
+The result is a median height of 66 inches. This means that about half of the
+customers were taller than 66 inches.
 
-
-
-
-```{r}
-table(earnings$ethnicity)
-```
-
-```{r}
-earnings %>%
-  ggplot(aes(y = ethnicity)) +
-  geom_bar()
-```
 
 ### Variability
 
-```{r}
-max(earnings$height_cm)
-min(earnings$height_cm)
-```
+The next important feature of the data is its variability. It answers the following question:
+how different are the customers between each other with respect to body height (for example). There are numerous ways to measure variability. 
+
+One intuitive measure would be 
+the range of the data, defined as the difference by the maximal observed height
+and the minimal observed height
 
 ```{r}
-max(earnings$height_cm) - min(earnings$height_cm)
+min(earnings$height)
+max(earnings$height)
+
+range(earnings$height)
 ```
+
+
+```{r}
+max(earnings$height) - min(earnings$height)
+```
+
+Another measure is the inter-quartile range. The quartiles are defined similar
+to the median. To see this lets use the example of body height. The first quartile of height (25-th percentile and 0.25 quantile are different names for the same thing) is the height
+for which about one quarter of the customers are shorter than it. You can compute
+it with the function `quantile`.
+
+```{r}
+quantile(earnings$height, 0.25)
+```
+
+About 25 percent of our customers were shorter than 64 inches.
+
+The second quartile is the same as the median (two quarters).
+
+```{r}
+quantile(earnings$height, 0.5)
+median(earnings$height)
+```
+
+The third quartile is the height for which three quarter of the customers are shorter than it.
+
+```{r}
+quantile(earnings$height, 0.75)
+```
+
+In our case about three quarter of the customers were shorter than 69.25 inches.
+
+The inter-quartile range is simply the difference between the third quartile and
+the second quartile.
+
+```{r}
+quantile(earnings$height, 0.75) - quantile(earnings$height, 0.25)
+```
+
+About half of our customers had a hight between the first quartile (64 inches) and
+the third quartile (69.25 inches). The inter-quartile range shows you the difference
+between the height of the talles person and the shortest person for the central 50 percent
+of the customers.
+
+As the range, the inter-quartile range is a measure of variability.
+
+
+The most important measure of variability and the one that will be central to our
+analysis is the (empirical) variance.
+
+:::{#def-empirical-variance}
+## Empirical variance
+
+For a vector of values $x = (x_1, \ldots, x_n)$ it is defined as the average (apart from a small correction in the denominator)
+squared deviation of the values from their mean.
 
 $$
-x = (x_1, \ldots, x_n)\\
-S^2_x = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2: \quad \text{variance}\\
+S^2_x = \frac{(x_1 - \bar{x})^2 + \ldots + (x_n - \bar{x}^2)}{n - 1} = \frac{1}{n - 1} \sum_{i = 1}^{n}(x_i - \bar{x})^2: \quad \text{variance}\\
 S_x = \sqrt{S^2_x} \quad \text{standard deviation}
 $$
+:::
+
+:::{#exm-empirical-variance}
+## Computing the empirical variance
+
+Lets apply the formula from @def-empirical-variance to a very simple example
+with just three values.
+
+$$
+x_1 = -1, x_2 = 0, x_3 = 4
+$$
+
+First, the empirical mean of these values is 
+
+$$
+\bar{x} = \frac{-1 + 0 + 4}{3} = 1
+$$
+
+Now lets substitute these values in the definition of the empirical variance:
+
+$$
+\begin{aligned}
+S^2_{x} & = \frac{(x_1 - \bar{x})^2 + (x_2 - \bar{x})^2 + (x_3 - \bar{x})^2 }{n - 1} \\
+        & = \frac{(-1 - 1)^2 + (0 - 1)^2 + (4 - 1)^2 }{3 - 1} \\
+        & = \frac{(-2)^2 + (- 1)^2 + (3 )^2 }{2} \\
+        & = \frac{4 + 1 + 9 }{2} \\
+        & = \frac{14}{2} \\
+        & = 7
+\end{aligned}
+$$
+Using R to compute the same thing:
+
 ```{r}
-x <- c(1, 3)
-((1 - 2)^2 + (3 - 2)^2) / 1
+x <- c(-1, 0, 4)
+x_avg <- mean(x)
+
+((-1 - x_avg)^2 + (0 - x_avg)^2 + (4 - x_avg)^2) / (length(x) - 1)
+```
+
+There is also a special function `var` that can compute it from a vector
+
+```{r}
 var(x)
+```
+
+The (empirical) standard deviation is simply the square root of the (empirical) variance.
+
+$$
+S_x = \sqrt{S^2_x} = \sqrt{7} \approx 2.64 
+$$
+
+In R you have two options: take the square root of the result of `var` using the `sqrt` function or use `sd` (standard deviation) to compute the standard deviation directly.
+
+```{r}
+sqrt(var(x))
 sd(x)
 ```
 
+:::
 
-```{r}
-var(earnings$height_cm)
-```
+::: {.callout-warning}
+## Warning
 
-```{r}
-sqrt(var(earnings$height_cm))
-```
+The following contains code discussed during the classes without 
+additional explanations
+:::
 
-```{r}
-sd(earnings$height_cm)
-```
 
 ```{r}
 ## Basic summaries for the whole tibble
@@ -193,7 +337,6 @@ earnings %>% skimr::skim()
 ```{r}
 table(earnings$ethnicity)
 ```
-
 
 ## Visualizations
 
@@ -213,8 +356,7 @@ earnings %>%
   geom_density()
 ```
 
-The boxplot shows the median and the 25-th and 75-th percentiles (the box). The whiskers in the plot stretch to the
-minimum or the maximum observed value, unless there are extreme observations that are shown as single dots.
+The boxplot shows the median and the 25-th and 75-th percentiles (the box). The whiskers in the plot stretch to the minimum or the maximum observed value, unless there are extreme observations that are shown as single dots.
 
 ```{r}
 earnings %>%
@@ -230,8 +372,7 @@ earnings %>%
   geom_boxplot()
 ```
 
-The scatterplot will be our primary tool in studying associations between variables. It represents each
-observation as a point in a coordinate system defined by the variables that we would like to study.
+The scatterplot will be our primary tool in studying associations between variables. It represents each observation as a point in a coordinate system defined by the variables that we would like to study.
 
 ```{r}
 earnings1 %>%

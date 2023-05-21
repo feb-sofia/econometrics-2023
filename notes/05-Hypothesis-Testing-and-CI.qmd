@@ -1,4 +1,4 @@
-# Simple ANOVA: a Simulation Study {#sec-simulation-anova}
+# A Simulation Study {#sec-simulation-anova}
 
 ```{r setup, include=FALSE}
 ## Warning: to compile the notes you need the "bookdown" and the "broom" packages. Install them by
@@ -380,7 +380,7 @@ in the tails of the distribution (extreme values far away from the center) [@fig
 
 ```{r}
 #| label: fig-t-distribution-df
-#| fig-cap: "Densities of t-distributions with different degrees of freedom."
+#| fig-cap: "Densities of t-distributions with different degrees of freedom (df)."
 
 dt <- expand_grid(
   ## Creates a sequence of 100 numbers between -3 and 3
@@ -395,7 +395,10 @@ dt <- expand_grid(
 
 ggplot() +
   ## Draws the normal density line
-  geom_line(data = dt, aes(x = x, y = t_dens, colour = df))
+  geom_line(data = dt, aes(x = x, y = t_dens, colour = df)) + 
+  labs(
+    y = "Density"
+  )
 ```
 
 Knowing the distribution of the test statistic under the null hypothesis (if it is true) allows
@@ -650,6 +653,7 @@ Therefore the p-value of this test is
 $$
 P(t > \text{t-statistic}^{obs} | H_0)
 $$
+
 The notation $\text{t-statistic}^{obs}$ refers to the value of the statistic
 in the sample (5.1). If $H_0$ is true, i.e. $\beta_1 = 0$ we know that the 
 t-statistic follows a t-distribution with $df = 432$. We can compute the 
@@ -715,6 +719,50 @@ $$
 \text{p-value} = P(|t| > |\text{t-statistic}^{obs}| |H_0)
 $$
 
+
+Finally, let us see the distribution of p-values in the simulation study. Here
+we will compute it for the true null hypothesis $H_0: \beta_1 = 11.77, H_1: \beta_1 \neq 11.77$.
+Figure @fig-p-value-h0-true shows the estimated density of the p-values (in each sample). You 
+can see that the density is roughly constant over the interval [0, 1]. Indeed, it can be shown
+that the p-value if uniformly distributed over this interval if the null hypothesis is true.
+
+```{r}
+slopes <- slopes %>%
+  mutate(
+    p_value_h0_true = 2 * pt(-abs(t_statistic), df = 434 - 2)
+  )
+```
+
+
+```{r}
+#| label: fig-p-value-h0-true
+#| fig-cap: "Distribution of p-values under the (true) null hypothesis"
+
+slopes %>%
+  ggplot(aes(x = p_value_h0_true)) + 
+  geom_density() + 
+  labs(
+    x = "p-value",
+    y = "Density"
+  )
+```
+
+When using the p-value to make a rejection decision we compare it to a predetermined
+probability of a wrong rejection of a true null hypothesis. This is the same approach
+that we followed when we derived the critical values of the tests. A widely used
+convention is to reject a null hypothesis if the p-value is less than 0.05.
+
+Let us apply this convention in the simulation and see in how many samples
+we make a wrong decision.
+
+```{r}
+slopes <- slopes %>%
+  mutate(
+    reject_h0_based_on_p_value = p_value_h0_true < 0.05
+  )
+
+table(slopes$reject_h0_based_on_p_value)
+```
 
 
 ## Confidence intervals {#sec-sim-ci}

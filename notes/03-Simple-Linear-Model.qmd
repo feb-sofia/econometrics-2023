@@ -941,6 +941,7 @@ From @eq-ols-simple we know that the OLS estimator for $\beta_1$ is
 $$
 \hat{\beta}_1 = \frac{\overline{xy} - \bar{x}\bar{y}}{\overline{x^2} - \bar{x}^2}
 $$
+
 To investigate the statistical properties (expected value and variance) of this estimator
 it is convenient to write is as a linear combination of $y$.
 

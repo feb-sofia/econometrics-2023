@@ -18,15 +18,12 @@ kids <- read_csv(
 
 Variables description:
 
-- `kid_score`: (numeric) Kid's IQ score.
-- `mom_hs` (numeric): This variable has only two possible values (a binary variable): 1 if the mother of the child has finished high school, and 0 otherwise.
+-   `kid_score`: (numeric) Kid's IQ score.
+-   `mom_hs` (numeric): This variable has only two possible values (a binary variable): 1 if the mother of the child has finished high school, and 0 otherwise.
 
-For the sake of simplicity we will assume that the children in the sample (in the data set `kids`) were selected at
-random from all children living in the US at the time of the survey.
-
+For the sake of simplicity we will assume that the children in the sample (in the data set `kids`) were selected at random from all children living in the US at the time of the survey.
 
 Research question: Do children whose mother did not finish a high school (`mom_hs = 0`) tend to achieve lower IQ scores compared to the children of mothers with a high school degree (`mom_hs = 1`).
-
 
 ## The Linear Regression Model with a single binary predictor
 
@@ -95,52 +92,39 @@ $$
 \end{align*}
 $$
 
-The linear model is then 
+The linear model is then
 
 $$
 y_i = \beta_0 + \beta_1 x_i + e_i, e_i \sim N(0, \sigma^2)
-$$
-Alternatively (and more generally) we can write the model (see @sec-simple-linear-model) as:
+$$ Alternatively (and more generally) we can write the model (see @sec-simple-linear-model) as:
 
 $$
 \begin{align*}
 & y_i \sim N(\mu_i, \sigma^2), \quad i = 1,\ldots,n \\
 & \mu_i = \beta_0 + \beta_1 x_i, \quad x_i \in \{0, 1\}
 \end{align*}
-$${#eq-simple-anova}
+$$ {#eq-simple-anova}
 
-Let us see what the model coefficients mean. This becomes obvious when we consider
-the expected value of $y$ (the IQ score) for the two possible values of $x$.
-For $x = 1$ (children with a mother with a HS degree) the expected IQ score is:
+Let us see what the model coefficients mean. This becomes obvious when we consider the expected value of $y$ (the IQ score) for the two possible values of $x$. For $x = 1$ (children with a mother with a HS degree) the expected IQ score is:
 
 $$
 \mu_1 = \beta_0 + \beta_1 \cdot 1
-$${#eq-mu-x-1}
-
+$$ {#eq-mu-x-1}
 
 For $x = 0$ (children with a mother without a HS degree)
 
 $$
 \mu_0 = \beta_0 + \beta_1 \cdot 0
-$${#eq-mu-x-0}
+$$ {#eq-mu-x-0}
 
-
-If you take the difference between equations [-@eq-mu-x-1] and [-@eq-mu-x-0]
-you will get:
+If you take the difference between equations [-@eq-mu-x-1] and [-@eq-mu-x-0] you will get:
 
 $$
 \begin{align*}
 \beta_0 & = \mu_0 \\
 \beta_1 & = \mu_1 - \mu_0
 \end{align*}
-$$
-Therefore, the constant in the model ($\beta_0$) equals the population average IQ score
-of children in the $x = 0$ group. The slope coefficient $\beta_1$ equals the difference 
-between the population average IQ scores. @fig-simple-anova-model-vis visualizes
-the population of children (as the model in @eq-simple-anova sees it). There are
-two groups of children in that population. The first has an average IQ score of $\mu_0$,
-the second group has an average IQ score of $\mu_1$. The children in both groups
-are normally distributed and the two distributions have the same standard deviation (spread).
+$$ Therefore, the constant in the model ($\beta_0$) equals the population average IQ score of children in the $x = 0$ group. The slope coefficient $\beta_1$ equals the difference between the population average IQ scores. @fig-simple-anova-model-vis visualizes the population of children (as the model in @eq-simple-anova sees it). There are two groups of children in that population. The first has an average IQ score of $\mu_0$, the second group has an average IQ score of $\mu_1$. The children in both groups are normally distributed and the two distributions have the same standard deviation (spread).
 
 ```{r, echo = FALSE}
 #| label: fig-simple-anova-model-vis
@@ -204,21 +188,11 @@ ggplot() +
   )
 ```
 
-Within that model our research question boils down to examining $\beta_1$ (the difference between
-the population averages). If $\beta_1$ is positive, then children born to a mother
-with a HS degree would tend to perform better at the IQ test.
+Within that model our research question boils down to examining $\beta_1$ (the difference between the population averages). If $\beta_1$ is positive, then children born to a mother with a HS degree would tend to perform better at the IQ test.
 
-The first obstacle to answering the research question is that we don't know
-the value of $\beta_1$. Therefore, we would need to rely on the sample
-to learn something about the value of $\beta_1$.
+The first obstacle to answering the research question is that we don't know the value of $\beta_1$. Therefore, we would need to rely on the sample to learn something about the value of $\beta_1$.
 
-
-In the previous section we discussed the OLS estimator and now we will use it
-to find the best (in terms of lowest RSS) estimates for $\beta_0$ and $\beta_1$.
-As in the previous section will will find these using the `lm` function.
-We will also store the result of `lm` in an object so that we can use it later
-without running `lm` every time.
-
+In the previous section we discussed the OLS estimator and now we will use it to find the best (in terms of lowest RSS) estimates for $\beta_0$ and $\beta_1$. As in the previous section will will find these using the `lm` function. We will also store the result of `lm` in an object so that we can use it later without running `lm` every time.
 
 ```{r}
 ## Run lm and save the output in an object called "fit"
@@ -227,8 +201,7 @@ fit <- lm(kid_score ~ 1 + mom_hs, data = kids)
 fit
 ```
 
-Look at the output of `lm` and write down the estimated regression equation: 
-
+Look at the output of `lm` and write down the estimated regression equation:
 
 $$
 \begin{align*}
@@ -236,30 +209,20 @@ $$
 \end{align*}
 $$
 
-This equation summarizes the _sample_. The children that we have selected and actually observed.
-For these children there was a difference of average IQ scores of 11.77. However, the
-sample only includes `r nrow(kids)` children. A more interesting question 
-is whether there is a difference between the average IQ scores between the two
-groups (mother with HS degree, mother without HS degree) in the _population_
-from which the sample was selected.
+This equation summarizes the *sample*. The children that we have selected and actually observed. For these children there was a difference of average IQ scores of 11.77. However, the sample only includes `r nrow(kids)` children. A more interesting question is whether there is a difference between the average IQ scores between the two groups (mother with HS degree, mother without HS degree) in the *population* from which the sample was selected.
 
-An interesting research hypothesis that we can test is whether the 
-_population_ coefficient $\beta_1$ is equal to zero, for example against a two-sided
-alternative $\beta_1 \neq 0$.
+An interesting research hypothesis that we can test is whether the *population* coefficient $\beta_1$ is equal to zero, for example against a two-sided alternative $\beta_1 \neq 0$.
 
 $$
 H_0: \beta_1 = 0 \\
 H_1: \beta_1 \neq 0
-$$
-A test of this hypothesis against the alternative is a t-test with a test statistic
+$$ A test of this hypothesis against the alternative is a t-test with a test statistic
 
 $$
 \text{t-statistic} = \frac{\hat{\beta}_1 - 0}{se(\hat{\beta}_1)}
 $$
 
-If $\beta_1$ is really equal to zero, then this statistic follows a t-distribution
-with $n - p$ degrees of freedom. The critical values of this test at $\alpha = 0.05$
-probability of wrong rejection of the null hypothesis.
+If $\beta_1$ is really equal to zero, then this statistic follows a t-distribution with $n - p$ degrees of freedom. The critical values of this test at $\alpha = 0.05$ probability of wrong rejection of the null hypothesis.
 
 For the `kids` data set you can test this hypothesis using the output of `summary`.
 
@@ -267,33 +230,24 @@ For the `kids` data set you can test this hypothesis using the output of `summar
 summary(fit)
 ```
 
-The second row in the coefficients table corresponds to our $\hat{\beta}_1$ in
-our model notation (the coefficient of `mom_hs`). You can find the estimated standard
-error of $\hat{\beta}_1$ in the second column (`Std. Error`).
+The second row in the coefficients table corresponds to our $\hat{\beta}_1$ in our model notation (the coefficient of `mom_hs`). You can find the estimated standard error of $\hat{\beta}_1$ in the second column (`Std. Error`).
 
 $$
 \text{t-statistic}^{obs} = \frac{11.77 - 0}{2.322} = 5.0689
 $$
 
-You can find this value in the column `t value` in the `summary` above. This
-t-statistic is shown in the regression output by almost all statistical software, 
-because the hypothesis 
+You can find this value in the column `t value` in the `summary` above. This t-statistic is shown in the regression output by almost all statistical software, because the hypothesis
 
 $$
 H_0: \beta_1 = 0 \\
 H_1: \beta_1 \neq 0
-$$
-is particularly interesting. If true it implies that there are no 
-population-level differences between the average IQ scores of the two groups of
-children.
+$$ is particularly interesting. If true it implies that there are no population-level differences between the average IQ scores of the two groups of children.
 
-In order to make a decision whether to reject this hypothesis or not, we compare
-the observed t-statistic to two critical values (because the alternative is two-sided).
+In order to make a decision whether to reject this hypothesis or not, we compare the observed t-statistic to two critical values (because the alternative is two-sided).
 
-The critical values at a five percent error probability (wrong rejection of a true null hypothesis)
-are derived from the t-distribution. You can find a detailed explanation in @sec-simulation-anova.
+The critical values at a five percent error probability (wrong rejection of a true null hypothesis) are derived from the t-distribution. You can find a detailed explanation in @sec-simulation-anova.
 
-The quantiles of the t-distribution are 
+The quantiles of the t-distribution are
 
 ```{r}
 alpha <- 0.05
@@ -301,40 +255,21 @@ qt(alpha / 2, df = nrow(kids) - 2)
 qt(1 - alpha / 2, df = nrow(kids) - 2)
 ```
 
-The observed t-statistic equals 5.0689 and is therefore greater than the upper
-critical value (1.96). Therefore we reject the null hypothesis at a significance
-level $1 - \alpha = 0.95$ (this is another way to state 
-the probability of wrong rejection of a true null hypothesis).
+The observed t-statistic equals 5.0689 and is therefore greater than the upper critical value (1.96). Therefore we reject the null hypothesis at a significance level $1 - \alpha = 0.95$ (this is another way to state the probability of wrong rejection of a true null hypothesis).
 
+Apart from the point estimate for the difference of average IQ scores (11.77 points) we usually also want to communicate the uncertainty of this estimate. One description of that uncertainty is the (estimated) standard error of the estimator for the regression coefficient.
 
-Apart from the point estimate for the difference of average IQ scores (11.77 points)
-we usually also want to communicate the uncertainty of this estimate.
-One description of that uncertainty is the (estimated) standard error of the estimator
-for the regression coefficient.
+One way to construct a confidence interval for the coefficients is to invert the two-sided t-test (see @sec-sim-ci for more details).
 
-One way to construct a confidence interval for the coefficients is to invert the
-two-sided t-test (see @sec-sim-ci for more details).
-
-We will use the critical values of the t-test at the 95 percent significance 
-level to obtain an confidence interval (CI) with a 95 percent coverage probability:
+We will use the critical values of the t-test at the 95 percent significance level to obtain an confidence interval (CI) with a 95 percent coverage probability:
 
 $$
 P\left(\hat{\beta}_1 - 1.96 se(\hat{\beta}_1)  < \beta_1 < \hat{\beta}_1 + 1.96 se(\hat{\beta}_1) \right) = 0.95
-$${#eq-ci-kids-beta1}
+$$ {#eq-ci-kids-beta1}
 
+Notice that the boundaries of the interval are random variables (because $\hat{\beta}_1$ and $se(\hat{\beta}_1)$) are random variables (they depend on the data). For the sample of children in `kids` we obtain *estimates* for these boundaries: $[11.77 - 1.96 \cdot 2.322; 11.77 + 1.96 \cdot 2.322] \approx [7.2; 16.3]$. Based on these estimated boundaries we would say that range of plausible values for the difference between the population IQ score averages between 7.2 and 16.3.
 
-Notice that the boundaries of the interval are random variables (because $\hat{\beta}_1$ and $se(\hat{\beta}_1)$)
-are random variables (they depend on the data). For the sample of children in `kids` we
-obtain _estimates_ for these boundaries: $[11.77 - 1.96 \cdot 2.322; 11.77 + 1.96 \cdot 2.322] \approx [7.2; 16.3]$.
-Based on these estimated boundaries we would say that range of plausible values for the  difference between the population IQ score averages between 7.2 and 16.3.
-
-
-Notice that in interpreting the boundaries of the CI we don't say 
-that the probability of $\beta_1$ being between 7.2 and 16.3 is 0.95. Generally this statement does not 
-make any sense, because we have assumed that $\beta_1$ is a fixed number (not random). The probability statement
-in @eq-ci-kids-beta1 does make sense, because the boundaries are random variables (depend on the data), but
-the statement $P(7.2 < \beta_1 < 16.3) = 0.95$ does not!
-
+Notice that in interpreting the boundaries of the CI we don't say that the probability of $\beta_1$ being between 7.2 and 16.3 is 0.95. Generally this statement does not make any sense, because we have assumed that $\beta_1$ is a fixed number (not random). The probability statement in @eq-ci-kids-beta1 does make sense, because the boundaries are random variables (depend on the data), but the statement $P(7.2 < \beta_1 < 16.3) = 0.95$ does not!
 
 ## Mathematical Details (Optional)
 
@@ -388,13 +323,13 @@ When you simplify the above expression (this is left as an exercise) you will ar
 
 $$
 \hat{\beta}_1 = \bar{y}_1 - \bar{y}_0
-$$ 
+$$
 
 From the equation for $\hat{\beta}_0$ we get:
 
 $$
 \hat{\beta}_0 = \bar{y} - (\bar{y}_1 - \bar{y}_0) \bar{x}
-$$ 
+$$
 
 Taking into account that $\bar{x} = n_1 / n$ this equation simplifies to
 
@@ -404,14 +339,9 @@ $$
 
 ### What about the standard errrors?
 
-In the case of the simple ANOVA model the standard errors of both coefficients are pretty easy to derive,
-because the estimators are simply a group average ($\hat{\beta}_0$) and the difference between
-two group averages ($\hat{\beta}_1$).
+In the case of the simple ANOVA model the standard errors of both coefficients are pretty easy to derive, because the estimators are simply a group average ($\hat{\beta}_0$) and the difference between two group averages ($\hat{\beta}_1$).
 
-We can compute the variance of $\hat{beta}_0$. Note that when studying the statistical
-properties of an estimator like the OLS estimator for $\beta_0$ we treat the 
-data $y_i$ as random variables. In the following derivation we assume that 
-the $y_i$ are not correlated.
+We can compute the variance of $\hat{beta}_0$. Note that when studying the statistical properties of an estimator like the OLS estimator for $\beta_0$ we treat the data $y_i$ as random variables. In the following derivation we assume that the $y_i$ are not correlated.
 
 $$
 \begin{align*}
@@ -421,11 +351,9 @@ Var(\hat{\beta}_0) & = Var\left(\frac{1}{n_0}\sum_{i: x_i = 0} y_i \right) \\
                    & = \frac{n_0 \sigma^2}{n_0^2} \\
                    & = \frac{\sigma^2}{n_0}
 \end{align*}
-$${#eq-simple-anova-var-beta0}
+$$ {#eq-simple-anova-var-beta0}
 
-
-For the variance of $\hat{beta}_1$ we obtain. In the derivation we use the assumption of $y_i$ being uncorrelated and the fact
-that the variance of a difference of uncorrelated random variables equals the sum of their variances.
+For the variance of $\hat{beta}_1$ we obtain. In the derivation we use the assumption of $y_i$ being uncorrelated and the fact that the variance of a difference of uncorrelated random variables equals the sum of their variances.
 
 $$
 \begin{align*}
@@ -434,48 +362,36 @@ Var(\hat{\beta}_1) & = Var\left(\frac{1}{n_1}\sum_{i: x_i = 1} y_i - \frac{1}{n_
                    & = \frac{\sigma^2}{n_1} + \frac{\sigma^2}{n_0} \\
                    & = \sigma^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)
 \end{align*}
-$${#eq-simple-anova-var-beta1}
+$$ {#eq-simple-anova-var-beta1}
 
-The variances of the two coefficients involve the unknown parameter $\sigma^2$.
-From the expressions for the variances you will notice that the variances
-increase in $\sigma^2$. This should make sense intuivively. $\sigma^2$ describes
-how much noise the data contains (random deviations from the regression line).
-Estimating the coefficients from noisy data will result in uncertain estimates (high variances).
+The variances of the two coefficients involve the unknown parameter $\sigma^2$. From the expressions for the variances you will notice that the variances increase in $\sigma^2$. This should make sense intuitively. $\sigma^2$ describes how much noise the data contains (random deviations from the regression line). Estimating the coefficients from noisy data will result in uncertain estimates (high variances).
 
-In order to arrive to estimates the coefficient variances we need a way to estimate
-$\sigma^2$ from the data. Here we will take a theorem from mathematical statistics
-that says that 
+In order to arrive to estimates the coefficient variances we need a way to estimate $\sigma^2$ from the data. Here we will take a theorem from mathematical statistics that says that
 
 $$
 \hat{\sigma}^2 = \frac{1}{n - p} \text{RSS}
-$${#eq-sigma-estimator}
+$$ {#eq-sigma-estimator}
 
-is an unbiased estimator for $\sigma$. In the above expression $n$ is the number
-of observations and $p$ is the number of coefficients in the model. RSS is the residual sum of squares [@sec-ols-intro].
+is an unbiased estimator for $\sigma$. In the above expression $n$ is the number of observations and $p$ is the number of coefficients in the model. RSS is the residual sum of squares [@sec-ols-intro].
 
 $$
 E\hat{\sigma}^2 = \sigma
 $$
 
-Plugging in this estimator for $\sigma^2$ into @eq-simple-anova-var-beta0 and @eq-simple-anova-var-beta1
-yields the following estimators for the variances of the model coefficients.
+Plugging in this estimator for $\sigma^2$ into @eq-simple-anova-var-beta0 and @eq-simple-anova-var-beta1 yields the following estimators for the variances of the model coefficients.
 
 $$
 \begin{align*}
 Var(\hat{\beta}_0) = & \frac{\hat{\sigma}^2}{n_0} \\
 Var(\hat{\beta}_1) = & \hat{\sigma}^2 \left(\frac{1}{n_0} + \frac{1}{n_1}\right)
 \end{align*}
-$$
-Let us compare the two formulas with the standard errors from the `lm` output (printed here again for convinience).
+$$ Let us compare the two formulas with the standard errors from the `lm` output (printed here again for convinience).
 
 ```{r}
 summary(fit)
 ```
 
-The number of children in the two groups are $n_0 = 93$ and $n_1 = 341$. 
-The number of observations is $n = n_0 + n_1 = 434$. The number of coefficients
-in the model is $p = 2$. We can compute the RSS by extracting the residuals
-from the model fit object (for example by using the `residuals` function).
+The number of children in the two groups are $n_0 = 93$ and $n_1 = 341$. The number of observations is $n = n_0 + n_1 = 434$. The number of coefficients in the model is $p = 2$. We can compute the RSS by extracting the residuals from the model fit object (for example by using the `residuals` function).
 
 ```{r}
 res <- residuals(fit)
@@ -490,8 +406,7 @@ $$
 \hat{\sigma} = \sqrt{\hat{\sigma}^2} = 19.85
 $$
 
-You can find last value under _residual standard error_ in the
-summary of the `lm` output above.
+You can find last value under *residual standard error* in the summary of the `lm` output above.
 
 Now let us compute the estimated variances and standard deviations of the coefficients:
 
