@@ -1,4 +1,3 @@
-
 # Departures from linearity
 
 ```{r}
@@ -6,11 +5,9 @@ library(tidyverse)
 library(readxl)
 ```
 
-
 ## Interactions
 
 ### A binary and a continuous predictor
-
 
 ```{r}
 gdp <- read_excel("../data/imf-dm-export-gdp-pcap.xls") %>% 
@@ -64,8 +61,67 @@ gdpgov <- gdp %>%
     ))
   )
 gdpgov2019 <- gdpgov %>% filter(year == 2019)
-write_csv(gdpgov2019, file = "../data/gdpgov2019.csv")
+# write_csv(gdpgov2019, file = "../data/gdpgov2019.csv")
+# gdpgov2019 <- read_csv("https://raw.githubusercontent.com/feb-sofia/econometrics-2023/main/data/gdpgov2019.csv")
+cntry_codes <- read_csv(
+  "https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv"
+  ) %>%
+  rename(
+    iso2 = `alpha-2`,
+    iso3 = `alpha-3`
+  )
+
+cntry_names_map <- list(
+  "Bahamas, The" = "Bahamas",
+  "Bolivia" = "Bolivia (Plurinational State of)",
+  "China, People's Republic of" = "China",
+  "Congo, Dem. Rep. of the" = "Congo, Democratic Republic of the",
+  "Congo, Republic of" = "Congo",
+  "Czech Republic" = "Czechia",
+  "Gambia, The" = "Gambia",
+  "Gambia, The" = "Gambia",
+  "Hong Kong SAR" = "Hong Kong",
+ "Iran" = "Iran (Islamic Republic of)",
+ "Kyrgyz Republic" = "Kyrgyzstan",
+ "Lao P.D.R." = "Lao People's Democratic Republic",
+ "Macao SAR" = "Macao",
+ "Micronesia, Fed. States of" = "Micronesia (Federated States of)",
+ "Moldova" = "Moldova, Republic of",
+ "Slovak Republic" = "Slovakia",
+ "Syria" = "Syrian Arab Republic",
+ "Tanzania" = "Tanzania, United Republic of",
+ "Taiwan Province of China" = "Taiwan, Province of China",
+ "Türkiye, Republic of" = "Turkey",
+ "United Kingdom" = "United Kingdom of Great Britain and Northern Ireland",
+ "United States" = "United States of America",
+ "Venezuela" = "Venezuela (Bolivarian Republic of)",
+ "Vietnam" = "Viet Nam"
+)
+
+gdpgov2019 <- gdpgov2019 %>%
+  mutate(
+    country = recode_factor(as.character(country), !!!cntry_names_map)
+  )
 ```
+
+
+```{r}
+tmp <- gdpgov2019 %>%
+  left_join(
+    cntry_codes %>% select(name, iso2, iso3),
+    by = c("country" = "name")
+  )
+
+tax <- read_csv("../data/DP_LIVE_22052023120851767.csv") %>%
+  filter(TIME == 2019, FREQUENCY == "A")
+
+tmp1 <- tmp %>%
+  left_join(
+    tax %>% select(LOCATION, Value),
+    by = c("iso3" = "LOCATION")
+  )
+```
+
 
 ```{r}
 gdpgov2019 <- gdpgov %>% filter(year == 2019)
@@ -77,14 +133,6 @@ gdpgov2019 %>%
   geom_point() +
   geom_smooth(method = "lm")
 ```
-
-
-Group `gddppc` according to worldbank classification:
-
-- Low-income countries (Gross national income [GNI] per capita less than $1,025 per year; 30 countries)
-- Medium-low-income countries (GNI per capita is $1,026 to $3,995 per year; 46 countries)
-- Medium-high-income countries (GNI per capita $3,996 to $12,375 per year; 58 countries)
-- High-income countries (GNI per capita greater than $12,376 per year; 60 countries)
 
 ```{r}
 gdpgov2019 <- gdpgov2019 %>%
@@ -134,6 +182,7 @@ kids_splt <- kids %>%
 
 kids_splt
 ```
+
 ```{r}
 lm(kid_score ~ 1 + mom_hs, data = kids)
 ```
@@ -141,7 +190,6 @@ lm(kid_score ~ 1 + mom_hs, data = kids)
 ```{r}
 lm(mom_iq ~ 1 + mom_hs, data = kids)
 ```
-
 
 ```{r}
 fit1 <- lm(kid_score ~ 1 + mom_hs + mom_iq, data = kids)
@@ -153,6 +201,7 @@ kids_splt +
   geom_abline(intercept = 25.73154, slope = 0.56, color = "firebrick") + 
   geom_abline(intercept = 25.73154 + 5.95012, slope = 0.56, color = "steelblue")
 ```
+
 ```{r}
 fit2 <- lm(kid_score ~ 1 + mom_hs * mom_iq, data = kids)
 summary(fit2)
@@ -166,20 +215,13 @@ kids_splt +
 
 ### Two continuous predictors
 
-
-
 ```{r}
 fit <- lm(survived_pct ~ 1 + Sex*Class + Class + Age, data = titanic)
 summary(fit)
 ```
+
 ```{r}
-library(rethinking)
-
-data(tulips) 
-d <- tulips
-str(d)
-
-write_csv(tulips, file = "../data/tulips.csv")
+tulips <- read_csv("https://raw.githubusercontent.com/feb-sofia/econometrics-2023/main/data/tulips.csv")
 ```
 
 ```{r}
@@ -199,7 +241,6 @@ summary(lm(blooms ~ 1 + water * shade, data = d))
 ```
 
 ## Polynomial regression
-
 
 ```{r}
 sim_n <- 100
@@ -225,6 +266,7 @@ summary(fit1)
 poly_plt + 
   geom_smooth(method = "lm")
 ```
+
 ```{r}
 poly_dt <- poly_dt %>%
   mutate(
@@ -283,7 +325,6 @@ fit3 <- update(fit2, . ~ . + I(x ^ 3) + I(x ^ 4))
 summary(fit3)
 ```
 
-
 ```{r}
 fit3_pred <- predict(fit3, interval = "confidence") %>%
   as_tibble() %>%
@@ -303,7 +344,6 @@ poly_dt <- poly_dt %>%
 ```{r}
 fit3
 ```
-
 
 ```{r}
 
@@ -342,7 +382,6 @@ summary(fit1)$r.squared
 summary(fit2)$r.squared
 summary(fit3)$r.squared
 ```
-
 
 ```{r}
 AIC(fit1)
