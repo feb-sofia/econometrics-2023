@@ -1,0 +1,324 @@
+---
+title: "Model Comparison"
+author: "Boyko Amarov"
+date: "2023-05-28"
+output: html_document
+---
+
+```{r}
+# install.packages(c("tidyverse", "caret"))
+library(tidyverse)
+library(caret)
+```
+
+
+# Model comparison
+
+## Data
+
+When the goal of the model is prediction, we need a way to make an educated
+guess about the model performance on data that it has not yet seen.
+
+Let us consider a model:
+
+$$
+y_i = 2 + 3 x_i + 2 x_i^2 + e_i, e_i \sim N(0, 1.5^2)
+$$
+And let us simulate data from this model. We will use the first 100
+observations to fit (train) the model. The rest of the data will serve
+as a test set.
+
+```{r}
+set.seed(1235)
+
+n_sim <- 200
+n_train <- 100
+n_test <- n_sim - n_train
+
+dt_all <- tibble(
+  x = runif(n = n_sim, min = -2, max = 2),
+  y = 2 + 3 * x + 2 * x^2 + rnorm(n = n_sim, mean = 0, sd = 1.5)
+)
+
+trainIndex <- createDataPartition(dt_all$y, p=0.8, list=FALSE)
+
+dt_train <- dt_all[trainIndex, ]
+dt_test <- dt_all[-trainIndex, ]
+```
+
+```{r}
+dt_train %>%
+  ggplot(aes(x = x, y = y)) + 
+  geom_point()
+```
+
+
+
+```{r}
+fit <- lm(y ~ 1 + poly(x, degree = 8, raw = TRUE), data = dt_train)
+summary(fit)
+```
+
+The $R^2$ is a measure of goodness of fit to the _observed_ data that was used
+when fitting the model.
+
+
+
+$$
+R^2 = 1 - \frac{\text{RSS}}{\text{TSS}} \\
+RSS = \sum_{i = 1}^n (y_i - \hat{y}_i)^2 \\
+TSS = \sum_{i = 1}^n (y_i - \bar{y})^2
+$$
+
+## Confidence and prediction intervals
+
+A prediction of new values of $y$ based on a linear model has 
+two sources of uncertainty. The first one is the estimation of the
+mean of $y$ at some predictor value.
+
+$$
+y_i = \beta_0 + \beta_1 x_{1i} + \ldots + \beta_2 x_{pi} + e_i, \quad e_i \sim N(0, \sigma^2)
+$$
+This is equivalent with
+
+$$
+y_i \sim N(\mu_i, \sigma^2)\\
+\mu_i = \beta_0 + \beta_1 x_{1i} + \ldots + \beta_2 x_{pi}
+$$
+The estimated regression equation is:
+
+$$
+\hat{y}_i = \hat{\mu}_i = \hat{\beta}_0 + \hat{\beta}_1 x_{1i} + \ldots + \hat{\beta}_2 x_{pi}
+$$
+The standard deviation of the error term can be estimated with the residual
+standard error:
+
+$$
+\hat{\sigma} = \sqrt{\frac{\text{RSS}}{n - (p + 1)}}
+$$
+
+where $p + 1$ is the number of coefficients in the model. Therefore under the
+model we expect $y$ to follow a normal distribution:
+
+$$
+y \sim N(\hat{\mu}, \hat{\sigma}^2)
+$$
+
+The uncertainty about the mean of $y$ can be expressed with the confidence interval.
+
+$$
+P(\hat{\mu} - t_{1 - \alpha / 2, n - (p + 1)}se(\hat{\mu}) \leq \mu \leq \hat{\mu} + t_{1 - \alpha / 2, n - (p + 1)} se(\hat{\mu})) \approx 1 - \alpha
+$$
+
+In addition, the prediction interval accounts for the uncertainty of sampling 
+from a normal distribution.
+
+
+
+## Comparing nested models
+
+In the model above we would like to test the hypothesis that
+the coefficients of the polynomial terms of degree greater and including three
+are simultaneously equal to zero.
+
+
+```{r}
+fit_reduced <- lm(y ~ 1 + poly(x, degree = 2, raw = TRUE), data = dt_train)
+summary(fit_reduced)
+```
+
+A natural summary of the goodness of fit of the model are the residuals
+and their sum of squares. This is the summary that OLS minimizes during
+the model fitting. If two models (full, reduced) that differ by linear constraints on
+their coefficients fit the data equally well, 
+then the difference of their RSS should be close to zero.
+
+$$
+RSS_{\text{reduced}} - RSS_{\text{full}}
+$$
+Note that the RSS of the full model will always be less of equal to that of the
+reduced model.
+
+It can be shown that an appropriately scaled version of this difference
+follows a F distribution of $\text{df_\text{reduced}}$ and $\text{df_{\full}}$
+degrees of freedom
+
+$$
+f = \frac{\frac{RSS_{\text{reduced}} - RSS_{\text{full}}}{df_{\text{reduced}} - df_{\text{full}}}}{\frac{RSS_{\text{full}}}{df_{\text{full}}}}
+$$
+\frac{df_{\text{full}}}{df_{\text{reduced}} - df_{\text{full}}}
+
+```{r}
+anova(fit_reduced, fit)
+```
+
+```{r}
+1 - pf(1.0703, df1 = 6, df2 = 151)
+```
+
+## Information criteria
+
+Adjusted $R^2$
+
+$$
+R^2_{ADJ} = 1 - \frac{n - 1}{n - p - 1} \frac{RSS}{TSS}
+$$
+
+Information Criteria
+
+Compute the Akaike information criterion (AIC) for the three models and choose the best one.
+
+$$
+\text{AIC} = n \log\left(\frac{RSS}{n}\right) + 2p + n + n \log(2\pi).
+$$
+
+```{r}
+AIC(fit1)
+AIC(fit2)
+AIC(fit3)
+```
+
+## Cross validation
+
+
+Let us compute the model predictions and let us compare these to the observed
+data. A common error measure is the Root Mean Squared Error:
+
+$$
+RMSE = \sqrt{\frac{1}{n}\sum_{i = 1}^{n}(y_i - \hat{y}_i)}
+$$
+We will use `predict` to generate the predicted values ($\hat{y}_i$)
+
+```{r}
+pred_fit <- predict(fit) %>%
+  as_tibble() %>%
+  bind_cols(dt_train)
+
+pred_fit %>%
+  mutate(
+    res = y - value
+  ) %>%
+  summarise(
+    RMSE = sqrt(sum(res^2) / n())
+  )
+```
+
+Let's now see how the model performs on data that it has not seen:
+
+```{r}
+pred_fit_test <- predict(fit, newdata = dt_test) %>%
+  as_tibble() %>%
+  bind_cols(dt_test)
+
+pred_fit_test %>%
+  mutate(
+    res = y - value
+  ) %>%
+  summarise(
+    RMSE = sqrt(sum(res^2) / n())
+  )
+```
+
+It is very common that we need to estimate the RMSE on new data by reusing
+the training data set. One such method is Leave One Out (LOO). It works
+by omitting one observation from the dataset and predicting it from 
+a model trained on the rest of the observations.
+
+
+```{r}
+trControl_opts <- trainControl(
+  method = "LOOCV"
+)
+
+fit_loo <- train(
+  y ~ 1 + poly(x, 8), 
+  data = dt_train, 
+  method = "lm", 
+  trControl = trControl_opts
+)
+fit_loo
+```
+
+A major problem with the LOO estimation of the test RMSE is the 
+need to fit a large number ($n - 1$) of models. While this is
+feasible for linear regression models where the LOO coefficient
+estimates can be computed without refitting the model, this approach
+does not generalize well to other models like GLM (e.g. logistic regression).
+
+It can be shown that the RMSE can be estimated reasonably well by 
+leaving out a whole subset (fold) of the data.
+
+
+```{r}
+trControl_opts <- trainControl(
+  method="repeatedcv", 
+  ## Number of folds
+  number=10,
+  repeats=10
+)
+
+fit_10_fold <- train(
+  y ~ 1 + poly(x, 8), 
+  data = dt_train, 
+  method = "lm", 
+  trControl = trControl_opts
+)
+fit_10_fold
+```
+
+
+## Interaction effect
+
+```{r}
+kids <- read_csv(
+  "https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/childiq.csv") %>%
+  select(kid_score, mom_hs, mom_iq) %>%
+  mutate(
+    mom_hs = factor(mom_hs)
+  )
+```
+
+```{r}
+kids_splt <- kids %>%
+  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
+  geom_point()
+
+kids_splt
+```
+
+```{r}
+lm(kid_score ~ 1 + mom_hs, data = kids)
+```
+
+```{r}
+lm(mom_iq ~ 1 + mom_hs, data = kids)
+```
+
+```{r}
+fit1 <- lm(kid_score ~ 1 + mom_hs + mom_iq, data = kids)
+summary(fit1)
+```
+
+```{r}
+kids_splt + 
+  geom_abline(intercept = 25.73154, slope = 0.56, color = "firebrick") + 
+  geom_abline(intercept = 25.73154 + 5.95012, slope = 0.56, color = "steelblue")
+```
+
+```{r}
+fit2 <- lm(kid_score ~ 1 + mom_hs * mom_iq, data = kids)
+summary(fit2)
+```
+
+```{r}
+kids_splt + 
+  geom_abline(intercept = -11.4820, slope = 0.9689, color = "firebrick") + 
+  geom_abline(intercept = -11.4820 + 51.2682 + 5.95012, slope = 0.9689 -0.4843, color = "steelblue")
+```
+
+
+
+
+
+
+
