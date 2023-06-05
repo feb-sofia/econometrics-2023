@@ -1,0 +1,273 @@
+---
+title: "Resampling Methods"
+author: "Boyko Amarov"
+date: "2023-06-05"
+output: html_document
+---
+
+# Data
+
+```{r}
+# install.packages(c("tidyverse", "caret"))
+library(tidyverse)
+library(caret)
+```
+
+
+```{r}
+kids <- read_csv(
+  "https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/childiq.csv") %>%
+  select(kid_score, mom_hs, mom_iq) %>%
+  mutate(
+    mom_hs = factor(mom_hs)
+  )
+```
+
+When the goal of the model is prediction, we need a way to make an
+educated guess about the model performance on data that it has not yet
+seen. We will reserve twenty percent of the observations in the `kids` data set
+for evaluation of the prediction performance.
+
+
+```{r}
+set.seed(1235)
+
+trainIndex <- createDataPartition(kids$kid_score, p=0.8, list=FALSE)
+
+kids_train <- kids[trainIndex, ]
+kids_test <- kids[-trainIndex, ]
+```
+
+```{r}
+kids_train %>%
+  ggplot(aes(x = mom_iq, y = kid_score)) + 
+  geom_point() + 
+  labs(
+    x = "Mother IQ",
+    y = "Kid IQ"
+  )
+```
+
+Let us fit several models to the data set and plot their predictions.
+
+```{r}
+summary(kids_train$mom_iq)
+```
+
+```{r}
+fit1 <- lm(kid_score ~ mom_iq, data = kids_train)
+
+prediction_data <- tibble(
+  mom_iq = seq(60, 150, length.out = 500)
+)
+
+pred_fit1 <- predict(fit1, newdata = prediction_data, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(prediction_data)
+
+pred_fit1 %>%
+  ggplot() + 
+  geom_point( 
+    data = kids_train,
+    aes(x = mom_iq, y = kid_score)
+    ) + 
+  geom_line(
+    aes(x = mom_iq, y = fit)
+  ) + 
+  geom_ribbon(
+    aes(x = mom_iq, ymin = lwr, ymax = upr),
+    alpha = 0.2
+    )
+```
+
+```{r}
+fit2 <- lm(kid_score ~ 1 + poly(mom_iq, 2), data = kids_train)
+
+prediction_data <- tibble(
+  mom_iq = seq(60, 150, length.out = 500)
+)
+
+pred_fit2 <- predict(fit2, newdata = prediction_data, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(prediction_data)
+
+pred_fit2 %>%
+  ggplot() + 
+  geom_point( 
+    data = kids_train,
+    aes(x = mom_iq, y = kid_score)
+    ) + 
+  geom_line(
+    aes(x = mom_iq, y = fit)
+  ) + 
+  geom_ribbon(
+    aes(x = mom_iq, ymin = lwr, ymax = upr),
+    alpha = 0.2
+    )
+```
+
+```{r}
+fit3 <- lm(kid_score ~ 1 + poly(mom_iq, 15), data = kids_train)
+
+prediction_data <- tibble(
+  mom_iq = seq(60, 150, length.out = 500)
+)
+
+pred_fit3 <- predict(fit3, newdata = prediction_data, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(prediction_data)
+
+pred_fit3 %>%
+  ggplot() + 
+  geom_point( 
+    data = kids_train,
+    aes(x = mom_iq, y = kid_score)
+    ) + 
+  geom_line(
+    aes(x = mom_iq, y = fit)
+  ) + 
+  geom_ribbon(
+    aes(x = mom_iq, ymin = lwr, ymax = upr),
+    alpha = 0.2
+    ) + 
+  ylim(c(0, 130))
+```
+
+Let us compute the model predictions and let us compare these to the
+observed data. A common error measure is the Root Mean Squared Error:
+
+$$
+RMSE = \sqrt{\frac{1}{n}\sum_{i = 1}^{n}(y_i - \hat{y}_i)^2}
+$$ 
+Let's compute the RMSE on the training and the test data.
+
+1. The training data
+2. The test data
+
+
+
+It is very common that we need to estimate the RMSE on new data by
+reusing the training data set. One such method is Leave One Out Cross Validation (LOOCV).
+It works by omitting one observation from the dataset and predicting it
+from a model trained on the rest of the observations.
+
+```{r}
+trControl_opts <- trainControl(
+  method = "LOOCV"
+)
+
+fit_loo <- train(
+  y ~ 1 + poly(x, 1), 
+  data = kids_train, 
+  method = "lm", 
+  trControl = trControl_opts
+)
+fit_loo
+```
+
+Compute the LOOCV RMSQ for the two and higher degree polynomial models
+
+```{r}
+
+```
+
+
+A major problem with the LOO estimation of the test RMSE is the need to
+fit a large number ($n - 1$) of models. While this is feasible for
+linear regression models where the LOO coefficient estimates can be
+computed without refitting the model, this approach does not generalize
+well to other models like GLM (e.g. logistic regression).
+
+It can be shown that the RMSE can be estimated reasonably well by
+leaving out a whole subset (fold) of the data.
+
+```{r}
+trControl_opts <- trainControl(
+  method="repeatedcv", 
+  ## Number of folds
+  number=10,
+  repeats=10
+)
+
+fit_10_fold <- train(
+  y ~ 1 + poly(x, 1), 
+  data = kids_train, 
+  method = "lm", 
+  trControl = trControl_opts
+)
+fit_10_fold
+```
+
+Compute the 10-fold CV RMSE for the two and higher polynomial models.
+
+## Information criteria
+
+Adjusted $R^2$
+
+$$
+R^2_{ADJ} = 1 - \frac{n - 1}{n - p - 1} \frac{RSS}{TSS}
+$$
+
+Information Criteria
+
+Compute the Akaike information criterion (AIC) for the three models and
+choose the best one.
+
+$$
+\text{AIC} = n \log\left(\frac{RSS}{n}\right) + 2p + n + n \log(2\pi).
+$$
+
+```{r}
+AIC(fit_int)
+AIC(fit_reduced)
+AIC(fit)
+```
+
+## Interaction effect
+
+```{r}
+kids <- read_csv(
+  "https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/childiq.csv") %>%
+  select(kid_score, mom_hs, mom_iq) %>%
+  mutate(
+    mom_hs = factor(mom_hs)
+  )
+```
+
+```{r}
+kids_splt <- kids %>%
+  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
+  geom_point()
+
+kids_splt
+```
+
+```{r}
+lm(kid_score ~ 1 + mom_hs, data = kids)
+```
+
+```{r}
+lm(mom_iq ~ 1 + mom_hs, data = kids)
+```
+
+```{r}
+fit1 <- lm(kid_score ~ 1 + mom_hs + mom_iq, data = kids)
+summary(fit1)
+```
+
+```{r}
+kids_splt + 
+  geom_abline(intercept = 25.73154, slope = 0.56, color = "firebrick") + 
+  geom_abline(intercept = 25.73154 + 5.95012, slope = 0.56, color = "steelblue")
+```
+
+```{r}
+fit2 <- lm(kid_score ~ 1 + mom_hs * mom_iq, data = kids)
+summary(fit2)
+```
+
+```{r}
+kids_splt + 
+  geom_abline(intercept = -11.4820, slope = 0.9689, color = "firebrick") + 
+  geom_abline(intercept = -11.4820 + 51.2682 + 5.95012, slope = 0.9689 -0.4843, color = "steelblue")
+```
