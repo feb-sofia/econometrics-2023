@@ -3,6 +3,9 @@ title: "Resampling Methods"
 author: "Boyko Amarov"
 date: "2023-06-05"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 # Data
@@ -13,7 +16,6 @@ library(tidyverse)
 library(caret)
 ```
 
-
 ```{r}
 kids <- read_csv(
   "https://raw.githubusercontent.com/feb-uni-sofia/econometrics2020-solutions/master/data/childiq.csv") %>%
@@ -23,11 +25,26 @@ kids <- read_csv(
   )
 ```
 
+```{r}
+mean(kids$kid_score)
+lm(kid_score ~ 1, data = kids)
+```
+
+```{r}
+dt <- tibble(
+  x = runif(10),
+  y = rnorm(10, mean = 2, sd = 2)
+)
+
+summary(lm(y ~ x, data = dt))
+summary(lm(y ~ -1 + x, data = dt))
+```
+
+
 When the goal of the model is prediction, we need a way to make an
 educated guess about the model performance on data that it has not yet
-seen. We will reserve twenty percent of the observations in the `kids` data set
-for evaluation of the prediction performance.
-
+seen. We will reserve twenty percent of the observations in the `kids`
+data set for evaluation of the prediction performance.
 
 ```{r}
 set.seed(1235)
@@ -55,7 +72,7 @@ summary(kids_train$mom_iq)
 ```
 
 ```{r}
-fit1 <- lm(kid_score ~ mom_iq, data = kids_train)
+fit1 <- lm(kid_score ~ 1 + poly(mom_iq, degree = 1), data = kids_train)
 
 prediction_data <- tibble(
   mom_iq = seq(60, 150, length.out = 500)
@@ -139,17 +156,66 @@ observed data. A common error measure is the Root Mean Squared Error:
 $$
 RMSE = \sqrt{\frac{1}{n}\sum_{i = 1}^{n}(y_i - \hat{y}_i)^2}
 $$ 
+
+
 Let's compute the RMSE on the training and the test data.
 
-1. The training data
-2. The test data
+1.  The training data
 
 
+```{r}
+pred_fit_train_1 <- predict(fit1, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(kids_train)
+
+pred_fit_train_1 %>%
+  summarise(
+    RMSE = sqrt(sum((kid_score - fit) ^ 2 ) / n())
+  )
+```
+
+```{r}
+pred_fit_train_3 <- predict(fit3, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(kids_train)
+
+pred_fit_train_3 %>%
+  summarise(
+    RMSE = sqrt(sum((kid_score - fit) ^ 2 ) / n())
+  )
+```
+
+2.  The test data
+
+
+```{r}
+pred_fit_test_1 <- predict(fit1, newdata = kids_test, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(kids_test)
+
+pred_fit_test_1 %>%
+  summarise(
+    RMSE = sqrt(sum((kid_score - fit) ^ 2 ) / n())
+  )
+```
+
+
+```{r}
+pred_fit_test_3 <- predict(fit3, newdata = kids_test, interval = "confidence") %>%
+  as_tibble() %>%
+  bind_cols(kids_test)
+
+pred_fit_test_3 %>%
+  summarise(
+    RMSE = sqrt(sum((kid_score - fit) ^ 2 ) / n())
+  )
+```
 
 It is very common that we need to estimate the RMSE on new data by
-reusing the training data set. One such method is Leave One Out Cross Validation (LOOCV).
-It works by omitting one observation from the dataset and predicting it
-from a model trained on the rest of the observations.
+reusing the training data set. One such method is Leave One Out Cross
+Validation (LOOCV). It works by omitting one observation from the
+dataset and predicting it from a model trained on the rest of the
+observations.
 
 ```{r}
 trControl_opts <- trainControl(
@@ -157,7 +223,7 @@ trControl_opts <- trainControl(
 )
 
 fit_loo <- train(
-  y ~ 1 + poly(x, 1), 
+  kid_score ~ 1 + poly(mom_iq, 1), 
   data = kids_train, 
   method = "lm", 
   trControl = trControl_opts
@@ -170,7 +236,6 @@ Compute the LOOCV RMSQ for the two and higher degree polynomial models
 ```{r}
 
 ```
-
 
 A major problem with the LOO estimation of the test RMSE is the need to
 fit a large number ($n - 1$) of models. While this is feasible for
