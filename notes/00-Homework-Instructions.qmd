@@ -1,30 +1,13 @@
-
-# Homework (not graded) {.unnumbered}
+# Homework (graded) {.unnumbered}
 
 Please find the homework assignment here:
 
+<https://classroom.github.com/a/TLpH3lT8>
 
-[https://classroom.github.com/a/FrFDdxP9](https://classroom.github.com/a/FrFDdxP9)
+In order to access the homework you will need a working GitHub account. If you don't have one, please create a profile with GitHub. Please use a working email address when opening your account, because you will receive notifications from GitHub related to the grading of the final homework.
 
+After clicking the link and logging into GitHub you can select your student id from the roster. Please email me ([amarov\@feb.uni-sofia.bg](mailto:amarov@feb.uni-sofia.bg)) if you can't find you student id there!
 
-In order to access the homework you will need a working GitHub account. If you
-don't have one, please create a profile with GitHub. As the organization of the 
-final homework will be identical to this one, you will also need the GitHub account 
-for it. Please use a working email address when opening your account, because you 
-will receive notifications from GitHub related to the grading of the final 
-homework.
+The homework is meant to be a group assignment. The team size is limited to five members. The first member of the group can open the assignment and create the team. The rest of the members can select that team when joining.
 
-
-After clicking the link and logging into GitHub you can select your student id 
-from the roster. Please email me ([amarov@feb.uni-sofia.bg](mailto:amarov@feb.uni-sofia.bg)) if you can't find
-you student id there.
-
-
-The homework is meant as a group assignment. You can team up with up to five
-members. The first member of the group can open the assignment and create the 
-team. The the rest of the members can select that team when joining.
-
-After joining, GitHub will create a repository for your team. You will find the 
-assignment in the `assignment.Rmd` file in that repository. Copy its contents
-in your local R Studio session to start working on it. You will find submission
-instructions at the top of the file.
+After joining, GitHub will create a repository for your team. This repository will be empty and you will receive your assignment once all the teams are formed (approx. 13.06.2023). You will receive a notification via GitHub when the assignment is available. *The submission deadline is 28.06.2023 12:00*. Copy its contents in your local R Studio session to start working on it. You will find submission instructions at the top of the file.
